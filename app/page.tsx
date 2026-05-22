@@ -8,6 +8,15 @@ export const metadata: Metadata = {
 
 const calculators = [
   {
+    href: '/viagens',
+    emoji: '✈️',
+    title: 'Viagem dos Sonhos',
+    subtitle: 'Quanto custa viajar — câmbio, IOF, Wise e plano de poupança.',
+    tag: 'novo',
+    bg: 'bg-blue-950',
+    accent: 'text-blue-300',
+  },
+  {
     href: '/apostas',
     emoji: '🎯',
     title: 'Gastos com Apostas',
