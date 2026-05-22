@@ -18,7 +18,7 @@ export default function InvestimentosPage() {
   return (
     <div className="space-y-6">
       <InvestmentComparison />
-      <div className="space-y-2">
+      <div className="prose prose-sm prose-stone max-w-none">
         <h2 className="text-base font-semibold text-stone-700">Sobre os investimentos</h2>
         <p className="text-stone-500 text-sm leading-relaxed">
           Os cálculos usam juros compostos com aporte mensal (fórmula de valor futuro de anuidade).

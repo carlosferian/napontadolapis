@@ -18,7 +18,7 @@ export default function FumoPage() {
   return (
     <div className="space-y-6">
       <SmokeCalculator />
-      <div className="space-y-2">
+      <div className="prose prose-sm prose-stone max-w-none">
         <h2 className="text-base font-semibold text-stone-700">Sobre o cálculo</h2>
         <p className="text-stone-500 text-sm leading-relaxed">
           O custo é calculado com base no número de cigarros por dia e o preço do maço de 20 unidades.
