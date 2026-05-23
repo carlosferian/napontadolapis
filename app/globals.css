@@ -1,24 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Manrope:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-brand-pencil: #f2c94c;
-  --color-brand-graphite: #333333;
-  --color-brand-paper: #faf9f6;
-  --color-brand-ink: #1a1a1a;
-  
-  --color-category-growth: #27ae60;
-  --color-category-saving: #eb5757;
-  --color-category-dream: #2d9cdb;
-  
-  --font-serif: 'Playfair Display', serif;
-  --font-sans: 'DM Sans', sans-serif;
-  --font-hand: 'Caveat', cursive;
+  /* Core brand — extracted from the pencil-arrow logo */
+  --color-brand-pencil: #00C4BE;
+  --color-brand-graphite: #172030;
+  --color-brand-paper: #EEF2F9;
+  --color-brand-ink: #172030;
+  --color-brand-green: #1A5E40;
+  --color-brand-teal: #0D8B72;
+  --color-brand-cyan: #00C4BE;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-muted: #4D6070;
+  --color-brand-border: #D6E1EF;
+
+  /* Category palette */
+  --color-category-growth: #1A5E40;
+  --color-category-saving: #C83333;
+  --color-category-dream: #0A8A7E;
+
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Manrope', sans-serif;
+  --font-hand: 'Manrope', sans-serif;
 }
 
 :root {
-  --brand-pencil: #f2c94c;
-  --brand-paper: #faf9f6;
+  --brand-pencil: #00C4BE;
+  --brand-paper: #EEF2F9;
+  --gradient-brand: linear-gradient(135deg, #1A5E40 0%, #0D8B72 55%, #00C4BE 100%);
 }
 
 * {
@@ -26,28 +35,40 @@
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
-  background-color: var(--color-brand-paper);
-  color: var(--color-brand-ink);
-  background-image: 
-    linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
-  background-size: 20px 20px;
+  font-family: 'Manrope', sans-serif;
+  background-color: #EEF2F9;
+  color: #172030;
+  -webkit-font-smoothing: antialiased;
+}
+
+.brand-gradient {
+  background: var(--gradient-brand);
+}
+
+.brand-gradient-text {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .hand-drawn-border {
-  border: 2px solid var(--color-brand-graphite);
-  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  border: 1.5px solid var(--color-brand-border);
+  border-radius: 16px;
 }
 
 .number-hero {
   font-size: clamp(2rem, 5vw, 2.5rem);
   font-weight: 700;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
   line-height: 1.1;
   font-family: var(--font-serif);
 }
 
 .card-shadow {
-  box-shadow: 5px 5px 0px 0px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 16px rgba(23, 32, 48, 0.06), 0 1px 4px rgba(23, 32, 48, 0.04);
+}
+
+.card-shadow-hover {
+  box-shadow: 0 8px 32px rgba(13, 139, 114, 0.14), 0 2px 8px rgba(23, 32, 48, 0.06);
 }

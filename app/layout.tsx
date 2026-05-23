@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import './globals.css'
 import { Nav } from '@/components/Nav'
 
@@ -24,14 +25,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
           {children}
         </main>
-        <footer className="max-w-4xl mx-auto px-4 py-12 border-t border-stone-200 mt-12">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-10 h-10 bg-brand-pencil rounded-full flex items-center justify-center font-bold text-brand-graphite">
-              ✎
+        <footer className="max-w-4xl mx-auto px-4 py-12 border-t border-brand-border mt-12">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-9 h-9 rounded-xl overflow-hidden">
+              <Image src="/logo.png" alt="Na Ponta do Lápis" width={36} height={36} className="object-cover" />
             </div>
-            <p className="text-sm font-serif text-brand-graphite font-bold">na ponta do lápis</p>
-            <p className="text-xs text-stone-400 text-center max-w-xs leading-relaxed">
-              Calculadoras honestas que mostram a realidade dos números. <br/>
+            <p className="text-sm font-serif font-semibold text-brand-ink tracking-tight">na ponta do lápis</p>
+            <p className="text-xs text-brand-muted text-center max-w-xs leading-relaxed">
+              Calculadoras honestas que mostram a realidade dos números.<br />
               Sem julgamento, só a conta.
             </p>
           </div>
