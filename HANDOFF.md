@@ -49,13 +49,57 @@ O projeto está completo e buildando sem erros. São **33 páginas estáticas** 
 
 ## Próximo passo imediato: Deploy
 
-O projeto está pronto para ir ao ar. Ordem de ações:
+### 1. Conta e repositório
+- [ ] Criar conta em vercel.com (pode usar login do GitHub)
+- [ ] Garantir que o repo `carlosferian/napontadolapis` está no GitHub com a branch principal atualizada
 
-1. **Vercel** — entrar em vercel.com, importar `carlosferian/napontadolapis`, zero config necessária
-2. **Domínio** — registrar `napontadolapis.com.br` no registro.br (~R$40/ano), apontar DNS para o Vercel
-3. **Google Search Console** — verificar domínio, submeter sitemap após o deploy
-4. **Google Analytics 4** — criar propriedade, inserir script no `app/layout.tsx`
-5. **AdSense** — aplicar para conta (pode demorar 2–4 semanas para aprovação)
+### 2. Importar o projeto no Vercel
+- [ ] Clicar em **"Add New Project"** no dashboard
+- [ ] Selecionar o repo `napontadolapis`
+- [ ] Framework: **Next.js** (detectado automaticamente — não alterar nada)
+- [ ] Clicar em **Deploy** — primeiro deploy leva ~2 min
+- [ ] Acessar a URL gerada (`napontadolapis.vercel.app`) e testar as calculadoras no celular
+
+### 3. Domínio customizado
+- [ ] Registrar `napontadolapis.com.br` no **registro.br** (~R$40/ano)
+- [ ] No Vercel: Settings → Domains → adicionar `napontadolapis.com.br`
+- [ ] O Vercel exibe dois registros DNS — configurar no painel do registro.br:
+  - Registro **A** apontando para o IP do Vercel
+  - Registro **CNAME** para `www`
+- [ ] Aguardar propagação DNS (geralmente menos de 1h)
+- [ ] Verificar HTTPS ativo (automático)
+
+### 4. Google Search Console
+- [ ] Acessar search.google.com/search-console
+- [ ] Adicionar propriedade `napontadolapis.com.br`
+- [ ] Verificar domínio via DNS (opção mais fácil)
+- [ ] Submeter sitemap: `https://napontadolapis.com.br/sitemap.xml`
+
+### 5. Google Analytics 4
+- [ ] Criar conta em analytics.google.com
+- [ ] Criar propriedade para `napontadolapis.com.br`
+- [ ] Copiar o **Measurement ID** (formato `G-XXXXXXXXXX`)
+- [ ] Adicionar no `app/layout.tsx` dentro do `<head>`:
+```tsx
+<script async src={`https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX`} />
+<script dangerouslySetInnerHTML={{ __html: `
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+` }} />
+```
+- [ ] Commitar, fazer push e verificar eventos chegando no GA4
+
+### 6. AdSense (pode levar 2–4 semanas para aprovação)
+- [ ] Acessar adsense.google.com e criar conta
+- [ ] Adicionar o site `napontadolapis.com.br`
+- [ ] Inserir o snippet de verificação no `<head>` do `layout.tsx`
+- [ ] Aguardar aprovação (Google analisa o conteúdo manualmente)
+- [ ] Após aprovado: configurar ad units e inserir nos locais definidos na proposta
+
+> **Ordem de prioridade real:** Vercel → Domínio → Search Console → GA4 → AdSense  
+> O AdSense pode ser deixado por último — o site precisa de algum tráfego orgânico para aprovação mais rápida.
 
 ---
 
