@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { BetsCalculator } from '@/components/calculators/BetsCalculator'
+import { AppCTA } from '@/components/AppCTA'
 
 export const metadata: Metadata = {
   title: 'Calculadora de Gastos com Apostas — Quanto você gasta com bets?',
@@ -27,6 +28,7 @@ export default function ApostasPage() {
           Não há julgamento — só matemática honesta.
         </p>
       </div>
+      <AppCTA context="esse gasto" />
     </div>
   )
 }

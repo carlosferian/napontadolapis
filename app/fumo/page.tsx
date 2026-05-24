@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { SmokeCalculator } from '@/components/calculators/SmokeCalculator'
+import { AppCTA } from '@/components/AppCTA'
 
 export const metadata: Metadata = {
   title: 'Quanto custa fumar? Calculadora do custo real do cigarro',
@@ -27,6 +28,7 @@ export default function FumoPage() {
           os números para quem quiser vê-los.
         </p>
       </div>
+      <AppCTA context="esse custo" />
     </div>
   )
 }

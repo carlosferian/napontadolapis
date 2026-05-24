@@ -6,6 +6,7 @@ import {
   PieChart,
   Compass,
   TrendingUp,
+  Users,
   ArrowRight,
   type LucideIcon,
 } from 'lucide-react'
@@ -78,6 +79,14 @@ const categories: Category[] = [
         subtitle: 'Câmbio, IOF, Wise e plano de poupança real.',
         tag: 'novo',
         accentClass: 'hover:border-category-dream/60',
+      },
+      {
+        href: '/dividir',
+        Icon: Users,
+        iconColor: '#0A8A7E',
+        title: 'Dividir a Conta',
+        subtitle: 'Rateio por pessoa com gorjeta. Sem discussão, só a matemática.',
+        accentClass: 'hover:border-category-dream/40',
       },
     ],
   },
@@ -225,7 +234,7 @@ export default function HomePage() {
               ].map((item) => (
                 <li key={item.n} className="flex gap-4">
                   <span
-                    className="text-xs font-bold pt-0.5 flex-shrink-0 brand-gradient-text"
+                    className="text-xs font-bold pt-0.5 flex-shrink-0"
                     style={{
                       background: 'linear-gradient(135deg, #1A5E40, #00C4BE)',
                       WebkitBackgroundClip: 'text',
@@ -259,6 +268,53 @@ export default function HomePage() {
             </footer>
           </blockquote>
         </div>
+      </section>
+
+      {/* App announcement */}
+      <section
+        id="app"
+        className="rounded-3xl p-10 sm:p-14 border space-y-8"
+        style={{ background: 'linear-gradient(145deg, #0D1A2A 0%, #122030 100%)', borderColor: '#1E3040' }}
+      >
+        <div className="flex items-center gap-3">
+          <span
+            className="w-2 h-2 rounded-full animate-pulse"
+            style={{ background: '#00C4BE' }}
+          />
+          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#00C4BE' }}>
+            App em desenvolvimento — Android
+          </span>
+        </div>
+
+        <div className="space-y-3 max-w-2xl">
+          <h3 className="text-3xl sm:text-4xl font-bold font-serif text-white leading-tight">
+            Na Ponta do Lápis<br />
+            <span className="italic font-normal" style={{ color: '#00C4BE' }}>no seu bolso.</span>
+          </h3>
+          <p className="text-white/50 text-base leading-relaxed">
+            Calculadoras pontuais são o ponto de partida. O app é para quem quer acompanhar
+            o mês inteiro — cada gasto, cada entrada, cada meta. A mesma honestidade matemática
+            do site, agora como rotina diária.
+          </p>
+        </div>
+
+        <ul className="grid sm:grid-cols-2 gap-3">
+          {[
+            'Lance despesas em segundos — com ou sem câmera, com ou sem IA',
+            'Divida a conta da mesa sem discussão',
+            'Veja para onde o dinheiro vai, com gráficos que não mentem',
+            'Defina limites por categoria e receba alertas antes de estourar',
+            'Importe sua fatura inteira de uma vez',
+            'Sem sincronização em nuvem. Sem e-mail. Sem CPF.',
+          ].map((item) => (
+            <li key={item} className="flex items-start gap-2.5 text-sm text-white/40">
+              <span className="mt-1 shrink-0 text-xs" style={{ color: '#00C4BE' }}>·</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <p className="text-white/20 text-xs italic">sem data prometida — só quando estiver bom.</p>
       </section>
 
       {/* Coming soon */}
@@ -298,7 +354,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Subtle decorative blobs */}
         <div
           className="absolute top-0 right-0 w-72 h-72 -mr-24 -mt-24 rounded-full opacity-10 pointer-events-none"
           style={{ background: 'radial-gradient(circle, #00C4BE, transparent)' }}

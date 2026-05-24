@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { InvestmentComparison } from '@/components/calculators/InvestmentComparison'
+import { AppCTA } from '@/components/AppCTA'
 
 export const metadata: Metadata = {
   title: 'E se eu tivesse investido? Comparador de investimentos vs apostas',
@@ -27,6 +28,7 @@ export default function InvestimentosPage() {
           O retorno de 72% nas apostas é baseado em estudos de mercado de apostas esportivas brasileiras.
         </p>
       </div>
+      <AppCTA context="seus aportes e investimentos" />
     </div>
   )
 }

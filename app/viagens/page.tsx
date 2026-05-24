@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { destinations, regionLabels, type Region } from '@/config/travel'
+import { AppCTA } from '@/components/AppCTA'
 
 export const metadata: Metadata = {
   title: 'Calculadoras de Viagem — Quanto custa viajar?',
@@ -66,6 +67,7 @@ export default function ViagensPage() {
           </div>
         </div>
       ))}
+      <AppCTA context="os gastos da sua viagem" />
     </div>
   )
 }

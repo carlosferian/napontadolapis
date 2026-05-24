@@ -18,21 +18,35 @@ export function Nav() {
         <div className="flex items-center gap-1">
           <Link
             href="/investimentos"
-            className="px-3 py-2 rounded-lg text-brand-muted hover:text-brand-green hover:bg-brand-green/8 transition-all text-sm font-medium"
+            className="px-3 py-2 rounded-lg text-brand-muted hover:text-brand-green hover:bg-brand-green/8 transition-all text-sm font-medium hidden sm:block"
           >
             Investimentos
           </Link>
           <Link
             href="/apostas"
-            className="px-3 py-2 rounded-lg text-brand-muted hover:text-category-saving hover:bg-category-saving/8 transition-all text-sm font-medium"
+            className="px-3 py-2 rounded-lg text-brand-muted hover:text-category-saving hover:bg-category-saving/8 transition-all text-sm font-medium hidden sm:block"
           >
             Hábitos
           </Link>
           <Link
             href="/viagens"
-            className="px-3 py-2 rounded-lg text-brand-muted hover:text-category-dream hover:bg-category-dream/8 transition-all text-sm font-medium"
+            className="px-3 py-2 rounded-lg text-brand-muted hover:text-category-dream hover:bg-category-dream/8 transition-all text-sm font-medium hidden md:block"
           >
             Viagens
+          </Link>
+          <Link
+            href="/dividir"
+            className="px-3 py-2 rounded-lg text-brand-muted hover:text-brand-teal hover:bg-brand-teal/8 transition-all text-sm font-medium hidden md:block"
+          >
+            Dividir
+          </Link>
+          <Link
+            href="/#app"
+            className="ml-2 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-all hover:opacity-90"
+            style={{ background: 'linear-gradient(135deg, #172030, #1A3A2A)', color: '#00C4BE', border: '1px solid #1E3040' }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#00C4BE' }} />
+            app em breve
           </Link>
         </div>
       </div>
