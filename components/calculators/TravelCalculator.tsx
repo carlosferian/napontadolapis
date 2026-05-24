@@ -168,30 +168,40 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
             <p className="text-4xl sm:text-5xl font-bold tabular-nums font-serif text-amber-500 leading-none">
               {formatBRL(tripCost.grandTotalFintechWithMargin)}
             </p>
-            <p className="text-xs text-stone-400 mt-1">com fintech · inclui margem de segurança de 15%</p>
+            <p className="text-xs text-stone-400 mt-1">
+              {tripCost.isDomestic
+                ? 'em reais · inclui margem de segurança de 15%'
+                : 'com fintech · inclui margem de segurança de 15%'}
+            </p>
           </div>
 
-          {/* Payment comparison */}
-          <div className="mx-5 mb-5 rounded-xl overflow-hidden border border-stone-100">
-            <div className="grid grid-cols-2">
-              {/* Fintech */}
-              <div className="p-3 sm:p-4 bg-emerald-50 border-r border-stone-100">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">Wise / Nomad</p>
-                <p className="text-lg sm:text-xl font-bold tabular-nums text-emerald-700 leading-none">{formatBRL(tripCost.grandTotalFintech)}</p>
-                <p className="text-[10px] text-emerald-600 mt-0.5">sem IOF</p>
+          {/* Payment comparison — international only */}
+          {!tripCost.isDomestic ? (
+            <div className="mx-5 mb-5 rounded-xl overflow-hidden border border-stone-100">
+              <div className="grid grid-cols-2">
+                <div className="p-3 sm:p-4 bg-emerald-50 border-r border-stone-100">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">Wise / Nomad</p>
+                  <p className="text-lg sm:text-xl font-bold tabular-nums text-emerald-700 leading-none">{formatBRL(tripCost.grandTotalFintech)}</p>
+                  <p className="text-[10px] text-emerald-600 mt-0.5">sem IOF</p>
+                </div>
+                <div className="p-3 sm:p-4 bg-red-50/60">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-red-500 mb-1">Cartão tradicional</p>
+                  <p className="text-lg sm:text-xl font-bold tabular-nums text-red-500 leading-none">{formatBRL(tripCost.grandTotalCard)}</p>
+                  <p className="text-[10px] text-red-400 mt-0.5">+{formatBRL(tripCost.savingsWithFintech)} com IOF</p>
+                </div>
               </div>
-              {/* Card */}
-              <div className="p-3 sm:p-4 bg-red-50/60">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-red-500 mb-1">Cartão tradicional</p>
-                <p className="text-lg sm:text-xl font-bold tabular-nums text-red-500 leading-none">{formatBRL(tripCost.grandTotalCard)}</p>
-                <p className="text-[10px] text-red-400 mt-0.5">+{formatBRL(tripCost.savingsWithFintech)} com IOF</p>
+              <div className="px-4 py-2 bg-stone-50 border-t border-stone-100 flex items-center justify-center gap-1.5">
+                <span className="text-xs text-stone-500">economia usando fintech:</span>
+                <span className="text-xs font-bold text-emerald-600">{formatBRL(tripCost.savingsWithFintech)} ({formatPct(tripCost.savingsPct)})</span>
               </div>
             </div>
-            <div className="px-4 py-2 bg-stone-50 border-t border-stone-100 flex items-center justify-center gap-1.5">
-              <span className="text-xs text-stone-500">economia usando fintech:</span>
-              <span className="text-xs font-bold text-emerald-600">{formatBRL(tripCost.savingsWithFintech)} ({formatPct(tripCost.savingsPct)})</span>
+          ) : (
+            <div className="mx-5 mb-5 px-4 py-3 rounded-xl bg-stone-50 border border-stone-100">
+              <p className="text-xs text-stone-500 leading-relaxed">
+                Destino nacional — pagamentos em reais. IOF de câmbio e fintechs internacionais não se aplicam. Use o cartão que preferir.
+              </p>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Breakdown collapsible */}
@@ -219,16 +229,18 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
                   <span className="font-medium tabular-nums shrink-0">{formatBRL(tripCost.visaCostBRL)}</span>
                 </div>
               )}
-              <div className="border-t border-stone-100 pt-2 mt-1 space-y-1.5">
-                <div className="flex items-center justify-between gap-3 text-sm">
-                  <span className="text-red-400 min-w-0">+ IOF + spread bancário (cartão)</span>
-                  <span className="text-red-500 font-medium tabular-nums shrink-0">+{formatBRL(tripCost.iofAndSpreadBRL)}</span>
+              {!tripCost.isDomestic && (
+                <div className="border-t border-stone-100 pt-2 mt-1 space-y-1.5">
+                  <div className="flex items-center justify-between gap-3 text-sm">
+                    <span className="text-red-400 min-w-0">+ IOF + spread bancário (cartão)</span>
+                    <span className="text-red-500 font-medium tabular-nums shrink-0">+{formatBRL(tripCost.iofAndSpreadBRL)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 text-sm">
+                    <span className="text-emerald-600 min-w-0">+ Taxa fintech (~1,5%)</span>
+                    <span className="text-emerald-600 font-medium tabular-nums shrink-0">+{formatBRL(tripCost.fintechFeeBRL)}</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between gap-3 text-sm">
-                  <span className="text-emerald-600 min-w-0">+ Taxa fintech (~1,5%)</span>
-                  <span className="text-emerald-600 font-medium tabular-nums shrink-0">+{formatBRL(tripCost.fintechFeeBRL)}</span>
-                </div>
-              </div>
+              )}
               <div className="flex items-center justify-between gap-3 text-sm border-t border-stone-100 pt-2 mt-1">
                 <span className="text-stone-600 font-medium min-w-0">Meta (+15% margem)</span>
                 <span className="font-bold text-amber-500 tabular-nums shrink-0">{formatBRL(tripCost.grandTotalFintechWithMargin)}</span>

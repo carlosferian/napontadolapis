@@ -9,6 +9,7 @@ export interface TripCostInputs {
 }
 
 export interface TripCost {
+  isDomestic: boolean
   subtotalUSD: number
   flightBRL: number
   dailyCostUSD: number
@@ -26,6 +27,8 @@ export interface TripCost {
 
 export function calculateTripCost(inputs: TripCostInputs): TripCost {
   const { destination: dest, travelers, days, style, exchangeRate } = inputs
+  const isDomestic = dest.region === 'brasil'
+
   const dailyCostUSD = dest.dailyCostUSD[style]
   const subtotalUSD = dailyCostUSD * days * travelers
   const flightBRL = dest.flightFromGRU.typical * travelers
@@ -34,8 +37,14 @@ export function calculateTripCost(inputs: TripCostInputs): TripCost {
   const spread = TRAVEL_CONFIG.bankSpreadEstimate
   const fintechFee = TRAVEL_CONFIG.fintechFeeEstimate
 
-  const accommodationWithCard = subtotalUSD * exchangeRate * (1 + iof + spread)
-  const accommodationWithFintech = subtotalUSD * exchangeRate * (1 + fintechFee)
+  // Domestic trips: everything in BRL, no IOF or fintech fee applies
+  const baseCostBRL = subtotalUSD * exchangeRate
+  const accommodationWithCard = isDomestic
+    ? baseCostBRL
+    : baseCostBRL * (1 + iof + spread)
+  const accommodationWithFintech = isDomestic
+    ? baseCostBRL
+    : baseCostBRL * (1 + fintechFee)
 
   const totalWithCard = accommodationWithCard + flightBRL
   const totalWithFintech = accommodationWithFintech + flightBRL
@@ -51,15 +60,16 @@ export function calculateTripCost(inputs: TripCostInputs): TripCost {
   const grandTotalFintechWithMargin = grandTotalFintech * (1 + TRAVEL_CONFIG.safetyMargin)
 
   return {
+    isDomestic,
     subtotalUSD,
     flightBRL,
     dailyCostUSD,
-    iofAndSpreadBRL: accommodationWithCard - subtotalUSD * exchangeRate,
-    fintechFeeBRL: accommodationWithFintech - subtotalUSD * exchangeRate,
+    iofAndSpreadBRL: isDomestic ? 0 : accommodationWithCard - baseCostBRL,
+    fintechFeeBRL: isDomestic ? 0 : accommodationWithFintech - baseCostBRL,
     totalWithCard,
     totalWithFintech,
     savingsWithFintech,
-    savingsPct: (savingsWithFintech / totalWithCard) * 100,
+    savingsPct: totalWithCard > 0 ? (savingsWithFintech / totalWithCard) * 100 : 0,
     visaCostBRL,
     grandTotalCard,
     grandTotalFintech,
