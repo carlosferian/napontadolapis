@@ -102,6 +102,7 @@ export function BetsCalculator() {
 
         <p className="text-xs text-stone-400 text-center">
           Selic utilizada: {(RATES.selic * 100).toFixed(2)}% a.a. — {RATES.lastUpdated}. Valores são estimativas.
+          O rendimento da Selic está sujeito a IR (15% sobre ganhos após 24 meses).
         </p>
       </div>
     </div>

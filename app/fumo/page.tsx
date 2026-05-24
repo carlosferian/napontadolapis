@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { SmokeCalculator } from '@/components/calculators/SmokeCalculator'
 import { AppCTA } from '@/components/AppCTA'
+import { SourcesFooter } from '@/components/ui/SourcesFooter'
 
 export const metadata: Metadata = {
   title: 'Quanto custa fumar? Calculadora do custo real do cigarro',
@@ -28,6 +29,12 @@ export default function FumoPage() {
           os números para quem quiser vê-los.
         </p>
       </div>
+      <SourcesFooter sources={[
+        { label: 'INCA — Instituto Nacional de Câncer: dados sobre tabagismo no Brasil', url: 'https://www.inca.gov.br/tabagismo' },
+        { label: 'ANVISA — Regulação e controle do tabaco no Brasil', url: 'https://www.gov.br/anvisa/pt-br/assuntos/tabaco' },
+        { label: 'BCB — Taxa Selic para referência de projeção de investimento', url: 'https://www.bcb.gov.br/controleinflacao/taxaselic' },
+        { label: 'Wikipedia — Juros compostos: fórmula usada na projeção', url: 'https://pt.wikipedia.org/wiki/Juro_composto' },
+      ]} />
       <AppCTA context="esse custo" />
     </div>
   )

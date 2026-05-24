@@ -28,7 +28,7 @@ export function SmokeCalculator() {
   const PACK_SIZE = 20
   const dailyCost = (cigarettesPerDay / PACK_SIZE) * packPrice
   const monthlyCost = dailyCost * 30
-  const annualCost = dailyCost * 365
+  const annualCost = monthlyCost * 12
 
   const cost10y = annualCost * 10
   const cost30y = annualCost * 30

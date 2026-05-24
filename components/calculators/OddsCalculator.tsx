@@ -211,6 +211,15 @@ export function OddsCalculator() {
             {getProfitComment(profit1000, odd)}
           </p>
         </div>
+
+        <div className="bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 space-y-1">
+          <p className="text-xs font-semibold text-stone-500">Sobre o modelo</p>
+          <p className="text-xs text-stone-400 leading-relaxed">
+            Este cálculo trata cada evento como 50% de probabilidade de acerto (cara ou coroa).
+            Isso é uma simplificação didática: na prática, favoritos têm chances maiores e zebras têm chances menores.
+            O ponto central continua válido — odds abaixo de 2.0 em eventos equilibrados são matematicamente desfavoráveis ao apostador.
+          </p>
+        </div>
       </div>
     </div>
   )

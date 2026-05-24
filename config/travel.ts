@@ -20,7 +20,7 @@ const livePrices = flightPricesData.prices as Record<string, { min: number; typi
 
 export const TRAVEL_CONFIG = {
   defaultUSDtoBRL: 5.75,
-  iofCreditCard: 0.0438,
+  iofCreditCard: 0.0338, // Decreto 11.322/2022: IOF cartão internacional = 3,38%
   bankSpreadEstimate: 0.04,
   fintechFeeEstimate: 0.015,
   selicAnnual: 0.1375,

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { BetsCalculator } from '@/components/calculators/BetsCalculator'
 import { AppCTA } from '@/components/AppCTA'
+import { SourcesFooter } from '@/components/ui/SourcesFooter'
 
 export const metadata: Metadata = {
   title: 'Calculadora de Gastos com Apostas — Quanto você gasta com bets?',
@@ -28,6 +29,12 @@ export default function ApostasPage() {
           Não há julgamento — só matemática honesta.
         </p>
       </div>
+      <SourcesFooter sources={[
+        { label: 'Banco Central do Brasil — Apostas Esportivas e impacto no orçamento das famílias', url: 'https://www.bcb.gov.br/estabilidadefinanceira/apostasesportivas' },
+        { label: 'BCB — Sistema de Metas de Inflação e taxa Selic vigente', url: 'https://www.bcb.gov.br/controleinflacao/taxaselic' },
+        { label: 'Receita Federal — Tabela regressiva de IR sobre rendimentos de renda fixa', url: 'https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/irrf' },
+        { label: 'Wikipedia — Juros compostos: fórmula e aplicações', url: 'https://pt.wikipedia.org/wiki/Juro_composto' },
+      ]} />
       <AppCTA context="esse gasto" />
     </div>
   )

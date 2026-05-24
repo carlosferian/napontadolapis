@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { InvestmentComparison } from '@/components/calculators/InvestmentComparison'
 import { AppCTA } from '@/components/AppCTA'
+import { SourcesFooter } from '@/components/ui/SourcesFooter'
 
 export const metadata: Metadata = {
   title: 'E se eu tivesse investido? Comparador de investimentos vs apostas',
@@ -28,6 +29,13 @@ export default function InvestimentosPage() {
           O retorno de 72% nas apostas é baseado em estudos de mercado de apostas esportivas brasileiras.
         </p>
       </div>
+      <SourcesFooter sources={[
+        { label: 'BCB — Taxa Selic vigente e histórico', url: 'https://www.bcb.gov.br/controleinflacao/taxaselic' },
+        { label: 'Resolução BCB 4.930/2021 — Regra de remuneração da poupança (0,5%/mês + TR quando Selic > 8,5%)' },
+        { label: 'Tesouro Nacional — Tesouro IPCA+ e taxas de referência', url: 'https://www.tesourodireto.com.br/titulos/tipos-de-tesouro.htm' },
+        { label: 'Receita Federal — IR tabela regressiva: 22,5% (< 6 meses) a 15% (> 24 meses)', url: 'https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/irrf' },
+        { label: 'BCB — Apostas Esportivas e impacto no orçamento das famílias', url: 'https://www.bcb.gov.br/estabilidadefinanceira/apostasesportivas' },
+      ]} />
       <AppCTA context="seus aportes e investimentos" />
     </div>
   )
