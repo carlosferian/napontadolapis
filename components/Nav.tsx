@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export function Nav() {
   return (
-    <nav className="border-b border-brand-border bg-brand-paper/90 backdrop-blur-sm sticky top-0 z-10">
+    <nav className="border-b border-brand-border bg-brand-paper sticky top-0 z-10">
       <div className="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">

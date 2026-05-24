@@ -163,8 +163,7 @@ export function InvestmentComparison() {
                 { label: 'perdido nas apostas', value: `−${formatBRL(betsLoss)}` },
               ]}
               footer="o dinheiro trabalha — ou some."
-              bgColor="#052e16"
-              accentColor="#4ade80"
+              accentColor="#22c55e"
             />
           </ScaledPreview>
           <div className="mt-3">

@@ -92,8 +92,7 @@ export function BetsCalculator() {
                 { label: 'diferença', value: '+' + formatBRL(difference) },
               ]}
               footer="a conta chegou faz tempo."
-              bgColor="#1c1917"
-              accentColor="#e8a838"
+              accentColor="#ef4444"
             />
           </ScaledPreview>
           <div className="mt-3">

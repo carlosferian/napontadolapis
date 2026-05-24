@@ -5,6 +5,8 @@ import { CalculatorCard } from '@/components/ui/CalculatorCard'
 import { SliderField } from '@/components/ui/SliderField'
 import { MetricGrid } from '@/components/ui/MetricGrid'
 import { SectionDivider } from '@/components/ui/SectionDivider'
+import { ShareButtons } from '@/components/ui/ShareButtons'
+import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { formatBRL, formatPct } from '@/lib/formatters'
 import { calcHouseEdge, expectedValuePerBet, probProfit } from '@/lib/calculations/probability'
 import { ChevronDown } from 'lucide-react'
@@ -26,6 +28,98 @@ function getProfitComment(pct: number, odd: number): string {
   if (pct < 5) return 'Após 1.000 apostas, a chance de estar no lucro é menor que 5%. A matemática não mente — quanto mais você aposta, mais certo é o prejuízo.'
   if (pct < 20) return 'Os números são implacáveis. Cada aposta é matematicamente desfavorável — o tempo é inimigo do apostador.'
   return 'A margem da casa é menor nessa odd, mas presente. No longo prazo, a perda é certa.'
+}
+
+interface OddsShareCardProps {
+  odd: number
+  betAmount: number
+  houseEdge: number
+  ev: number
+  profit1000: number
+}
+
+function OddsShareCard({ odd, betAmount, houseEdge, ev, profit1000 }: OddsShareCardProps) {
+  const lossPerBet = Math.abs(Math.min(ev, 0))
+  return (
+    <div
+      id="odds-share-card"
+      style={{
+        backgroundColor: '#EEF2F9',
+        width: 600,
+        fontFamily: 'Georgia, "Times New Roman", serif',
+        borderRadius: 20,
+        overflow: 'hidden',
+      }}
+    >
+      {/* Header bar */}
+      <div
+        style={{
+          backgroundColor: '#172030',
+          padding: '14px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#00C4BE' }} />
+          <span style={{ color: '#00C4BE', fontSize: 11, fontWeight: 700, letterSpacing: 3, fontFamily: 'Georgia, serif' }}>
+            NA PONTA DO LÁPIS
+          </span>
+        </div>
+        <span style={{ color: '#00C4BE', opacity: 0.35, fontSize: 9, letterSpacing: 1, fontFamily: 'sans-serif' }}>
+          napontadolapis.com.br
+        </span>
+      </div>
+
+      {/* Main content */}
+      <div style={{ padding: '28px 28px 0' }}>
+        <div style={{ color: '#8B8F9A', fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 10, fontFamily: 'sans-serif', fontWeight: 600 }}>
+          calculei a matemática das apostas — odd {odd.toFixed(1)}
+        </div>
+
+        <div style={{ color: '#ef4444', fontSize: 54, fontWeight: 700, letterSpacing: -2, lineHeight: 1, marginBottom: 8 }}>
+          {ev < 0 ? `−${formatBRL(lossPerBet)}` : `±${formatBRL(0)}`}
+        </div>
+        <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 24, fontFamily: 'sans-serif' }}>
+          de perda esperada por aposta de {formatBRL(betAmount)}
+        </div>
+
+        <div style={{ height: 1, backgroundColor: '#D6E1EF', marginBottom: 20 }} />
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
+          {[
+            { label: 'ODD ANALISADA', value: odd.toFixed(1) },
+            { label: 'MARGEM DA CASA', value: formatPct(houseEdge) },
+            { label: 'RETORNO POR APOSTA', value: formatPct(100 - houseEdge) },
+            { label: 'CHANCE DE LUCRO (1000 apostas)', value: formatPct(profit1000) },
+          ].map((m, i) => (
+            <div key={i} style={{ backgroundColor: '#fff', borderRadius: 12, padding: '14px 16px', borderLeft: '3px solid #ef4444' }}>
+              <div style={{ color: '#9CA3AF', fontSize: 9, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 5, fontFamily: 'sans-serif', fontWeight: 600 }}>
+                {m.label}
+              </div>
+              <div style={{ color: '#172030', fontSize: 18, fontWeight: 700, letterSpacing: -0.5 }}>
+                {m.value}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer bar */}
+      <div style={{ backgroundColor: '#172030', padding: '12px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ color: '#6B7A8D', fontSize: 11, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
+          a casa sempre tem vantagem matemática.
+        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 4, height: 4, borderRadius: '50%', backgroundColor: '#00C4BE', opacity: 0.6 }} />
+          <span style={{ color: '#00C4BE', opacity: 0.4, fontSize: 9, letterSpacing: 1, fontFamily: 'sans-serif' }}>
+            CALCULADO COM DADOS REAIS
+          </span>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export function OddsCalculator() {
@@ -219,6 +313,23 @@ export function OddsCalculator() {
             Isso é uma simplificação didática: na prática, favoritos têm chances maiores e zebras têm chances menores.
             O ponto central continua válido — odds abaixo de 2.0 em eventos equilibrados são matematicamente desfavoráveis ao apostador.
           </p>
+        </div>
+
+        {/* Share */}
+        <div className="bg-stone-50 rounded-2xl p-4">
+          <p className="text-xs text-stone-400 mb-3 text-center">Compartilhe o resultado</p>
+          <ScaledPreview>
+            <OddsShareCard
+              odd={odd}
+              betAmount={betAmount}
+              houseEdge={houseEdge}
+              ev={ev}
+              profit1000={profit1000}
+            />
+          </ScaledPreview>
+          <div className="mt-3">
+            <ShareButtons cardId="odds-share-card" filename="odds" />
+          </div>
         </div>
       </div>
     </div>

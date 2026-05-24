@@ -8,6 +8,7 @@ export function SplitBillCalculator() {
   const [tip, setTip] = useState(0)
   const [names, setNames] = useState<string[]>(['', ''])
   const [newName, setNewName] = useState('')
+  const [copied, setCopied] = useState(false)
 
   const totalNum = parseFloat(total.replace(',', '.')) || 0
   const totalWithTip = totalNum * (1 + tip / 100)
@@ -26,6 +27,27 @@ export function SplitBillCalculator() {
 
   function updateName(index: number, value: string) {
     setNames((prev) => prev.map((n, i) => (i === index ? value : n)))
+  }
+
+  function copyMarkdown() {
+    const displayNames = names.map((n, i) => n.trim() || `Pessoa ${i + 1}`)
+    const lines = [
+      '**Divisão de conta — Na Ponta do Lápis**',
+      '',
+      `Total: ${formatBRLDecimal(totalNum)}`,
+      ...(tip > 0 ? [`Gorjeta (${tip}%): ${formatBRLDecimal(totalWithTip - totalNum)}`, `Total com gorjeta: ${formatBRLDecimal(totalWithTip)}`] : []),
+      `Por pessoa: ${formatBRLDecimal(perPerson)}`,
+      '',
+      '| Quem | Valor |',
+      '|------|-------|',
+      ...displayNames.map((name) => `| ${name} | ${formatBRLDecimal(perPerson)} |`),
+      '',
+      '_napontadolapis.com.br_',
+    ]
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
   }
 
   const tipOptions = [0, 5, 10, 15]
@@ -165,6 +187,14 @@ export function SplitBillCalculator() {
               ))}
             </div>
           )}
+
+          {/* Export */}
+          <button
+            onClick={copyMarkdown}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold rounded-xl transition-colors text-sm"
+          >
+            {copied ? '✓ Copiado!' : '⎘ Copiar tabela (Markdown)'}
+          </button>
 
           <div
             className="rounded-2xl p-5 border space-y-2"

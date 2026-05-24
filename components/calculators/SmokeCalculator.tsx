@@ -103,7 +103,6 @@ export function SmokeCalculator() {
                 { label: 'investido 30a', value: formatBRL(invested30y) },
               ]}
               footer="nem parece muito. mas a conta chega."
-              bgColor="#1c1007"
               accentColor="#fb923c"
             />
           </ScaledPreview>
