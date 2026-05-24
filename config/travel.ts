@@ -1,3 +1,5 @@
+import flightPricesData from './flight-prices.json'
+
 export type TravelStyle = 'budget' | 'mid' | 'premium'
 export type Region = 'europa' | 'america_norte' | 'america_sul' | 'asia_oceania' | 'caribe' | 'brasil'
 
@@ -14,6 +16,8 @@ export interface Destination {
   highlight: string
 }
 
+const livePrices = flightPricesData.prices as Record<string, { min: number; typical: number }>
+
 export const TRAVEL_CONFIG = {
   defaultUSDtoBRL: 5.75,
   iofCreditCard: 0.0438,
@@ -27,7 +31,7 @@ export const TRAVEL_CONFIG = {
   lastUpdated: '2026-05',
 }
 
-export const destinations: Destination[] = [
+const rawDestinations: Destination[] = [
   {
     id: 'lisboa', name: 'Lisboa', country: 'Portugal', flag: '🇵🇹', region: 'europa',
     flightFromGRU: { min: 2800, typical: 4500 },
@@ -197,6 +201,13 @@ export const destinations: Destination[] = [
     highlight: 'chocolate + fondue + frio. destino parcelável.',
   },
 ]
+
+export const destinations: Destination[] = rawDestinations.map((d) => ({
+  ...d,
+  flightFromGRU: livePrices[d.id] ?? d.flightFromGRU,
+}))
+
+export const flightPricesMeta = flightPricesData._meta
 
 export const regionLabels: Record<Region | 'africa', string> = {
   europa: 'Europa',

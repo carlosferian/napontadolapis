@@ -16,20 +16,25 @@ const INVESTMENTS = [
   { key: 'tesouro', label: 'Tesouro IPCA+', rate: RATES.tesouroDireto, color: '#3b82f6', note: `${(RATES.tesouroDireto * 100).toFixed(2)}% a.a.` },
 ]
 
-const BETS_RETURN = 0.72 // 72% do aportado retorna em média
+const BETS_RETURN = 0.72
 
 export function InvestmentComparison() {
   const [monthly, setMonthly] = useState(300)
   const [years, setYears] = useState(5)
 
+  const totalContributed = monthly * years * 12
+
   const invested = INVESTMENTS.map((inv) => ({
     ...inv,
     total: compoundMonthly(monthly, years, inv.rate),
+    gain: compoundMonthly(monthly, years, inv.rate) - totalContributed,
   }))
 
-  const betsTotal = monthly * years * 12 * BETS_RETURN
-  const totalContributed = monthly * years * 12
-  const best = Math.max(...invested.map((i) => i.total))
+  const betsBack = totalContributed * BETS_RETURN
+  const betsLoss = totalContributed - betsBack
+
+  const bestGain = Math.max(...invested.map((i) => i.gain))
+  const bestInvestment = invested.find((i) => i.gain === bestGain)!
 
   return (
     <div className="space-y-4">
@@ -56,69 +61,104 @@ export function InvestmentComparison() {
       </CalculatorCard>
 
       <div role="region" aria-live="polite" aria-label="Resultado do cálculo" className="space-y-4">
-        <div className="bg-white rounded-2xl border border-stone-100 p-5 space-y-4">
-          <div className="flex justify-between text-sm text-stone-500">
-            <span>Total aportado</span>
-            <span className="font-semibold text-stone-900">{formatBRL(totalContributed)}</span>
-          </div>
 
-          <SectionDivider label="Resultado por investimento" />
+        {/* Summary hero */}
+        <div className="bg-white rounded-2xl border border-stone-100 overflow-hidden">
+          <div className="grid grid-cols-2">
+            <div className="p-5 border-r border-stone-100">
+              <p className="text-xs text-stone-400 uppercase tracking-wide mb-1">Investindo na {bestInvestment.label}</p>
+              <p className="text-3xl font-bold text-emerald-600 tabular-nums leading-none">
+                +{formatBRL(bestGain)}
+              </p>
+              <p className="text-xs text-stone-400 mt-1">de rendimento em {years} {years === 1 ? 'ano' : 'anos'}</p>
+            </div>
+            <div className="p-5 bg-red-50/60">
+              <p className="text-xs text-stone-400 uppercase tracking-wide mb-1">Nas apostas</p>
+              <p className="text-3xl font-bold text-red-500 tabular-nums leading-none">
+                −{formatBRL(betsLoss)}
+              </p>
+              <p className="text-xs text-stone-400 mt-1">queimado do seu bolso</p>
+            </div>
+          </div>
+          <div className="px-5 py-3 bg-stone-50 border-t border-stone-100">
+            <p className="text-xs text-stone-500 text-center">
+              Total aportado: <span className="font-semibold text-stone-700">{formatBRL(totalContributed)}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Investments detail */}
+        <div className="bg-white rounded-2xl border border-stone-100 p-5 space-y-5">
+          <SectionDivider label="Rendimento por investimento" />
 
           {invested.map((inv) => {
-            const gain = inv.total - totalContributed
-            const width = (inv.total / best) * 100
+            const barWidth = bestGain > 0 ? (inv.gain / bestGain) * 100 : 0
             return (
-              <div key={inv.key} className="space-y-1">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-sm font-medium text-stone-700">{inv.label}</span>
+              <div key={inv.key} className="space-y-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-sm font-semibold text-stone-800">{inv.label}</p>
+                    <p className="text-xs text-stone-400">{inv.note}</p>
+                  </div>
                   <div className="text-right">
-                    <span className="text-lg font-bold text-stone-900">{formatBRL(inv.total)}</span>
-                    <span className="text-xs text-emerald-600 ml-2">+{formatBRL(gain)}</span>
+                    <p className="text-xl font-bold text-emerald-600 tabular-nums leading-none">
+                      +{formatBRL(inv.gain)}
+                    </p>
+                    <p className="text-xs text-stone-400 mt-0.5">
+                      total: {formatBRL(inv.total)}
+                    </p>
                   </div>
                 </div>
-                <div className="w-full bg-stone-100 rounded-full h-3">
+                <div className="w-full bg-stone-100 rounded-full h-2">
                   <div
-                    className="h-3 rounded-full transition-all"
-                    style={{ width: `${width}%`, backgroundColor: inv.color }}
+                    className="h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${barWidth}%`, backgroundColor: inv.color }}
                   />
                 </div>
-                <p className="text-xs text-stone-400">{inv.note}</p>
               </div>
             )
           })}
 
           <SectionDivider label="Apostas (para comparar)" />
 
-          <div className="space-y-1">
-            <div className="flex justify-between items-baseline">
-              <span className="text-sm font-medium text-stone-700">Apostas (retorno médio 72%)</span>
+          <div className="space-y-2">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-semibold text-stone-800">Apostas</p>
+                <p className="text-xs text-stone-400">retorno médio de 72% — você perde 28%</p>
+              </div>
               <div className="text-right">
-                <span className="text-lg font-bold text-red-500">{formatBRL(betsTotal)}</span>
-                <span className="text-xs text-red-400 ml-2">-{formatBRL(totalContributed - betsTotal)}</span>
+                <p className="text-xl font-bold text-red-500 tabular-nums leading-none">
+                  −{formatBRL(betsLoss)}
+                </p>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  devolveu apenas: {formatBRL(betsBack)}
+                </p>
               </div>
             </div>
-            <div className="w-full bg-stone-100 rounded-full h-3">
+            <div className="w-full bg-stone-100 rounded-full h-2">
               <div
-                className="h-3 rounded-full bg-red-400 transition-all"
-                style={{ width: `${(betsTotal / best) * 100}%` }}
+                className="h-2 rounded-full bg-red-400 transition-all duration-500"
+                style={{ width: `${bestGain > 0 ? Math.max((betsBack / (totalContributed + bestGain)) * 100, 4) : 100}%` }}
               />
             </div>
           </div>
         </div>
 
+        {/* Share */}
         <div className="bg-stone-50 rounded-2xl p-4">
           <p className="text-xs text-stone-400 mb-3 text-center">Compartilhe o resultado</p>
           <div className="overflow-x-auto">
             <ShareCardBase
               id="invest-share-card"
               eyebrow="comparativo de investimentos"
-              mainValue={formatBRL(monthly) + '/mês'}
-              mainLabel={`por ${years} ${years === 1 ? 'ano' : 'anos'}`}
+              mainValue={`+${formatBRL(bestGain)}`}
+              mainLabel={`rendimento em ${years} ${years === 1 ? 'ano' : 'anos'} na ${bestInvestment.label}`}
               metrics={[
                 { label: 'total aportado', value: formatBRL(totalContributed) },
-                { label: 'na Selic', value: formatBRL(invested[1].total) },
-                { label: 'Tesouro IPCA+', value: formatBRL(invested[2].total) },
-                { label: 'apostas (72%)', value: formatBRL(betsTotal) },
+                { label: 'ganho na Selic', value: `+${formatBRL(invested[1].gain)}` },
+                { label: 'ganho no Tesouro', value: `+${formatBRL(invested[2].gain)}` },
+                { label: 'perdido nas apostas', value: `−${formatBRL(betsLoss)}` },
               ]}
               footer="o dinheiro trabalha — ou some."
               bgColor="#052e16"

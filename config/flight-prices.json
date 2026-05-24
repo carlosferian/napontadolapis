@@ -1,0 +1,30 @@
+{
+  "_meta": {
+    "lastUpdated": "2026-05-23",
+    "source": "baseline-manual",
+    "note": "Atualizado automaticamente toda segunda-feira via GitHub Actions + Amadeus API"
+  },
+  "prices": {
+    "lisboa":              { "min": 2800, "typical": 4500 },
+    "paris":               { "min": 3500, "typical": 5500 },
+    "roma":                { "min": 3200, "typical": 5000 },
+    "barcelona":           { "min": 3200, "typical": 5200 },
+    "amsterdam":           { "min": 3800, "typical": 5800 },
+    "londres":             { "min": 3500, "typical": 6000 },
+    "praga":               { "min": 4000, "typical": 6000 },
+    "miami":               { "min": 1800, "typical": 3200 },
+    "nova-york":           { "min": 2200, "typical": 3800 },
+    "orlando":             { "min": 1800, "typical": 3200 },
+    "cancun":              { "min": 2000, "typical": 3500 },
+    "buenos-aires":        { "min": 800,  "typical": 1600 },
+    "santiago":            { "min": 900,  "typical": 1800 },
+    "machu-picchu":        { "min": 1500, "typical": 2800 },
+    "cartagena":           { "min": 1400, "typical": 2600 },
+    "bali":                { "min": 4500, "typical": 7000 },
+    "toquio":              { "min": 4800, "typical": 7500 },
+    "dubai":               { "min": 3800, "typical": 6000 },
+    "bangkok":             { "min": 4000, "typical": 6500 },
+    "fernando-de-noronha": { "min": 1200, "typical": 2200 },
+    "gramado":             { "min": 400,  "typical": 900  }
+  }
+}
