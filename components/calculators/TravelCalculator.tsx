@@ -9,6 +9,7 @@ import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { SavingsChart } from '@/components/ui/SavingsChart'
 import { TravelShareCard } from '@/components/share/TravelShareCard'
+import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { destinations, TRAVEL_CONFIG, type Destination, type TravelStyle } from '@/config/travel'
 import { calculateTripCost } from '@/lib/calculations/travel'
 import { calculateSavingsPlan } from '@/lib/calculations/savings'
@@ -315,7 +316,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
         {/* Share card */}
         <div className="bg-stone-50 rounded-2xl p-4">
           <p className="text-xs text-stone-400 mb-3 text-center">Compartilhe o resultado</p>
-          <div className="overflow-x-auto">
+          <ScaledPreview>
             <TravelShareCard
               destination={destination}
               travelers={travelers}
@@ -327,7 +328,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
               savingsWise={tripCost.savingsWithFintech}
               sharePhrase={getSharePhrase(monthsToSave)}
             />
-          </div>
+          </ScaledPreview>
           <div className="mt-3">
             <ShareButtons cardId="travel-share-card" filename="viagem" />
           </div>

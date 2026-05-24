@@ -8,6 +8,7 @@ import { MetricGrid } from '@/components/ui/MetricGrid'
 import { ComparisonList } from '@/components/ui/ComparisonList'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { ShareCardBase } from '@/components/share/ShareCard'
+import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { SectionDivider } from '@/components/ui/SectionDivider'
 import { compoundMonthly } from '@/lib/calculations/compound'
 import { formatBRL } from '@/lib/formatters'
@@ -89,7 +90,7 @@ export function SmokeCalculator() {
 
         <div className="bg-stone-50 rounded-2xl p-4">
           <p className="text-xs text-stone-400 mb-3 text-center">Compartilhe o resultado</p>
-          <div className="overflow-x-auto">
+          <ScaledPreview>
             <ShareCardBase
               id="smoke-share-card"
               eyebrow="custo do cigarro"
@@ -105,7 +106,7 @@ export function SmokeCalculator() {
               bgColor="#1c1007"
               accentColor="#fb923c"
             />
-          </div>
+          </ScaledPreview>
           <div className="mt-3">
             <ShareButtons cardId="smoke-share-card" filename="fumo" />
           </div>

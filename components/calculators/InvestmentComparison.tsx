@@ -5,6 +5,7 @@ import { CalculatorCard } from '@/components/ui/CalculatorCard'
 import { SliderField } from '@/components/ui/SliderField'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { ShareCardBase } from '@/components/share/ShareCard'
+import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { SectionDivider } from '@/components/ui/SectionDivider'
 import { compoundMonthly } from '@/lib/calculations/compound'
 import { formatBRL } from '@/lib/formatters'
@@ -149,7 +150,7 @@ export function InvestmentComparison() {
         {/* Share */}
         <div className="bg-stone-50 rounded-2xl p-4">
           <p className="text-xs text-stone-400 mb-3 text-center">Compartilhe o resultado</p>
-          <div className="overflow-x-auto">
+          <ScaledPreview>
             <ShareCardBase
               id="invest-share-card"
               eyebrow="comparativo de investimentos"
@@ -165,7 +166,7 @@ export function InvestmentComparison() {
               bgColor="#052e16"
               accentColor="#4ade80"
             />
-          </div>
+          </ScaledPreview>
           <div className="mt-3">
             <ShareButtons cardId="invest-share-card" filename="investimentos" />
           </div>

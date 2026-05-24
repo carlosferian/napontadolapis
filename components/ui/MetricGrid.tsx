@@ -13,8 +13,9 @@ interface MetricGridProps {
 }
 
 export function MetricGrid({ metrics }: MetricGridProps) {
+  const colClass = metrics.length === 4 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'
   return (
-    <div className={`grid gap-3 ${metrics.length === 4 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+    <div className={`grid gap-2 sm:gap-3 ${colClass}`}>
       {metrics.map((m, i) => (
         <MetricCard key={i} {...m} />
       ))}

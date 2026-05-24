@@ -9,6 +9,7 @@ import { ComparisonList } from '@/components/ui/ComparisonList'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareCardBase } from '@/components/share/ShareCard'
+import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { compoundMonthly } from '@/lib/calculations/compound'
 import { formatBRL } from '@/lib/formatters'
 import { comments } from '@/lib/contextualComments'
@@ -78,7 +79,7 @@ export function BetsCalculator() {
 
         <div className="bg-stone-50 rounded-2xl p-4">
           <p className="text-xs text-stone-400 mb-3 text-center">Compartilhe o resultado</p>
-          <div className="overflow-x-auto">
+          <ScaledPreview>
             <ShareCardBase
               id="bets-share-card"
               eyebrow="meus gastos com apostas"
@@ -94,7 +95,7 @@ export function BetsCalculator() {
               bgColor="#1c1917"
               accentColor="#e8a838"
             />
-          </div>
+          </ScaledPreview>
           <div className="mt-3">
             <ShareButtons cardId="bets-share-card" filename="apostas" />
           </div>
