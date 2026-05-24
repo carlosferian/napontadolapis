@@ -16,15 +16,69 @@ export const metadata: Metadata = {
 
 export default function ProbabilidadesPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <OddsCalculator />
-      <div className="prose prose-sm prose-stone max-w-none">
-        <h2 className="text-base font-semibold text-stone-700">Como funciona o cálculo</h2>
-        <p className="text-stone-500 text-sm leading-relaxed">
-          Toda odd embute uma margem para a casa — a diferença entre a probabilidade implícita e o retorno real.
-          A probabilidade de estar no lucro após muitas apostas é calculada pelo Teorema do Limite Central,
-          que aproxima a distribuição acumulada de ganhos e perdas por uma curva normal. Em odds comuns (1.7–2.0),
-          a matemática é implacável: quanto mais apostas, menor a chance de lucro.
+
+      <div className="space-y-5 text-sm text-stone-500 leading-relaxed border-t border-stone-200 pt-8">
+        <h2 className="text-base font-semibold text-stone-700">Como a matemática funciona</h2>
+
+        <p>
+          Toda odd embute uma <strong className="text-stone-600">margem para a casa</strong> — a diferença entre a
+          probabilidade implícita (1 ÷ odd) e a probabilidade real do evento. Num mercado de duas opções (vitória
+          ou derrota), se a casa oferecer odd 1.90 para os dois lados, cada lado implica 52,6% de probabilidade.
+          Somados, dão 105,2% — os 5,2% extras são o lucro garantido da casa, independente do resultado.
+        </p>
+
+        <p>
+          A chance de estar no lucro após muitas apostas é calculada pelo{' '}
+          <strong className="text-stone-600">Teorema do Limite Central</strong>: à medida que o número de apostas
+          cresce, a distribuição dos resultados se aproxima de uma curva normal centrada no valor esperado.
+          Como o valor esperado é negativo para o apostador, a probabilidade de lucro converge para zero com o tempo.
+        </p>
+
+        <div className="bg-stone-50 rounded-xl p-4 space-y-2 border border-stone-100">
+          <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide">Referências</p>
+          <ul className="space-y-1.5 text-xs text-stone-500">
+            <li>
+              <a
+                href="https://pt.wikipedia.org/wiki/Valor_esperado"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-teal hover:text-brand-green underline underline-offset-2 transition-colors"
+              >
+                Wikipedia — Valor Esperado
+              </a>
+              {' '}— o conceito estatístico que explica por que a repetição não reverte a desvantagem.
+            </li>
+            <li>
+              <a
+                href="https://pt.wikipedia.org/wiki/Teorema_central_do_limite"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-teal hover:text-brand-green underline underline-offset-2 transition-colors"
+              >
+                Wikipedia — Teorema Central do Limite
+              </a>
+              {' '}— base do cálculo de "chance de estar no lucro após N apostas".
+            </li>
+            <li>
+              <a
+                href="https://www.bcb.gov.br/estabilidadefinanceira/apostasesportivas"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-teal hover:text-brand-green underline underline-offset-2 transition-colors"
+              >
+                Banco Central do Brasil — Apostas Esportivas
+              </a>
+              {' '}— dados sobre o impacto das bets no orçamento das famílias brasileiras.
+            </li>
+          </ul>
+        </div>
+
+        <p className="text-xs text-stone-400">
+          Os cálculos assumem apostas simples (não acumuladas) com probabilidade implícita igual a 1 ÷ odd.
+          Mercados reais possuem margens maiores — as odds aqui são cenários didáticos.
+          Rentabilidade passada não garante resultados futuros.
         </p>
       </div>
     </div>
