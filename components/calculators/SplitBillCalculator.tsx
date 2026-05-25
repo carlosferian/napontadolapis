@@ -21,6 +21,31 @@ function displayName(person: Person, index: number) {
   return person.name.trim() || `Pessoa ${index + 1}`
 }
 
+function Tip({ text }: { text: string }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <span className="relative inline-block align-middle ml-1.5">
+      <button
+        type="button"
+        tabIndex={-1}
+        className="w-3.5 h-3.5 rounded-full border border-brand-muted/40 text-[8px] text-brand-muted/50 inline-flex items-center justify-center hover:border-brand-muted hover:text-brand-muted transition-colors focus:outline-none"
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onClick={(e) => { e.stopPropagation(); setOpen(v => !v) }}
+        aria-label="Dica"
+      >
+        ?
+      </button>
+      {open && (
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-60 p-2.5 bg-stone-800 text-white text-[11px] rounded-xl z-50 leading-relaxed shadow-xl pointer-events-none">
+          {text}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-stone-800" />
+        </div>
+      )}
+    </span>
+  )
+}
+
 export function SplitBillCalculator() {
   const [mode, setMode] = useState<'itemized' | 'equal'>('itemized')
   const [people, setPeople] = useState<Person[]>([
@@ -192,6 +217,7 @@ export function SplitBillCalculator() {
       <button
         type="button"
         onClick={onToggle}
+        title={selected ? `${displayName(person, idx)} divide este item — clique para remover` : `${displayName(person, idx)} não divide este item — clique para incluir`}
         className="px-2.5 py-1 rounded-full text-xs font-semibold border transition-all"
         style={
           selected
@@ -238,11 +264,30 @@ export function SplitBillCalculator() {
           ))}
         </div>
 
+        {/* How-to guide */}
+        <div className="rounded-xl border border-brand-border/60 bg-white/50 px-4 py-3 space-y-2">
+          <p className="text-[10px] font-semibold text-brand-muted uppercase tracking-wider">como usar</p>
+          {mode === 'itemized' ? (
+            <div className="space-y-1.5 text-xs text-brand-muted">
+              <p><span className="font-semibold" style={{ color: '#00C4BE' }}>1.</span> Adicione quem está na conta — clique no nome para personalizar</p>
+              <p><span className="font-semibold" style={{ color: '#00C4BE' }}>2.</span> Insira cada item (prato, bebida…) com nome e valor</p>
+              <p><span className="font-semibold" style={{ color: '#00C4BE' }}>3.</span> Selecione quem divide cada item — o total é calculado na hora</p>
+            </div>
+          ) : (
+            <div className="space-y-1.5 text-xs text-brand-muted">
+              <p><span className="font-semibold" style={{ color: '#00C4BE' }}>1.</span> Adicione todos os participantes</p>
+              <p><span className="font-semibold" style={{ color: '#00C4BE' }}>2.</span> Digite o valor total da conta no campo abaixo</p>
+              <p><span className="font-semibold" style={{ color: '#00C4BE' }}>3.</span> O valor por pessoa aparece automaticamente</p>
+            </div>
+          )}
+        </div>
+
         {/* People */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-brand-muted">
             Quem está na conta?{' '}
             <span className="font-normal">({people.length} pessoa{people.length !== 1 ? 's' : ''})</span>
+            <Tip text="Clique diretamente no campo para renomear cada pessoa. Mínimo de 2. Use '+ Adicionar' para incluir mais participantes." />
           </label>
           <div className="flex flex-wrap gap-2">
             {people.map((person, i) => (
@@ -256,6 +301,7 @@ export function SplitBillCalculator() {
                   value={person.name}
                   onChange={(e) => updateName(person.id, e.target.value)}
                   placeholder={`Pessoa ${i + 1}`}
+                  title="Clique para renomear"
                   className="bg-transparent text-sm text-brand-ink outline-none w-20 min-w-0"
                 />
                 {people.length > 2 && (
@@ -291,7 +337,10 @@ export function SplitBillCalculator() {
         {/* Equal mode: total input */}
         {mode === 'equal' && (
           <div className="space-y-2">
-            <label htmlFor="bill-total" className="text-sm font-medium text-brand-muted">Valor total da conta</label>
+            <label htmlFor="bill-total" className="text-sm font-medium text-brand-muted">
+              Valor total da conta
+              <Tip text="Digite o total já com bebidas, taxas e serviço. A gorjeta extra (se houver) é somada depois." />
+            </label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted font-medium">R$</span>
               <input
@@ -310,7 +359,10 @@ export function SplitBillCalculator() {
 
         {/* Tip */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-brand-muted">Gorjeta</label>
+          <label className="text-sm font-medium text-brand-muted">
+            Gorjeta
+            <Tip text="A gorjeta é dividida proporcionalmente ao que cada pessoa consumiu — quem pediu mais, paga mais gorjeta." />
+          </label>
           <div className="grid grid-cols-4 gap-2">
             {[0, 5, 10, 15].map((t) => (
               <button
@@ -414,7 +466,10 @@ export function SplitBillCalculator() {
 
                         {/* Who pays — chips for assignment */}
                         <div className="space-y-1.5">
-                          <p className="text-[10px] font-semibold text-brand-muted uppercase tracking-wide">
+                          <p
+                            className="text-[10px] font-semibold text-brand-muted uppercase tracking-wide"
+                            title="Por padrão todos dividem igualmente. Clique nos nomes para marcar/desmarcar quem consumiu este item."
+                          >
                             Quem divide este item?
                           </p>
                           <div className="flex flex-wrap gap-1.5">
@@ -453,7 +508,10 @@ export function SplitBillCalculator() {
 
           {/* Add item form — only description + price, no people selector */}
           <div className="p-4 space-y-3 border-t border-dashed border-brand-border bg-brand-paper/30">
-            <p className="text-xs font-semibold text-brand-muted uppercase tracking-wide">Adicionar item</p>
+            <div>
+              <p className="text-xs font-semibold text-brand-muted uppercase tracking-wide">Adicionar item</p>
+              <p className="text-[10px] text-brand-muted/70 mt-0.5">Nome do prato ou bebida + valor. Depois você escolhe quem divide.</p>
+            </div>
             <div className="flex gap-2">
               <input
                 type="text"
