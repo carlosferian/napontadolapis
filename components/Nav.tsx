@@ -36,9 +36,9 @@ export function Nav() {
           </Link>
           <Link
             href="/dividir"
-            className="px-3 py-2 rounded-lg text-brand-muted hover:text-brand-teal hover:bg-brand-teal/8 transition-all text-sm font-medium hidden md:block"
+            className="px-3 py-2 rounded-lg text-brand-muted hover:text-brand-teal hover:bg-brand-teal/8 transition-all text-sm font-medium hidden sm:block"
           >
-            Dividir
+            Dividir conta
           </Link>
           <Link
             href="/#app"

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
+import { Trash2, Pencil } from 'lucide-react'
 import { formatBRLDecimal } from '@/lib/formatters'
 
 interface Person {
@@ -259,9 +260,10 @@ export function SplitBillCalculator() {
                 {people.length > 2 && (
                   <button
                     onClick={() => removePerson(person.id)}
-                    className="text-brand-muted hover:text-red-400 transition-colors w-5 h-5 flex items-center justify-center rounded-full text-xs"
+                    className="text-brand-muted hover:text-red-500 transition-colors p-0.5 rounded-md hover:bg-red-50 flex items-center justify-center"
+                    aria-label="Remover pessoa"
                   >
-                    ×
+                    <Trash2 size={14} />
                   </button>
                 )}
               </div>
@@ -393,19 +395,19 @@ export function SplitBillCalculator() {
                           </span>
                           <button
                             onClick={() => startEdit(item)}
-                            className="text-brand-muted hover:text-brand-teal transition-colors ml-1 shrink-0 text-sm"
+                            className="text-brand-muted hover:text-brand-teal transition-colors ml-1 shrink-0 p-1 rounded-lg hover:bg-brand-teal/8"
                             aria-label="Editar item"
                             title="Editar"
                           >
-                            ✎
+                            <Pencil size={16} />
                           </button>
                           <button
                             onClick={() => removeItem(item.id)}
-                            className="text-brand-muted hover:text-red-400 transition-colors shrink-0 text-lg leading-none"
+                            className="text-brand-muted hover:text-red-500 transition-colors shrink-0 p-1 rounded-lg hover:bg-red-50"
                             aria-label="Remover item"
                             title="Remover"
                           >
-                            ×
+                            <Trash2 size={18} />
                           </button>
                         </div>
 
