@@ -6,6 +6,10 @@ export interface TripCostInputs {
   days: number
   style: TravelStyle
   exchangeRate: number
+  // Custom style overrides (bypass preset daily cost and flight)
+  isCustom?: boolean
+  customDailyBRL?: number      // daily cost per person in BRL (direct, no exchange rate)
+  customFlightTotalBRL?: number // total round-trip flight for all travelers in BRL
 }
 
 export interface TripCost {
@@ -27,19 +31,37 @@ export interface TripCost {
   grandTotalFintechWithMargin: number
 }
 
+const CUSTOM_ACCOMMODATION_PCT = 0.45
+
 export function calculateTripCost(inputs: TripCostInputs): TripCost {
-  const { destination: dest, travelers, days, style, exchangeRate } = inputs
+  const { destination: dest, travelers, days, style, exchangeRate, isCustom, customDailyBRL, customFlightTotalBRL } = inputs
   const isDomestic = dest.region === 'brasil'
 
-  const dailyCostUSD = dest.dailyCostUSD[style]
+  let accommodationUSD: number
+  let variableUSD: number
+  let subtotalUSD: number
+  let dailyCostUSD: number
+  let flightBRL: number
 
-  // Accommodation is shared — does not scale linearly with travelers
-  const accommodationPct = TRAVEL_CONFIG.accommodationPct[style]
-  const accommodationUSD = dailyCostUSD * accommodationPct * days
-  const variableUSD = dailyCostUSD * (1 - accommodationPct) * days * travelers
-  const subtotalUSD = accommodationUSD + variableUSD
-
-  const flightBRL = dest.flightFromGRU.typical * travelers
+  if (isCustom && customDailyBRL !== undefined) {
+    // Custom mode: user-specified BRL amounts, back-convert to USD for display
+    const accommodationBRL = customDailyBRL * CUSTOM_ACCOMMODATION_PCT * days
+    const variableBRL = customDailyBRL * (1 - CUSTOM_ACCOMMODATION_PCT) * days * travelers
+    accommodationUSD = accommodationBRL / exchangeRate
+    variableUSD = variableBRL / exchangeRate
+    subtotalUSD = accommodationUSD + variableUSD
+    dailyCostUSD = customDailyBRL / exchangeRate
+    flightBRL = customFlightTotalBRL ?? dest.flightFromGRU.typical * travelers
+  } else {
+    // Preset mode: destination daily costs in USD
+    const dailyCost = dest.dailyCostUSD[style]
+    const accommodationPct = TRAVEL_CONFIG.accommodationPct[style]
+    accommodationUSD = dailyCost * accommodationPct * days
+    variableUSD = dailyCost * (1 - accommodationPct) * days * travelers
+    subtotalUSD = accommodationUSD + variableUSD
+    dailyCostUSD = dailyCost
+    flightBRL = dest.flightFromGRU.typical * travelers
+  }
 
   const iof = TRAVEL_CONFIG.iofCreditCard
   const spread = TRAVEL_CONFIG.bankSpreadEstimate
@@ -47,16 +69,11 @@ export function calculateTripCost(inputs: TripCostInputs): TripCost {
 
   // Domestic trips: everything in BRL, no IOF or fintech fee applies
   const baseCostBRL = subtotalUSD * exchangeRate
-  const accommodationWithCard = isDomestic
-    ? baseCostBRL
-    : baseCostBRL * (1 + iof + spread)
-  const accommodationWithFintech = isDomestic
-    ? baseCostBRL
-    : baseCostBRL * (1 + fintechFee)
+  const accommodationWithCard = isDomestic ? baseCostBRL : baseCostBRL * (1 + iof + spread)
+  const accommodationWithFintech = isDomestic ? baseCostBRL : baseCostBRL * (1 + fintechFee)
 
   const totalWithCard = accommodationWithCard + flightBRL
   const totalWithFintech = accommodationWithFintech + flightBRL
-
   const savingsWithFintech = totalWithCard - totalWithFintech
 
   const visaCostBRL = dest.visa.required

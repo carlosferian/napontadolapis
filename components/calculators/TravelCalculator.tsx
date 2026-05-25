@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from 'react'
 import { CalculatorCard } from '@/components/ui/CalculatorCard'
 import { SliderField } from '@/components/ui/SliderField'
-import { MetricGrid } from '@/components/ui/MetricGrid'
 import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { SavingsChart } from '@/components/ui/SavingsChart'
@@ -14,11 +13,41 @@ import { calculateTripCost } from '@/lib/calculations/travel'
 import { calculateSavingsPlan } from '@/lib/calculations/savings'
 import { formatBRL, formatPct } from '@/lib/formatters'
 
-const STYLE_OPTIONS: { key: TravelStyle; label: string; description: string; icon: string }[] = [
-  { key: 'budget', label: 'Econômico', description: 'hostel, airbnb, comida local, transporte público', icon: '🎒' },
-  { key: 'mid', label: 'Confortável', description: 'hotel 3★, restaurantes, alguns táxis', icon: '🏨' },
-  { key: 'premium', label: 'Premium', description: 'hotel 4–5★, experiências, conforto', icon: '💎' },
+type StyleKey = TravelStyle | 'custom'
+
+interface StyleOption {
+  key: StyleKey
+  label: string
+  icon: string
+}
+
+const STYLE_OPTIONS: StyleOption[] = [
+  { key: 'budget', label: 'Econômico', icon: '🎒' },
+  { key: 'mid', label: 'Confortável', icon: '🏨' },
+  { key: 'premium', label: 'Premium', icon: '💎' },
+  { key: 'custom', label: 'Personalizado', icon: '✏️' },
 ]
+
+const STYLE_BREAKDOWN: Record<TravelStyle, { icon: string; label: string; detail: string }[]> = {
+  budget: [
+    { icon: '🛏', label: 'Hospedagem', detail: 'hostel, airbnb, quarto compartilhado ou dorm' },
+    { icon: '🍜', label: 'Alimentação', detail: 'comida de rua, mercado, restaurantes populares' },
+    { icon: '🚌', label: 'Transporte', detail: 'metrô, ônibus, caminhada sempre que possível' },
+    { icon: '🎭', label: 'Atividades', detail: 'parques, praias, atrações gratuitas, museus básicos' },
+  ],
+  mid: [
+    { icon: '🏨', label: 'Hospedagem', detail: 'hotel 3★ ou apart bem localizado (quarto duplo)' },
+    { icon: '🍽', label: 'Alimentação', detail: 'restaurantes variados, cafés, almoços executivos' },
+    { icon: '🚕', label: 'Transporte', detail: 'metrô + Uber/taxi ocasional, day pass de transporte' },
+    { icon: '🎫', label: 'Atividades', detail: 'museus, tours guiados, ingressos pagos, passeios de barco' },
+  ],
+  premium: [
+    { icon: '🏰', label: 'Hospedagem', detail: 'hotel 4–5★, boutique hotel ou suite' },
+    { icon: '🍷', label: 'Alimentação', detail: 'restaurantes sofisticados, experiências gastronômicas, room service' },
+    { icon: '🚗', label: 'Transporte', detail: 'taxi, Uber Black, transfers privados, aluguel de carro' },
+    { icon: '✨', label: 'Atividades', detail: 'experiências exclusivas, spas, shows, safáris, voos panorâmicos' },
+  ],
+}
 
 function getSavingsComment(monthly: number): string {
   if (monthly < 500) return 'dá pra chegar lá. a conta mostra como.'
@@ -45,7 +74,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   const [selectedId, setSelectedId] = useState(defaultDest.id)
   const [travelers, setTravelers] = useState(TRAVEL_CONFIG.defaultTravelers)
   const [days, setDays] = useState(defaultDest.typicalDays.recommended)
-  const [style, setStyle] = useState<TravelStyle>(TRAVEL_CONFIG.defaultStyle)
+  const [styleKey, setStyleKey] = useState<StyleKey>(TRAVEL_CONFIG.defaultStyle)
   const [exchangeRate, setExchangeRate] = useState(TRAVEL_CONFIG.defaultUSDtoBRL)
   const [monthsToSave, setMonthsToSave] = useState(TRAVEL_CONFIG.defaultMonthsToSave)
   const [selicRate, setSelicRate] = useState(TRAVEL_CONFIG.selicAnnual * 100)
@@ -56,14 +85,43 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   const [extraAmount, setExtraAmount] = useState('')
   const [showExtras, setShowExtras] = useState(false)
 
+  // Custom style state — pre-populated when switching to custom
+  const [customDailyBRL, setCustomDailyBRL] = useState(
+    Math.round(defaultDest.dailyCostUSD['mid'] * TRAVEL_CONFIG.defaultUSDtoBRL)
+  )
+  const [customFlightTotalBRL, setCustomFlightTotalBRL] = useState(
+    defaultDest.flightFromGRU.typical * TRAVEL_CONFIG.defaultTravelers
+  )
+
   const destination = useMemo(
     () => destinations.find((d) => d.id === selectedId) ?? destinations[0],
     [selectedId]
   )
 
+  function handleStyleChange(key: StyleKey) {
+    if (key === 'custom' && styleKey !== 'custom') {
+      // styleKey is narrowed to TravelStyle here — safe to index dailyCostUSD
+      setCustomDailyBRL(Math.round(destination.dailyCostUSD[styleKey] * exchangeRate))
+      setCustomFlightTotalBRL(Math.round(destination.flightFromGRU.typical * travelers))
+    }
+    setStyleKey(key)
+  }
+
+  const effectiveStyle: TravelStyle = styleKey === 'custom' ? 'mid' : styleKey
+
   const tripCost = useMemo(
-    () => calculateTripCost({ destination, travelers, days, style, exchangeRate }),
-    [destination, travelers, days, style, exchangeRate]
+    () =>
+      calculateTripCost({
+        destination,
+        travelers,
+        days,
+        style: effectiveStyle,
+        exchangeRate,
+        ...(styleKey === 'custom'
+          ? { isCustom: true, customDailyBRL, customFlightTotalBRL }
+          : {}),
+      }),
+    [destination, travelers, days, effectiveStyle, exchangeRate, styleKey, customDailyBRL, customFlightTotalBRL]
   )
 
   const extrasTotalBRL = useMemo(
@@ -78,7 +136,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
     [grandTotal, monthsToSave, selicRate]
   )
 
-  const currentStyle = STYLE_OPTIONS.find((s) => s.key === style)!
+  const currentStyleOption = STYLE_OPTIONS.find((s) => s.key === styleKey)!
 
   function addExtra() {
     const label = extraLabel.trim()
@@ -92,6 +150,11 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   function removeExtra(id: number) {
     setExtras((prev) => prev.filter((e) => e.id !== id))
   }
+
+  const breakdownCategories = styleKey !== 'custom' ? STYLE_BREAKDOWN[styleKey] : null
+  const dailyBRLReference = styleKey !== 'custom'
+    ? destination.dailyCostUSD[styleKey] * exchangeRate
+    : customDailyBRL
 
   return (
     <div className="space-y-4">
@@ -126,7 +189,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           )}
         </div>
 
-        {/* Travelers + days — stacked on mobile, side by side on sm+ */}
+        {/* Travelers + days */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <SliderField
             id="travelers"
@@ -153,13 +216,15 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
         {/* Travel style */}
         <div className="space-y-3">
           <label className="text-sm font-medium text-stone-600">Estilo de viagem</label>
+
+          {/* Top row: 3 preset styles */}
           <div className="grid grid-cols-3 gap-2">
-            {STYLE_OPTIONS.map((s) => (
+            {STYLE_OPTIONS.filter((s) => s.key !== 'custom').map((s) => (
               <button
                 key={s.key}
-                onClick={() => setStyle(s.key)}
+                onClick={() => handleStyleChange(s.key)}
                 className={`py-3 px-2 rounded-xl text-sm font-semibold border transition-colors flex flex-col items-center gap-1 ${
-                  style === s.key
+                  styleKey === s.key
                     ? 'bg-amber-500 text-white border-amber-500'
                     : 'bg-white text-stone-600 border-stone-200 hover:border-amber-300'
                 }`}
@@ -169,7 +234,104 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
               </button>
             ))}
           </div>
-          <p className="text-xs text-stone-400 italic">{currentStyle.description}</p>
+
+          {/* Personalizado button — full width */}
+          <button
+            onClick={() => handleStyleChange('custom')}
+            className={`w-full py-2.5 rounded-xl text-sm font-semibold border transition-colors flex items-center justify-center gap-2 ${
+              styleKey === 'custom'
+                ? 'bg-stone-800 text-white border-stone-800'
+                : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400 hover:text-stone-700'
+            }`}
+          >
+            <span>✏️</span>
+            <span>Personalizado — eu sei os valores exatos</span>
+          </button>
+
+          {/* Style detail: breakdown card for preset, custom inputs for custom */}
+          {styleKey !== 'custom' && breakdownCategories ? (
+            <div className="rounded-xl bg-stone-50 border border-stone-100 p-3 space-y-2">
+              <div className="flex items-center justify-between mb-0.5">
+                <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">O que está incluído</p>
+                <p className="text-[10px] text-stone-400">
+                  ≈ {formatBRL(dailyBRLReference)}<span className="text-stone-300">/pessoa/dia</span>
+                </p>
+              </div>
+              <div className="space-y-2">
+                {breakdownCategories.map((cat) => (
+                  <div key={cat.label} className="flex items-start gap-2.5">
+                    <span className="text-sm w-5 shrink-0 mt-px">{cat.icon}</span>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-xs font-semibold text-stone-600">{cat.label}</span>
+                      <span className="text-xs text-stone-400"> · {cat.detail}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-stone-400 italic pt-0.5">
+                Hospedagem calculada por quarto, compartilhada entre os viajantes.
+              </p>
+            </div>
+          ) : styleKey === 'custom' ? (
+            <div className="rounded-xl bg-stone-50 border border-stone-100 p-4 space-y-4">
+              <p className="text-xs text-stone-500 leading-relaxed">
+                Informe seus próprios valores. Pesquise no Google Flights, Booking, Airbnb e some tudo aqui.
+              </p>
+
+              {/* Custom daily cost */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-stone-600 uppercase tracking-wide">
+                  Custo diário por pessoa
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">R$</span>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min={1}
+                    value={customDailyBRL}
+                    onChange={(e) => setCustomDailyBRL(Number(e.target.value) || 0)}
+                    className="w-full border border-stone-200 rounded-xl pl-9 pr-4 py-3 text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-lg font-semibold tabular-nums"
+                  />
+                </div>
+                <p className="text-[10px] text-stone-400">
+                  Hospedagem + alimentação + transporte local + atividades. A hospedagem é dividida entre os viajantes.
+                </p>
+              </div>
+
+              {/* Custom flight */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-stone-600 uppercase tracking-wide">
+                  Passagem aérea — total ida e volta
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">R$</span>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    value={customFlightTotalBRL}
+                    onChange={(e) => setCustomFlightTotalBRL(Number(e.target.value) || 0)}
+                    className="w-full border border-stone-200 rounded-xl pl-9 pr-4 py-3 text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-lg font-semibold tabular-nums"
+                  />
+                </div>
+                <p className="text-[10px] text-stone-400">
+                  Total para {travelers} pessoa{travelers !== 1 ? 's' : ''}, ida e volta. Pesquise no Google Flights com datas flexíveis.
+                </p>
+              </div>
+
+              {/* Custom summary hint */}
+              <div className="rounded-lg bg-amber-50 border border-amber-100 px-3 py-2">
+                <p className="text-xs text-amber-700">
+                  Custo total estimado (sem voo, sem margem):{' '}
+                  <strong>
+                    {formatBRL(customDailyBRL * 0.45 * days + customDailyBRL * 0.55 * days * travelers)}
+                  </strong>{' '}
+                  · {travelers}p × {days}d
+                </p>
+              </div>
+            </div>
+          ) : null}
         </div>
 
         {/* Extras */}
@@ -195,8 +357,6 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
               <p className="text-xs text-stone-400 pt-1">
                 Seguro viagem, city tax, passeios, ingressos, equipamentos — qualquer custo que não está no modelo base.
               </p>
-
-              {/* Existing extras */}
               {extras.length > 0 && (
                 <div className="space-y-1.5">
                   {extras.map((e) => (
@@ -214,8 +374,6 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
                   ))}
                 </div>
               )}
-
-              {/* Add form */}
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -255,15 +413,15 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
 
         {/* Main trip cost summary card */}
         <div className="rounded-2xl border border-stone-100 overflow-hidden bg-white">
-          {/* Trip tag */}
           <div className="px-5 pt-4 pb-3 border-b border-stone-50 flex items-center gap-2 flex-wrap">
             <span className="text-xl">{destination.flag}</span>
             <span className="text-sm font-semibold text-stone-700">{destination.name}</span>
             <span className="text-stone-300">·</span>
-            <span className="text-xs text-stone-400">{days}d · {travelers}p · {currentStyle.icon} {currentStyle.label}</span>
+            <span className="text-xs text-stone-400">
+              {days}d · {travelers}p · {currentStyleOption.icon} {currentStyleOption.label}
+            </span>
           </div>
 
-          {/* Goal number */}
           <div className="px-5 pt-5 pb-4">
             <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">Meta da viagem</p>
             <p className="text-4xl sm:text-5xl font-bold tabular-nums font-serif text-amber-500 leading-none">
@@ -277,7 +435,6 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
             </p>
           </div>
 
-          {/* Payment comparison — international only */}
           {!tripCost.isDomestic ? (
             <div className="mx-5 mb-5 rounded-xl overflow-hidden border border-stone-100">
               <div className="grid grid-cols-2">
@@ -363,7 +520,6 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
 
         <SectionDivider label="Plano de poupança" />
 
-        {/* Months slider */}
         <div className="bg-white rounded-2xl border border-stone-100 p-5">
           <SliderField
             id="months-save"
@@ -377,9 +533,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           />
         </div>
 
-        {/* Savings summary card — replaces ResultHero + MetricGrid */}
         <div className="rounded-2xl border border-stone-100 overflow-hidden bg-white">
-          {/* Hero */}
           <div className="px-5 py-6 text-center border-b border-stone-50">
             <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Poupar por mês</p>
             <p className={`text-5xl font-bold tabular-nums font-serif leading-none ${savingsPlan.monthlyWithSelic < 2000 ? 'text-emerald-600' : 'text-amber-500'}`}>
@@ -388,8 +542,6 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
             <p className="text-xs text-stone-400 mt-2">investindo na Selic · {selicRate.toFixed(2)}% a.a.</p>
             <p className="text-sm font-hand text-stone-500 mt-3 italic">{getSavingsComment(savingsPlan.monthlyWithSelic)}</p>
           </div>
-
-          {/* Comparison rows */}
           <div className="divide-y divide-stone-50">
             <div className="flex items-center justify-between px-5 py-3">
               <div>
@@ -415,13 +567,8 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           </div>
         </div>
 
-        {/* Evolution chart */}
-        <SavingsChart
-          data={savingsPlan.monthlyBreakdown}
-          target={grandTotal}
-        />
+        <SavingsChart data={savingsPlan.monthlyBreakdown} target={grandTotal} />
 
-        {/* Rate editor */}
         <div className="bg-white rounded-2xl border border-stone-100 p-5">
           <button
             onClick={() => setShowRateEditor((v) => !v)}
@@ -459,7 +606,6 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           )}
         </div>
 
-        {/* Reminders */}
         <div className="bg-stone-50 rounded-2xl border border-stone-100 p-4 space-y-2">
           <p className="text-xs font-medium text-stone-500">Lembretes importantes</p>
           <ul className="space-y-1 text-xs text-stone-400">
@@ -472,7 +618,6 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           </ul>
         </div>
 
-        {/* Share card */}
         <div className="bg-stone-50 rounded-2xl p-4">
           <p className="text-xs text-stone-400 mb-3 text-center">Compartilhe o resultado</p>
           <ScaledPreview>
@@ -480,7 +625,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
               destination={destination}
               travelers={travelers}
               days={days}
-              style={style}
+              style={effectiveStyle}
               totalBRL={grandTotal}
               monthlyBRL={savingsPlan.monthlyWithSelic}
               months={monthsToSave}
