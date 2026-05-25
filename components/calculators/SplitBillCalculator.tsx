@@ -12,29 +12,31 @@ interface BillItem {
   id: number
   description: string
   price: number
-  payers: number[] // person IDs; empty = all people
+  payers: number[] // empty = all people
 }
 
 function displayName(person: Person, index: number) {
   return person.name.trim() || `Pessoa ${index + 1}`
 }
 
-const INITIAL_IDS = [1, 2]
-
 export function SplitBillCalculator() {
   const [mode, setMode] = useState<'itemized' | 'equal'>('itemized')
   const [people, setPeople] = useState<Person[]>([
-    { id: INITIAL_IDS[0], name: '' },
-    { id: INITIAL_IDS[1], name: '' },
+    { id: 1, name: '' },
+    { id: 2, name: '' },
   ])
   const [items, setItems] = useState<BillItem[]>([])
   const [tip, setTip] = useState(0)
   const [newName, setNewName] = useState('')
   const [newDesc, setNewDesc] = useState('')
   const [newPrice, setNewPrice] = useState('')
-  const [newPayers, setNewPayers] = useState<number[]>(INITIAL_IDS)
   const [equalTotal, setEqualTotal] = useState('')
   const [copied, setCopied] = useState(false)
+
+  // Inline editing state
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editDesc, setEditDesc] = useState('')
+  const [editPrice, setEditPrice] = useState('')
 
   // ── Derived ─────────────────────────────────────────────────────
 
@@ -46,7 +48,6 @@ export function SplitBillCalculator() {
       : item.payers.filter((id) => allIds.includes(id))
   }
 
-  // All per-person calculations in one pass
   const calc = useMemo(() => {
     const ids = people.map((p) => p.id)
     const subs: Record<number, number> = {}
@@ -73,19 +74,16 @@ export function SplitBillCalculator() {
     return { subtotal, tipAmt, breakdown }
   }, [people, items, tip])
 
-  // Equal mode
   const equalNum = parseFloat(equalTotal.replace(',', '.')) || 0
   const equalWithTip = equalNum * (1 + tip / 100)
   const perPersonEqual = people.length > 0 ? equalWithTip / people.length : 0
-
   const hasResults = mode === 'itemized' ? items.length > 0 : equalNum > 0
 
-  // ── Actions ─────────────────────────────────────────────────────
+  // ── People actions ───────────────────────────────────────────────
 
   function addPerson() {
     const id = Date.now()
     setPeople((prev) => [...prev, { id, name: newName.trim() }])
-    setNewPayers((prev) => [...prev, id])
     setNewName('')
   }
 
@@ -95,26 +93,43 @@ export function SplitBillCalculator() {
     setItems((prev) =>
       prev.map((item) => ({ ...item, payers: item.payers.filter((pid) => pid !== id) }))
     )
-    setNewPayers((prev) => prev.filter((pid) => pid !== id))
   }
 
   function updateName(id: number, name: string) {
     setPeople((prev) => prev.map((p) => (p.id === id ? { ...p, name } : p)))
   }
 
+  // ── Item actions ─────────────────────────────────────────────────
+
   function addItem() {
     const desc = newDesc.trim()
     const price = parseFloat(newPrice.replace(',', '.'))
-    if (!desc || isNaN(price) || price <= 0 || newPayers.length === 0) return
-    const payers = newPayers.length === people.length ? [] : newPayers
-    setItems((prev) => [...prev, { id: Date.now(), description: desc, price, payers }])
+    if (!desc || isNaN(price) || price <= 0) return
+    // Default payers: [] means all people
+    setItems((prev) => [...prev, { id: Date.now(), description: desc, price, payers: [] }])
     setNewDesc('')
     setNewPrice('')
-    setNewPayers(people.map((p) => p.id))
   }
 
   function removeItem(id: number) {
     setItems((prev) => prev.filter((item) => item.id !== id))
+    if (editingId === id) setEditingId(null)
+  }
+
+  function startEdit(item: BillItem) {
+    setEditingId(item.id)
+    setEditDesc(item.description)
+    setEditPrice(String(item.price))
+  }
+
+  function saveEdit(id: number) {
+    const desc = editDesc.trim()
+    const price = parseFloat(editPrice.replace(',', '.'))
+    if (!desc || isNaN(price) || price <= 0) return
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, description: desc, price } : item))
+    )
+    setEditingId(null)
   }
 
   function toggleItemPayer(itemId: number, personId: number) {
@@ -128,12 +143,6 @@ export function SplitBillCalculator() {
           : [...current, personId]
         return { ...item, payers: next.length === ids.length ? [] : next }
       })
-    )
-  }
-
-  function toggleNewPayer(personId: number) {
-    setNewPayers((prev) =>
-      prev.includes(personId) ? prev.filter((id) => id !== personId) : [...prev, personId]
     )
   }
 
@@ -171,13 +180,12 @@ export function SplitBillCalculator() {
     })
   }
 
-  // ── UI helpers ───────────────────────────────────────────────────
+  // ── Person chip ──────────────────────────────────────────────────
 
   function PersonChip({ personId, selected, onToggle }: { personId: number; selected: boolean; onToggle: () => void }) {
     const idx = people.findIndex((p) => p.id === personId)
     const person = people[idx]
     if (!person) return null
-    const name = displayName(person, idx)
     return (
       <button
         type="button"
@@ -189,13 +197,16 @@ export function SplitBillCalculator() {
             : { background: '#F9FAFB', color: '#9CA3AF', borderColor: '#E5E7EB' }
         }
       >
-        {name}
+        {displayName(person, idx)}
       </button>
     )
   }
 
+  // ── Render ───────────────────────────────────────────────────────
+
   return (
     <div className="space-y-4">
+
       {/* Config card */}
       <div className="bg-brand-surface rounded-2xl border border-brand-border p-6 space-y-6">
         <div>
@@ -277,9 +288,7 @@ export function SplitBillCalculator() {
         {/* Equal mode: total input */}
         {mode === 'equal' && (
           <div className="space-y-2">
-            <label htmlFor="bill-total" className="text-sm font-medium text-brand-muted">
-              Valor total da conta
-            </label>
+            <label htmlFor="bill-total" className="text-sm font-medium text-brand-muted">Valor total da conta</label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted font-medium">R$</span>
               <input
@@ -318,47 +327,112 @@ export function SplitBillCalculator() {
         </div>
       </div>
 
-      {/* Itemized: item list + add form */}
+      {/* ── Itemized: item list + add form ── */}
       {mode === 'itemized' && (
         <div className="bg-brand-surface rounded-2xl border border-brand-border overflow-hidden">
+
           {/* Item list */}
           {items.length > 0 && (
             <div className="divide-y divide-brand-border">
               {items.map((item) => {
                 const payers = resolvePayers(item)
+                const isEditing = editingId === item.id
+
                 return (
-                  <div key={item.id} className="p-4 space-y-2.5">
-                    {/* Row: description + price + remove */}
-                    <div className="flex items-center gap-2">
-                      <span className="flex-1 text-sm font-medium text-brand-ink min-w-0 truncate">
-                        {item.description}
-                      </span>
-                      <span className="text-sm font-bold text-brand-ink tabular-nums shrink-0">
-                        {formatBRLDecimal(item.price)}
-                      </span>
-                      <button
-                        onClick={() => removeItem(item.id)}
-                        className="text-brand-muted hover:text-red-400 transition-colors ml-1 text-lg leading-none shrink-0"
-                        aria-label="Remover item"
-                      >
-                        ×
-                      </button>
-                    </div>
-                    {/* Person chips */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {people.map((person) => (
-                        <PersonChip
-                          key={person.id}
-                          personId={person.id}
-                          selected={payers.includes(person.id)}
-                          onToggle={() => toggleItemPayer(item.id, person.id)}
-                        />
-                      ))}
-                    </div>
-                    {payers.length > 1 && (
-                      <p className="text-[10px] text-brand-muted">
-                        {formatBRLDecimal(item.price / payers.length)} por pessoa
-                      </p>
+                  <div key={item.id} className="p-4 space-y-3">
+                    {isEditing ? (
+                      /* ── Edit mode ── */
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <input
+                            autoFocus
+                            type="text"
+                            value={editDesc}
+                            onChange={(e) => setEditDesc(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && saveEdit(item.id)}
+                            className="flex-1 min-w-0 border border-brand-teal rounded-lg px-3 py-2 text-sm text-brand-ink bg-white focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                          />
+                          <div className="relative shrink-0 w-28">
+                            <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-muted text-xs">R$</span>
+                            <input
+                              type="number"
+                              inputMode="decimal"
+                              value={editPrice}
+                              onChange={(e) => setEditPrice(e.target.value)}
+                              onKeyDown={(e) => e.key === 'Enter' && saveEdit(item.id)}
+                              className="w-full border border-brand-teal rounded-lg pl-7 pr-2 py-2 text-sm text-brand-ink bg-white focus:outline-none focus:ring-2 focus:ring-brand-teal tabular-nums"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => saveEdit(item.id)}
+                            disabled={!editDesc.trim() || parseFloat(editPrice) <= 0}
+                            className="flex-1 py-2 rounded-lg bg-brand-teal hover:opacity-90 disabled:opacity-40 text-white text-sm font-semibold transition-all"
+                          >
+                            ✓ Salvar
+                          </button>
+                          <button
+                            onClick={() => setEditingId(null)}
+                            className="px-4 py-2 rounded-lg border border-brand-border text-brand-muted text-sm hover:text-brand-ink transition-colors"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      /* ── Default view ── */
+                      <>
+                        {/* Description + price + actions */}
+                        <div className="flex items-center gap-2">
+                          <span className="flex-1 text-sm font-medium text-brand-ink min-w-0 truncate">
+                            {item.description}
+                          </span>
+                          <span className="text-sm font-bold text-brand-ink tabular-nums shrink-0">
+                            {formatBRLDecimal(item.price)}
+                          </span>
+                          <button
+                            onClick={() => startEdit(item)}
+                            className="text-brand-muted hover:text-brand-teal transition-colors ml-1 shrink-0 text-sm"
+                            aria-label="Editar item"
+                            title="Editar"
+                          >
+                            ✎
+                          </button>
+                          <button
+                            onClick={() => removeItem(item.id)}
+                            className="text-brand-muted hover:text-red-400 transition-colors shrink-0 text-lg leading-none"
+                            aria-label="Remover item"
+                            title="Remover"
+                          >
+                            ×
+                          </button>
+                        </div>
+
+                        {/* Who pays — chips for assignment */}
+                        <div className="space-y-1.5">
+                          <p className="text-[10px] font-semibold text-brand-muted uppercase tracking-wide">
+                            Quem divide este item?
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {people.map((person) => (
+                              <PersonChip
+                                key={person.id}
+                                personId={person.id}
+                                selected={payers.includes(person.id)}
+                                onToggle={() => toggleItemPayer(item.id, person.id)}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Per-person hint */}
+                        {payers.length > 1 && (
+                          <p className="text-[10px] text-brand-muted">
+                            {formatBRLDecimal(item.price / payers.length)} por pessoa
+                          </p>
+                        )}
+                      </>
                     )}
                   </div>
                 )
@@ -366,7 +440,7 @@ export function SplitBillCalculator() {
             </div>
           )}
 
-          {/* Subtotal row */}
+          {/* Subtotal */}
           {items.length > 0 && (
             <div className="flex items-center justify-between px-4 py-3 bg-stone-50/80 border-t border-brand-border">
               <span className="text-xs font-semibold text-brand-muted uppercase tracking-wide">Subtotal</span>
@@ -374,7 +448,7 @@ export function SplitBillCalculator() {
             </div>
           )}
 
-          {/* Add item form */}
+          {/* Add item form — only description + price, no people selector */}
           <div className="p-4 space-y-3 border-t border-dashed border-brand-border bg-brand-paper/30">
             <p className="text-xs font-semibold text-brand-muted uppercase tracking-wide">Adicionar item</p>
             <div className="flex gap-2">
@@ -399,30 +473,19 @@ export function SplitBillCalculator() {
                   className="w-full border border-brand-border rounded-lg pl-7 pr-2 py-2.5 text-sm text-brand-ink bg-white focus:outline-none focus:ring-2 focus:ring-brand-teal tabular-nums"
                 />
               </div>
+              <button
+                onClick={addItem}
+                disabled={!newDesc.trim() || !newPrice || parseFloat(newPrice) <= 0}
+                className="shrink-0 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
+              >
+                +
+              </button>
             </div>
-
-            {/* Who ordered this item */}
-            <div className="space-y-1.5">
-              <p className="text-[10px] font-semibold text-brand-muted uppercase tracking-wide">Quem pediu?</p>
-              <div className="flex flex-wrap gap-1.5">
-                {people.map((person) => (
-                  <PersonChip
-                    key={person.id}
-                    personId={person.id}
-                    selected={newPayers.includes(person.id)}
-                    onToggle={() => toggleNewPayer(person.id)}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <button
-              onClick={addItem}
-              disabled={!newDesc.trim() || !newPrice || parseFloat(newPrice) <= 0 || newPayers.length === 0}
-              className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
-            >
-              + Adicionar item
-            </button>
+            {items.length === 0 && (
+              <p className="text-[10px] text-brand-muted italic">
+                Após adicionar, selecione quem divide cada item.
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -437,10 +500,7 @@ export function SplitBillCalculator() {
                 style={{ background: '#EEF2F9', borderColor: '#D6E1EF' }}
               >
                 <p className="text-xs font-medium text-brand-muted uppercase tracking-wider mb-2">cada um paga</p>
-                <p
-                  className="text-5xl font-bold tabular-nums font-serif"
-                  style={{ letterSpacing: '-0.04em', color: '#1A5E40' }}
-                >
+                <p className="text-5xl font-bold tabular-nums font-serif" style={{ letterSpacing: '-0.04em', color: '#1A5E40' }}>
                   {formatBRLDecimal(perPersonEqual)}
                 </p>
                 {tip > 0 && (
@@ -449,7 +509,6 @@ export function SplitBillCalculator() {
                   </p>
                 )}
               </div>
-
               <div className="bg-brand-surface rounded-2xl border border-brand-border p-5 space-y-3">
                 <p className="text-sm font-medium text-brand-muted">Divisão individual</p>
                 {people.map((person, i) => (
@@ -463,19 +522,13 @@ export function SplitBillCalculator() {
           ) : (
             <div className="space-y-3">
               {calc.breakdown.map(({ person, index, sub, tip: t, total }) => (
-                <div
-                  key={person.id}
-                  className="bg-brand-surface rounded-2xl border border-brand-border overflow-hidden"
-                >
-                  {/* Person header */}
+                <div key={person.id} className="bg-brand-surface rounded-2xl border border-brand-border overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-brand-border">
                     <span className="text-sm font-semibold text-brand-ink">{displayName(person, index)}</span>
                     <span className="text-xl font-bold tabular-nums" style={{ color: '#1A5E40' }}>
                       {formatBRLDecimal(total)}
                     </span>
                   </div>
-
-                  {/* Item breakdown */}
                   <div className="px-4 py-3 space-y-1.5 bg-white">
                     {items.map((item) => {
                       const payers = resolvePayers(item)
@@ -506,7 +559,6 @@ export function SplitBillCalculator() {
                 </div>
               ))}
 
-              {/* Grand total */}
               <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-stone-50 border border-brand-border">
                 <span className="text-sm font-semibold text-brand-muted">Total geral</span>
                 <span className="text-sm font-bold text-brand-ink tabular-nums">
