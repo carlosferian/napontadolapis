@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react'
 import { Trash2, Pencil } from 'lucide-react'
 import { formatBRLDecimal } from '@/lib/formatters'
+import { SectionDivider } from '@/components/ui/SectionDivider'
 
 interface Person {
   id: number
@@ -495,6 +496,7 @@ export function SplitBillCalculator() {
       {/* Results */}
       {hasResults && (
         <div role="region" aria-live="polite" className="space-y-4">
+          <SectionDivider label="O que cada um deve" />
           {mode === 'equal' ? (
             <>
               <div
@@ -524,13 +526,18 @@ export function SplitBillCalculator() {
           ) : (
             <div className="space-y-3">
               {calc.breakdown.map(({ person, index, sub, tip: t, total }) => (
-                <div key={person.id} className="bg-brand-surface rounded-2xl border border-brand-border overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-brand-border">
-                    <span className="text-sm font-semibold text-brand-ink">{displayName(person, index)}</span>
-                    <span className="text-xl font-bold tabular-nums" style={{ color: '#1A5E40' }}>
+                <div key={person.id} className="rounded-2xl overflow-hidden shadow-sm" style={{ border: '1px solid #1E3040' }}>
+                  {/* Dark header */}
+                  <div
+                    className="flex items-center justify-between px-4 py-3.5"
+                    style={{ background: 'linear-gradient(135deg, #172030, #1A2E3E)' }}
+                  >
+                    <span className="text-sm font-semibold text-white/90">{displayName(person, index)}</span>
+                    <span className="text-xl font-bold tabular-nums" style={{ color: '#00C4BE' }}>
                       {formatBRLDecimal(total)}
                     </span>
                   </div>
+                  {/* White body with item breakdown */}
                   <div className="px-4 py-3 space-y-1.5 bg-white">
                     {items.map((item) => {
                       const payers = resolvePayers(item)
@@ -561,9 +568,12 @@ export function SplitBillCalculator() {
                 </div>
               ))}
 
-              <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-stone-50 border border-brand-border">
-                <span className="text-sm font-semibold text-brand-muted">Total geral</span>
-                <span className="text-sm font-bold text-brand-ink tabular-nums">
+              <div
+                className="flex items-center justify-between px-4 py-3 rounded-xl border"
+                style={{ background: 'linear-gradient(135deg, #172030, #1A2E3E)', borderColor: '#1E3040' }}
+              >
+                <span className="text-sm font-semibold text-white/60">Total geral</span>
+                <span className="text-sm font-bold tabular-nums" style={{ color: '#00C4BE' }}>
                   {formatBRLDecimal(calc.subtotal + calc.tipAmt)}
                 </span>
               </div>
