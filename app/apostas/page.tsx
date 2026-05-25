@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   title: 'Calculadora de Gastos com Apostas — Quanto você gasta com bets?',
   description: 'Descubra quanto você realmente gasta com apostas esportivas e o que esse dinheiro renderia investido. Sem julgamento, só os números.',
   openGraph: {
-    title: 'Calculadora de Apostas — Na Ponta do Lápis',
+    title: 'Calculadora de Apostas — A Ponta do Lápis',
     description: 'os números não mentem. a gente só mostra eles.',
-    url: 'https://napontadolapis.com.br/apostas',
+    url: 'https://apontadolapis.com.br/apostas',
     locale: 'pt_BR',
     type: 'website',
   },
-  alternates: { canonical: 'https://napontadolapis.com.br/apostas' },
+  alternates: { canonical: 'https://apontadolapis.com.br/apostas' },
 }
 
 export default function ApostasPage() {

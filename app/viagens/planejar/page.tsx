@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   title: 'Calculadora da Viagem dos Sonhos — Planeje qualquer destino',
   description: 'Calcule o custo real de qualquer viagem em reais, compare cartão tradicional com fintech e saiba quanto poupar por mês. Sem ilusão, sem susto.',
   openGraph: {
-    title: 'Calculadora da Viagem dos Sonhos — Na Ponta do Lápis',
+    title: 'Calculadora da Viagem dos Sonhos — A Ponta do Lápis',
     description: 'Você sonha com a viagem. A gente faz a conta.',
-    url: 'https://napontadolapis.com.br/viagens/planejar',
+    url: 'https://apontadolapis.com.br/viagens/planejar',
     locale: 'pt_BR',
     type: 'website',
   },
-  alternates: { canonical: 'https://napontadolapis.com.br/viagens/planejar' },
+  alternates: { canonical: 'https://apontadolapis.com.br/viagens/planejar' },
 }
 
 export default function PlanejarPage() {

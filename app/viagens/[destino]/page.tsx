@@ -23,11 +23,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: `Viagem para ${dest.name}: quanto custa de verdade?`,
       description: `${dest.flag} ${dest.name} · ${dest.highlight}`,
-      url: `https://napontadolapis.com.br/viagens/${dest.id}`,
+      url: `https://apontadolapis.com.br/viagens/${dest.id}`,
       locale: 'pt_BR',
       type: 'website',
     },
-    alternates: { canonical: `https://napontadolapis.com.br/viagens/${dest.id}` },
+    alternates: { canonical: `https://apontadolapis.com.br/viagens/${dest.id}` },
   }
 }
 

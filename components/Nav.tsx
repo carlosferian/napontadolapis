@@ -8,10 +8,10 @@ export function Nav() {
       <div className="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
-            <Image src="/logo.png" alt="Na Ponta do Lápis" width={32} height={32} className="object-cover" />
+            <Image src="/logo.png" alt="A Ponta do Lápis" width={32} height={32} className="object-cover" />
           </div>
           <span className="font-semibold text-brand-ink text-lg tracking-tight font-serif leading-none">
-            na ponta do lápis
+            a ponta do lápis
           </span>
         </Link>
 

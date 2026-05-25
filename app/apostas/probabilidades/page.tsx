@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   title: 'Qual é a chance real de ganhar na bet? Calculadora de probabilidades',
   description: 'Descubra qual é sua chance matemática real de lucrar com apostas esportivas. A casa não é burra — veja os números.',
   openGraph: {
-    title: 'Probabilidades Reais — Na Ponta do Lápis',
+    title: 'Probabilidades Reais — A Ponta do Lápis',
     description: 'A casa não é burra. Veja os números.',
-    url: 'https://napontadolapis.com.br/apostas/probabilidades',
+    url: 'https://apontadolapis.com.br/apostas/probabilidades',
     locale: 'pt_BR',
     type: 'website',
   },
-  alternates: { canonical: 'https://napontadolapis.com.br/apostas/probabilidades' },
+  alternates: { canonical: 'https://apontadolapis.com.br/apostas/probabilidades' },
 }
 
 export default function ProbabilidadesPage() {

@@ -4,16 +4,16 @@ import { AppCTA } from '@/components/AppCTA'
 import { SourcesFooter } from '@/components/ui/SourcesFooter'
 
 export const metadata: Metadata = {
-  title: 'Quanto custa fumar? Calculadora do custo real do cigarro',
-  description: 'Descubra quanto você gasta por mês, ano e em 10 anos com cigarro — e o que esse dinheiro renderia investido. Sem moralismo. Só a conta.',
+  title: 'Quanto custa fumar ou vapear? Calculadora do custo real do cigarro e vape',
+  description: 'Calcule quanto você gasta por mês com cigarro ou vape e o que esse dinheiro renderia investido na Selic em 10 ou 30 anos. Sem moralismo. Só a conta.',
   openGraph: {
-    title: 'Custo do Fumo — Na Ponta do Lápis',
+    title: 'Custo do Fumo — A Ponta do Lápis',
     description: 'Sem moralismo. Só a conta.',
-    url: 'https://napontadolapis.com.br/fumo',
+    url: 'https://apontadolapis.com.br/fumo',
     locale: 'pt_BR',
     type: 'website',
   },
-  alternates: { canonical: 'https://napontadolapis.com.br/fumo' },
+  alternates: { canonical: 'https://apontadolapis.com.br/fumo' },
 }
 
 export default function FumoPage() {

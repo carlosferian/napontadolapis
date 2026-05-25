@@ -58,11 +58,11 @@ export function ShareCardBase({
               fontFamily: 'Georgia, serif',
             }}
           >
-            NA PONTA DO LÁPIS
+            A PONTA DO LÁPIS
           </span>
         </div>
         <span style={{ color: '#00C4BE', opacity: 0.35, fontSize: 9, letterSpacing: 1, fontFamily: 'sans-serif' }}>
-          napontadolapis.com.br
+          apontadolapis.com.br
         </span>
       </div>
 

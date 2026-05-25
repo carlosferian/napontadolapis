@@ -147,7 +147,7 @@ export function SplitBillCalculator() {
   }
 
   function copyMarkdown() {
-    const lines: string[] = ['**Divisão de conta — Na Ponta do Lápis**', '']
+    const lines: string[] = ['**Divisão de conta — A Ponta do Lápis**', '']
     if (mode === 'itemized') {
       lines.push('**Itens:**', '')
       for (const item of items) {
@@ -173,7 +173,7 @@ export function SplitBillCalculator() {
         lines.push(`| ${displayName(p, i)} | ${formatBRLDecimal(perPersonEqual)} |`)
       }
     }
-    lines.push('', '_napontadolapis.com.br_')
+    lines.push('', '_apontadolapis.com.br_')
     navigator.clipboard.writeText(lines.join('\n')).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
@@ -581,7 +581,7 @@ export function SplitBillCalculator() {
           >
             <p className="text-white/70 text-sm font-medium">Quer dividir por foto do cardápio?</p>
             <p className="text-white/40 text-sm leading-relaxed">
-              O app Na Ponta do Lápis usa IA para extrair os itens direto da foto do cardápio e calcular o que cada pessoa deve exatamente.
+              O app A Ponta do Lápis usa IA para extrair os itens direto da foto do cardápio e calcular o que cada pessoa deve exatamente.
             </p>
             <p className="text-white/20 text-xs italic">sem data prometida — só quando estiver bom.</p>
           </div>

@@ -12,8 +12,8 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Na Ponta do Lápis — calculadoras financeiras para o brasileiro',
-  description: 'Descubra o custo real das suas decisões financeiras. Calculadoras simples, honestas e sem julgamento.',
+  title: 'A Ponta do Lápis — calculadoras financeiras gratuitas para o brasileiro',
+  description: 'Calculadoras financeiras gratuitas: custo de apostas, cigarro, vape, viagens com câmbio e IOF, dividir conta e comparativo de investimentos. Sem cadastro.',
 }
 
 type CalcItem = {
@@ -128,7 +128,7 @@ export default function HomePage() {
         </h1>
 
         <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
-          O <strong className="text-brand-ink font-semibold">Na Ponta do Lápis</strong> traduz
+          O <strong className="text-brand-ink font-semibold">A Ponta do Lápis</strong> traduz
           decisões do dia a dia em números reais. Sem sermão, sem fórmulas mágicas, sem julgamento.
         </p>
 
@@ -205,7 +205,7 @@ export default function HomePage() {
         <div className="space-y-6">
           <h2 className="text-4xl font-bold font-serif text-brand-ink leading-tight">
             Por que colocar tudo<br />
-            <span className="italic font-normal text-brand-muted">na ponta do lápis?</span>
+            <span className="italic font-normal text-brand-muted">a ponta do lápis?</span>
           </h2>
           <div className="space-y-4 text-brand-muted text-sm leading-relaxed">
             <p>
@@ -288,7 +288,7 @@ export default function HomePage() {
 
         <div className="space-y-3 max-w-2xl">
           <h3 className="text-3xl sm:text-4xl font-bold font-serif text-white leading-tight">
-            Na Ponta do Lápis<br />
+            A Ponta do Lápis<br />
             <span className="italic font-normal" style={{ color: '#00C4BE' }}>no seu bolso.</span>
           </h3>
           <p className="text-white/50 text-base leading-relaxed">

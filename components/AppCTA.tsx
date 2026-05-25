@@ -20,8 +20,8 @@ export function AppCTA({ context }: AppCTAProps) {
       </div>
       <p className="text-white/80 text-sm leading-relaxed">
         {context
-          ? `No app Na Ponta do Lápis você lança ${context} direto no seu orçamento mensal.`
-          : 'No app Na Ponta do Lápis você acompanha todos esses gastos no orçamento mensal.'}
+          ? `No app A Ponta do Lápis você lança ${context} direto no seu orçamento mensal.`
+          : 'No app A Ponta do Lápis você acompanha todos esses gastos no orçamento mensal.'}
         {' '}A mesma matemática honesta do site, agora como rotina diária.
       </p>
       <ul className="space-y-1.5">

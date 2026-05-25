@@ -70,7 +70,7 @@ export function TravelShareCard({
               fontFamily: 'Georgia, serif',
             }}
           >
-            NA PONTA DO LÁPIS
+            A PONTA DO LÁPIS
           </span>
         </div>
         <span
@@ -82,7 +82,7 @@ export function TravelShareCard({
             fontFamily: 'sans-serif',
           }}
         >
-          napontadolapis.com.br
+          apontadolapis.com.br
         </span>
       </div>
 

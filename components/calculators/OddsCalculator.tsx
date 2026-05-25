@@ -121,11 +121,11 @@ function OddsShareCard({ odd, betAmount, houseEdge, ev, profit1000 }: OddsShareC
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#00C4BE' }} />
           <span style={{ color: '#00C4BE', fontSize: 11, fontWeight: 700, letterSpacing: 3, fontFamily: 'Georgia, serif' }}>
-            NA PONTA DO LÁPIS
+            A PONTA DO LÁPIS
           </span>
         </div>
         <span style={{ color: '#00C4BE', opacity: 0.35, fontSize: 9, letterSpacing: 1, fontFamily: 'sans-serif' }}>
-          napontadolapis.com.br
+          apontadolapis.com.br
         </span>
       </div>
 

@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   title: 'E se eu tivesse investido? Comparador de investimentos vs apostas',
   description: 'Compare quanto renderia poupança, Selic, CDB e Tesouro Direto contra apostas esportivas. O dinheiro trabalha — ou some.',
   openGraph: {
-    title: 'Comparativo de Investimentos — Na Ponta do Lápis',
+    title: 'Comparativo de Investimentos — A Ponta do Lápis',
     description: 'O dinheiro trabalha — ou some.',
-    url: 'https://napontadolapis.com.br/investimentos',
+    url: 'https://apontadolapis.com.br/investimentos',
     locale: 'pt_BR',
     type: 'website',
   },
-  alternates: { canonical: 'https://napontadolapis.com.br/investimentos' },
+  alternates: { canonical: 'https://apontadolapis.com.br/investimentos' },
 }
 
 export default function InvestimentosPage() {

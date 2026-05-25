@@ -218,7 +218,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
       `Poupar por mês (Selic ${selicRate.toFixed(2)}% a.a.)   ${formatBRL(savingsPlan.monthlyWithSelic)}`,
       `Economia total com Selic              ${formatBRL(savingsPlan.savingsWithInvestment)}`,
       '',
-      `Calculado em napontadolapis.com.br | ${new Date().toLocaleDateString('pt-BR')}`,
+      `Calculado em apontadolapis.com.br | ${new Date().toLocaleDateString('pt-BR')}`,
     ]
     const text = lines.join('\n')
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })

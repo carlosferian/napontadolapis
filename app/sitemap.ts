@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { destinations } from '@/config/travel'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://napontadolapis.com.br'
+  const base = 'https://apontadolapis.com.br'
   const now = new Date()
 
   const destinationPages: MetadataRoute.Sitemap = destinations.map((d) => ({
