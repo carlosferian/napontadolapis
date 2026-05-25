@@ -51,6 +51,10 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   const [selicRate, setSelicRate] = useState(TRAVEL_CONFIG.selicAnnual * 100)
   const [showRateEditor, setShowRateEditor] = useState(false)
   const [showBreakdown, setShowBreakdown] = useState(false)
+  const [extras, setExtras] = useState<{ id: number; label: string; amountBRL: number }[]>([])
+  const [extraLabel, setExtraLabel] = useState('')
+  const [extraAmount, setExtraAmount] = useState('')
+  const [showExtras, setShowExtras] = useState(false)
 
   const destination = useMemo(
     () => destinations.find((d) => d.id === selectedId) ?? destinations[0],
@@ -62,12 +66,32 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
     [destination, travelers, days, style, exchangeRate]
   )
 
+  const extrasTotalBRL = useMemo(
+    () => extras.reduce((sum, e) => sum + e.amountBRL, 0),
+    [extras]
+  )
+
+  const grandTotal = tripCost.grandTotalFintechWithMargin + extrasTotalBRL
+
   const savingsPlan = useMemo(
-    () => calculateSavingsPlan(tripCost.grandTotalFintechWithMargin, monthsToSave, selicRate / 100),
-    [tripCost.grandTotalFintechWithMargin, monthsToSave, selicRate]
+    () => calculateSavingsPlan(grandTotal, monthsToSave, selicRate / 100),
+    [grandTotal, monthsToSave, selicRate]
   )
 
   const currentStyle = STYLE_OPTIONS.find((s) => s.key === style)!
+
+  function addExtra() {
+    const label = extraLabel.trim()
+    const amount = parseFloat(extraAmount.replace(',', '.'))
+    if (!label || isNaN(amount) || amount <= 0) return
+    setExtras((prev) => [...prev, { id: Date.now(), label, amountBRL: amount }])
+    setExtraLabel('')
+    setExtraAmount('')
+  }
+
+  function removeExtra(id: number) {
+    setExtras((prev) => prev.filter((e) => e.id !== id))
+  }
 
   return (
     <div className="space-y-4">
@@ -147,6 +171,83 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           </div>
           <p className="text-xs text-stone-400 italic">{currentStyle.description}</p>
         </div>
+
+        {/* Extras */}
+        <div className="rounded-xl border border-stone-100 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowExtras((v) => !v)}
+            className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-stone-50 transition-colors"
+          >
+            <span className="text-sm font-medium text-stone-600">
+              Despesas extras
+              {extras.length > 0 && (
+                <span className="ml-2 text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+                  +{formatBRL(extrasTotalBRL)}
+                </span>
+              )}
+            </span>
+            <span className="text-stone-400 text-xs">{showExtras ? '▲' : '▼ adicionar'}</span>
+          </button>
+
+          {showExtras && (
+            <div className="px-4 pb-4 pt-1 space-y-3 border-t border-stone-100 bg-stone-50/50">
+              <p className="text-xs text-stone-400 pt-1">
+                Seguro viagem, city tax, passeios, ingressos, equipamentos — qualquer custo que não está no modelo base.
+              </p>
+
+              {/* Existing extras */}
+              {extras.length > 0 && (
+                <div className="space-y-1.5">
+                  {extras.map((e) => (
+                    <div key={e.id} className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-stone-100">
+                      <span className="text-sm text-stone-700 flex-1 min-w-0 truncate">{e.label}</span>
+                      <span className="text-sm font-semibold text-stone-800 tabular-nums shrink-0">{formatBRL(e.amountBRL)}</span>
+                      <button
+                        onClick={() => removeExtra(e.id)}
+                        className="text-stone-300 hover:text-red-400 transition-colors ml-1 text-base leading-none"
+                        aria-label="Remover"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Add form */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={extraLabel}
+                  onChange={(e) => setExtraLabel(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && addExtra()}
+                  placeholder="Ex: Seguro viagem"
+                  className="flex-1 min-w-0 border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                />
+                <div className="relative shrink-0 w-28">
+                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-400 text-xs">R$</span>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    value={extraAmount}
+                    onChange={(e) => setExtraAmount(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addExtra()}
+                    placeholder="0"
+                    className="w-full border border-stone-200 rounded-lg pl-7 pr-2 py-2 text-sm text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 tabular-nums"
+                  />
+                </div>
+                <button
+                  onClick={addExtra}
+                  className="shrink-0 px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold transition-colors"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </CalculatorCard>
 
       {/* ── RESULTS ─────────────────────────────────────── */}
@@ -166,12 +267,13 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           <div className="px-5 pt-5 pb-4">
             <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">Meta da viagem</p>
             <p className="text-4xl sm:text-5xl font-bold tabular-nums font-serif text-amber-500 leading-none">
-              {formatBRL(tripCost.grandTotalFintechWithMargin)}
+              {formatBRL(grandTotal)}
             </p>
             <p className="text-xs text-stone-400 mt-1">
               {tripCost.isDomestic
                 ? 'em reais · inclui margem de segurança de 15%'
                 : 'com fintech · inclui margem de segurança de 15%'}
+              {extrasTotalBRL > 0 && ` · +${formatBRL(extrasTotalBRL)} extras`}
             </p>
           </div>
 
@@ -220,8 +322,12 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
                 <span className="font-medium tabular-nums shrink-0">{formatBRL(tripCost.flightBRL)}</span>
               </div>
               <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="text-stone-500 min-w-0">🏨 Hospedagem + refeições ({days}d × {travelers}p)</span>
-                <span className="font-medium tabular-nums shrink-0">{formatBRL(tripCost.subtotalUSD * exchangeRate)}</span>
+                <span className="text-stone-500 min-w-0">🏨 Hospedagem ({days}d, quarto compartilhado)</span>
+                <span className="font-medium tabular-nums shrink-0">{formatBRL(tripCost.accommodationUSD * exchangeRate)}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span className="text-stone-500 min-w-0">🍽 Alimentação + atividades ({days}d × {travelers}p)</span>
+                <span className="font-medium tabular-nums shrink-0">{formatBRL(tripCost.variableUSD * exchangeRate)}</span>
               </div>
               {tripCost.visaCostBRL > 0 && (
                 <div className="flex items-center justify-between gap-3 text-sm">
@@ -229,6 +335,12 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
                   <span className="font-medium tabular-nums shrink-0">{formatBRL(tripCost.visaCostBRL)}</span>
                 </div>
               )}
+              {extras.map((e) => (
+                <div key={e.id} className="flex items-center justify-between gap-3 text-sm">
+                  <span className="text-stone-500 min-w-0">+ {e.label}</span>
+                  <span className="font-medium tabular-nums shrink-0">{formatBRL(e.amountBRL)}</span>
+                </div>
+              ))}
               {!tripCost.isDomestic && (
                 <div className="border-t border-stone-100 pt-2 mt-1 space-y-1.5">
                   <div className="flex items-center justify-between gap-3 text-sm">
@@ -242,8 +354,8 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
                 </div>
               )}
               <div className="flex items-center justify-between gap-3 text-sm border-t border-stone-100 pt-2 mt-1">
-                <span className="text-stone-600 font-medium min-w-0">Meta (+15% margem)</span>
-                <span className="font-bold text-amber-500 tabular-nums shrink-0">{formatBRL(tripCost.grandTotalFintechWithMargin)}</span>
+                <span className="text-stone-600 font-medium min-w-0">Meta (+15% margem{extrasTotalBRL > 0 ? ' + extras' : ''})</span>
+                <span className="font-bold text-amber-500 tabular-nums shrink-0">{formatBRL(grandTotal)}</span>
               </div>
             </div>
           )}
@@ -306,7 +418,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
         {/* Evolution chart */}
         <SavingsChart
           data={savingsPlan.monthlyBreakdown}
-          target={tripCost.grandTotalFintechWithMargin}
+          target={grandTotal}
         />
 
         {/* Rate editor */}
@@ -369,7 +481,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
               travelers={travelers}
               days={days}
               style={style}
-              totalBRL={tripCost.grandTotalFintechWithMargin}
+              totalBRL={grandTotal}
               monthlyBRL={savingsPlan.monthlyWithSelic}
               months={monthsToSave}
               savingsWise={tripCost.savingsWithFintech}

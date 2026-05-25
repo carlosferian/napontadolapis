@@ -29,6 +29,9 @@ export const TRAVEL_CONFIG = {
   defaultTravelers: 2,
   defaultMonthsToSave: 18,
   lastUpdated: '2026-05',
+  // Fraction of daily cost that is accommodation (shared between travelers, not per-person)
+  // Remaining fraction (food, transport, activities) scales per traveler
+  accommodationPct: { budget: 0.35, mid: 0.50, premium: 0.55 } as Record<TravelStyle, number>,
 }
 
 const rawDestinations: Destination[] = [

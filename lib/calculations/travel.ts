@@ -11,6 +11,8 @@ export interface TripCostInputs {
 export interface TripCost {
   isDomestic: boolean
   subtotalUSD: number
+  accommodationUSD: number
+  variableUSD: number
   flightBRL: number
   dailyCostUSD: number
   iofAndSpreadBRL: number
@@ -30,7 +32,13 @@ export function calculateTripCost(inputs: TripCostInputs): TripCost {
   const isDomestic = dest.region === 'brasil'
 
   const dailyCostUSD = dest.dailyCostUSD[style]
-  const subtotalUSD = dailyCostUSD * days * travelers
+
+  // Accommodation is shared — does not scale linearly with travelers
+  const accommodationPct = TRAVEL_CONFIG.accommodationPct[style]
+  const accommodationUSD = dailyCostUSD * accommodationPct * days
+  const variableUSD = dailyCostUSD * (1 - accommodationPct) * days * travelers
+  const subtotalUSD = accommodationUSD + variableUSD
+
   const flightBRL = dest.flightFromGRU.typical * travelers
 
   const iof = TRAVEL_CONFIG.iofCreditCard
@@ -62,6 +70,8 @@ export function calculateTripCost(inputs: TripCostInputs): TripCost {
   return {
     isDomestic,
     subtotalUSD,
+    accommodationUSD,
+    variableUSD,
     flightBRL,
     dailyCostUSD,
     iofAndSpreadBRL: isDomestic ? 0 : accommodationWithCard - baseCostBRL,
