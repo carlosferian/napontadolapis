@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { CalculatorCard } from '@/components/ui/CalculatorCard'
 import { SliderField } from '@/components/ui/SliderField'
-import { MetricGrid } from '@/components/ui/MetricGrid'
 import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
@@ -28,6 +27,64 @@ function getProfitComment(pct: number, odd: number): string {
   if (pct < 5) return 'Após 1.000 apostas, a chance de estar no lucro é menor que 5%. A matemática não mente — quanto mais você aposta, mais certo é o prejuízo.'
   if (pct < 20) return 'Os números são implacáveis. Cada aposta é matematicamente desfavorável — o tempo é inimigo do apostador.'
   return 'A margem da casa é menor nessa odd, mas presente. No longo prazo, a perda é certa.'
+}
+
+function getDramaticAnalogy(profit1000: number): { headline: string; body: string } {
+  if (profit1000 < 1) {
+    return {
+      headline: 'Praticamente impossível no longo prazo.',
+      body: 'Menos de 1% de chance de lucro após 1.000 apostas. Se 200 pessoas fizessem exatamente a mesma sequência nessa odd, provavelmente nenhuma terminaria no positivo. Não é azar — é design matemático. A casa não precisa trapacear. Basta existir.',
+    }
+  }
+  if (profit1000 < 5) {
+    const n = Math.max(1, Math.round(profit1000))
+    return {
+      headline: `${n} em 100 saem no lucro.`,
+      body: `Imagine 100 pessoas numa sala, todas fazendo a mesma sequência de 1.000 apostas nessa odd. Apenas ${n} delas termina no positivo. As outras ${100 - n} saem no vermelho — e todas, durante a sequência, tiveram momentos em que estavam na frente. Todas acharam que seriam a exceção. A maioria não foi.`,
+    }
+  }
+  if (profit1000 < 15) {
+    const n = Math.max(1, Math.round(profit1000 / 10))
+    return {
+      headline: `${n} em 10 saem no lucro.`,
+      body: `Em cada 10 pessoas que apostam 1.000 vezes nessa odd, apenas ${n} termina no positivo. As outras ${10 - n} perdem. O vencedor não era mais inteligente ou disciplinado — teve mais sorte num jogo matematicamente desfavorável. Na próxima sequência de 1.000, essa sorte não se repete necessariamente.`,
+    }
+  }
+  if (profit1000 < 35) {
+    return {
+      headline: 'Menos de 1 em 3 sai no lucro.',
+      body: 'A odd mais alta reduz a margem da casa. Mesmo assim, após 1.000 apostas, mais de 2 em cada 3 apostadores terminam no vermelho. A sensação de "quase lá" é parte do design das plataformas — e parte do problema.',
+    }
+  }
+  return {
+    headline: 'Margem menor, mas sempre presente.',
+    body: 'Essa odd tem uma das menores margens da casa. No curto prazo, a variância permite lucros reais. No longo prazo, para cada R$100 apostados coletivamente, a casa embolsa sua parte garantida. Sempre. A diferença entre essa odd e as menores é quanto tempo leva para a matemática vencer.',
+  }
+}
+
+// Tooltip com ⓘ — funciona no hover (desktop) e no toque (mobile)
+function InfoTip({ text }: { text: string }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <span className="relative inline-block align-middle ml-1.5">
+      <button
+        type="button"
+        className="w-4 h-4 rounded-full border border-stone-300 text-[9px] text-stone-400 flex items-center justify-center hover:border-stone-500 hover:text-stone-600 transition-colors focus:outline-none"
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onClick={(e) => { e.stopPropagation(); setOpen(v => !v) }}
+        aria-label="Mais informações"
+      >
+        i
+      </button>
+      {open && (
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 p-3 bg-stone-800 text-white text-xs rounded-xl z-50 leading-relaxed shadow-xl">
+          {text}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-stone-800" />
+        </div>
+      )}
+    </span>
+  )
 }
 
 interface OddsShareCardProps {
@@ -131,6 +188,7 @@ export function OddsCalculator() {
   const ev = expectedValuePerBet(odd, betAmount)
   const profit1000 = probProfit(odd, 1000)
   const lossPerBet = Math.abs(Math.min(ev, 0))
+  const analogy = getDramaticAnalogy(profit1000)
 
   return (
     <div className="space-y-4">
@@ -146,13 +204,12 @@ export function OddsCalculator() {
           onChange={setBetAmount}
         />
 
-        {/* Odd selector — hidden by default, revealed on hover/click */}
+        {/* Odd selector */}
         <div
           className="rounded-xl border border-stone-100 overflow-hidden"
           onMouseEnter={() => setOddPanelOpen(true)}
           onMouseLeave={() => setOddPanelOpen(false)}
         >
-          {/* Trigger text — always visible */}
           <button
             type="button"
             onClick={() => setOddPanelOpen((v) => !v)}
@@ -171,40 +228,35 @@ export function OddsCalculator() {
             />
           </button>
 
-          {/* Collapsible explanation + selector */}
           <div
             className={`transition-all duration-300 ease-in-out ${
               oddPanelOpen ? 'max-h-[420px] opacity-100' : 'max-h-0 opacity-0'
             } overflow-hidden`}
           >
             <div className="px-4 pb-4 pt-1 space-y-4 border-t border-stone-100 bg-stone-50/60">
-
-              {/* What is an odd */}
               <div className="space-y-2">
                 <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">O que é uma odd?</p>
                 <p className="text-sm text-stone-600 leading-relaxed">
-                  A odd é o multiplicador que a casa de apostas paga se você acertar.
+                  A odd é o multiplicador que a casa paga se você acertar.
                   Com odd <strong>{odd.toFixed(1)}</strong>, cada{' '}
                   <strong>{formatBRL(betAmount)}</strong> apostado vira{' '}
                   <strong>{formatBRL(betAmount * odd)}</strong> em caso de vitória
-                  — mas a sua chance real de acertar é sempre menor do que{' '}
+                  — mas a sua chance real é sempre menor do que{' '}
                   <strong>{formatPct((1 / odd) * 100)}</strong>.
                 </p>
                 <p className="text-sm text-stone-500 leading-relaxed">
-                  A casa define a odd embutindo uma margem: a soma das probabilidades implícitas
-                  de todos os resultados de um mercado sempre ultrapassa 100%. Essa diferença é o lucro garantido da casa.{' '}
+                  A casa embute uma margem: a soma das probabilidades implícitas de todos os resultados
+                  ultrapassa 100%. Essa diferença é o lucro garantido da casa.{' '}
                   <a
                     href="https://pt.wikipedia.org/wiki/Valor_esperado"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-brand-teal underline underline-offset-2 hover:text-brand-green transition-colors"
                   >
-                    Entender Valor Esperado (Wikipedia)
+                    Entender Valor Esperado
                   </a>
                 </p>
               </div>
-
-              {/* Buttons */}
               <div className="space-y-2">
                 <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">Ajustar a odd</p>
                 <div className="grid grid-cols-3 gap-2">
@@ -222,13 +274,11 @@ export function OddsCalculator() {
                     </button>
                   ))}
                 </div>
-                {/* Direction guide */}
                 <div className="flex justify-between text-[10px] text-stone-400 pt-1 px-0.5">
                   <span>← favorito claro<br />menor retorno</span>
                   <span className="text-right">maior incerteza →<br />maior retorno</span>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -243,15 +293,22 @@ export function OddsCalculator() {
           <p className="text-xs text-stone-400 uppercase tracking-wide mb-2">O que acontece com cada aposta</p>
           {ev < 0 ? (
             <>
-              <div className="flex items-baseline gap-2">
+              <div className="flex items-baseline gap-2 flex-wrap">
                 <span className="text-3xl font-bold text-red-500 tabular-nums">−{formatBRL(lossPerBet)}</span>
-                <span className="text-sm text-stone-500">de perda esperada por aposta</span>
+                <span className="text-sm text-stone-500 flex items-center flex-wrap">
+                  de perda esperada por aposta
+                  <InfoTip text={`Valor Esperado (VE): a perda média por aposta, calculada matematicamente. Assumindo 50% de chance de acerto, com odd ${odd.toFixed(1)}, cada R$${betAmount} apostado resulta em VE negativo de R$${lossPerBet.toFixed(2)}. Não significa que você perde exatamente isso — significa que essa é a média após muitas apostas. A lei dos grandes números garante que o resultado real se aproxima desse valor.`} />
+                </span>
               </div>
               <p className="text-xs text-stone-400 mt-2">
                 A casa retém{' '}
-                <strong className="text-stone-500">{formatPct(houseEdge)}</strong> em média.
+                <strong className="text-stone-500">{formatPct(houseEdge)}</strong>
+                <InfoTip text={`Margem da casa (house edge): para cada R$100 apostados coletivamente, R$${houseEdge.toFixed(1)} ficam com a plataforma — garantidos matematicamente. Calculada como 1 − (1 ÷ odd) × 100. Numa odd ${odd.toFixed(1)}: 1 − (1 ÷ ${odd.toFixed(1)}) = ${houseEdge.toFixed(2)}%. Esse percentual não varia com sorte ou habilidade.`} />
+                {' '}em média.
                 Você recebe de volta{' '}
-                <strong className="text-stone-500">{formatPct(100 - houseEdge)}</strong> do que aposta ao longo do tempo.
+                <strong className="text-stone-500">{formatPct(100 - houseEdge)}</strong>
+                <InfoTip text={`RTP (Return to Player): ${(100 - houseEdge).toFixed(2)}% do total apostado retorna em premiações. Parece alto? Numa sessão com R$5.000 apostados, são R$${Math.round((houseEdge / 100) * 5000)} que ficam com a casa — independente de você ganhar ou perder individualmente.`} />
+                {' '}do que aposta ao longo do tempo.
               </p>
             </>
           ) : (
@@ -276,6 +333,9 @@ export function OddsCalculator() {
           </p>
           {N_VALUES.map((n) => {
             const pct = probProfit(odd, n)
+            const tipText = n <= 50
+              ? `Com apenas ${n} apostas, a sorte tem grande influência — o resultado pode ser positivo ou negativo por acaso puro. Matematicamente, é cedo para a lei dos grandes números agir. Mas a desvantagem já existe em cada rodada.`
+              : `Com ${n.toLocaleString('pt-BR')} apostas, a lei dos grandes números domina. A variância diminui drasticamente e a perda esperada acumulada é quase certa. Probabilidade de ${formatPct(pct)} de terminar no positivo — restando ${formatPct(100 - pct)} de chance de estar no vermelho.`
             return (
               <div key={n} className="flex items-center justify-between gap-3">
                 <span className="text-sm text-stone-500 w-36 flex-shrink-0">Após {n.toLocaleString('pt-BR')} apostas</span>
@@ -288,22 +348,27 @@ export function OddsCalculator() {
                     }}
                   />
                 </div>
-                <span
-                  className={`text-sm font-bold w-14 text-right tabular-nums ${
-                    pct < 15 ? 'text-red-500' : pct < 35 ? 'text-amber-500' : 'text-emerald-600'
-                  }`}
-                >
-                  {formatPct(pct)}
-                </span>
+                <div className="flex items-center gap-0.5 flex-shrink-0 w-16 justify-end">
+                  <span
+                    className={`text-sm font-bold tabular-nums ${
+                      pct < 15 ? 'text-red-500' : pct < 35 ? 'text-amber-500' : 'text-emerald-600'
+                    }`}
+                  >
+                    {formatPct(pct)}
+                  </span>
+                  <InfoTip text={tipText} />
+                </div>
               </div>
             )
           })}
         </div>
 
+        {/* Dramatic analogy */}
         <div className="bg-stone-800 rounded-2xl p-5 space-y-2">
-          <p className="text-stone-300 text-sm leading-relaxed italic">
-            {getProfitComment(profit1000, odd)}
-          </p>
+          <p className="text-[10px] text-stone-500 uppercase tracking-widest font-semibold">Na prática</p>
+          <p className="text-base font-bold text-white leading-snug">{analogy.headline}</p>
+          <p className="text-stone-300 text-sm leading-relaxed">{analogy.body}</p>
+          <p className="text-stone-500 text-xs italic pt-1 border-t border-stone-700 mt-1">{getProfitComment(profit1000, odd)}</p>
         </div>
 
         <div className="bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 space-y-1">
@@ -313,6 +378,46 @@ export function OddsCalculator() {
             Isso é uma simplificação didática: na prática, favoritos têm chances maiores e zebras têm chances menores.
             O ponto central continua válido — odds abaixo de 2.0 em eventos equilibrados são matematicamente desfavoráveis ao apostador.
           </p>
+        </div>
+
+        {/* Help links */}
+        <div className="bg-red-50 border border-red-100 rounded-2xl p-4 space-y-3">
+          <div>
+            <p className="text-xs font-bold text-red-700 uppercase tracking-wide">Precisa de ajuda?</p>
+            <p className="text-xs text-red-600 mt-1 leading-relaxed">
+              O vício em apostas (ludomania) é reconhecido como transtorno pelo CID-11. Se você ou alguém próximo sente dificuldade em parar, há apoio gratuito e sigiloso.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <a
+              href="https://ja.org.br"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between bg-white rounded-xl px-3 py-2.5 border border-red-100 hover:border-red-300 transition-colors group"
+            >
+              <div>
+                <p className="text-xs font-semibold text-stone-700">Jogadores Anônimos Brasil</p>
+                <p className="text-[10px] text-stone-400">ja.org.br — grupos de apoio presenciais e online, gratuitos</p>
+              </div>
+              <span className="text-stone-300 group-hover:text-red-400 transition-colors ml-3">→</span>
+            </a>
+            <a
+              href="https://cvv.org.br"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between bg-white rounded-xl px-3 py-2.5 border border-red-100 hover:border-red-300 transition-colors group"
+            >
+              <div>
+                <p className="text-xs font-semibold text-stone-700">CVV — Centro de Valorização da Vida</p>
+                <p className="text-[10px] text-stone-400">cvv.org.br · Ligue 188 — 24h, gratuito, sigiloso</p>
+              </div>
+              <span className="text-stone-300 group-hover:text-red-400 transition-colors ml-3">→</span>
+            </a>
+            <div className="bg-white rounded-xl px-3 py-2.5 border border-red-100">
+              <p className="text-xs font-semibold text-stone-700">CAPS AD — pelo SUS</p>
+              <p className="text-[10px] text-stone-400">Ligue 136 (DISQUE SAÚDE) para encontrar o CAPS AD mais próximo. Gratuito e sigiloso.</p>
+            </div>
+          </div>
         </div>
 
         {/* Share */}

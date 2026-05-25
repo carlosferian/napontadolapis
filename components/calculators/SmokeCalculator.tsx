@@ -22,12 +22,20 @@ const comparisons = [
   { icon: '✈️', label: 'Viagens domésticas/ano', value: 800 / 12, unit: 'meses' },
 ]
 
+type ProductType = 'cigarro' | 'vape'
+
 export function SmokeCalculator() {
+  const [productType, setProductType] = useState<ProductType>('cigarro')
   const [cigarettesPerDay, setCigarettesPerDay] = useState(10)
   const [packPrice, setPackPrice] = useState(14)
+  // Vape: custo do pod/refil e quantos dias ele dura
+  const [podCost, setPodCost] = useState(60)
+  const [podDays, setPodDays] = useState(4)
 
   const PACK_SIZE = 20
-  const dailyCost = (cigarettesPerDay / PACK_SIZE) * packPrice
+  const dailyCost = productType === 'cigarro'
+    ? (cigarettesPerDay / PACK_SIZE) * packPrice
+    : podCost / podDays
   const monthlyCost = dailyCost * 30
   const annualCost = monthlyCost * 12
 
@@ -38,26 +46,73 @@ export function SmokeCalculator() {
 
   return (
     <div className="space-y-4">
-      <CalculatorCard title="Custo do Fumo" subtitle="Sem moralismo. Só a conta.">
-        <SliderField
-          id="cigarettes-day"
-          label="Cigarros por dia"
-          value={cigarettesPerDay}
-          min={1}
-          max={40}
-          step={1}
-          onChange={setCigarettesPerDay}
-          formatValue={(v) => `${v} ${v === 1 ? 'cigarro' : 'cigarros'}`}
-        />
-        <SliderField
-          id="pack-price"
-          label="Preço do maço (20 unidades)"
-          value={packPrice}
-          min={8}
-          max={45}
-          step={1}
-          onChange={setPackPrice}
-        />
+      <CalculatorCard title="Custo do Fumo" subtitle="Cigarro, vape ou pod — a conta não mente.">
+
+        {/* Product type toggle */}
+        <div className="grid grid-cols-2 gap-2">
+          {(['cigarro', 'vape'] as const).map((type) => (
+            <button
+              key={type}
+              onClick={() => setProductType(type)}
+              className={`py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+                productType === type
+                  ? 'bg-orange-500 text-white border-orange-500'
+                  : 'bg-white text-stone-600 border-stone-200 hover:border-orange-300'
+              }`}
+            >
+              {type === 'cigarro' ? '🚬 Cigarro' : '💨 Vape / Pod'}
+            </button>
+          ))}
+        </div>
+
+        {productType === 'cigarro' ? (
+          <>
+            <SliderField
+              id="cigarettes-day"
+              label="Cigarros por dia"
+              value={cigarettesPerDay}
+              min={1}
+              max={40}
+              step={1}
+              onChange={setCigarettesPerDay}
+              formatValue={(v) => `${v} ${v === 1 ? 'cigarro' : 'cigarros'}`}
+            />
+            <SliderField
+              id="pack-price"
+              label="Preço do maço (20 unidades)"
+              value={packPrice}
+              min={8}
+              max={45}
+              step={1}
+              onChange={setPackPrice}
+            />
+          </>
+        ) : (
+          <>
+            <SliderField
+              id="pod-cost"
+              label="Custo do pod / refil / descartável"
+              value={podCost}
+              min={20}
+              max={250}
+              step={5}
+              onChange={setPodCost}
+            />
+            <SliderField
+              id="pod-days"
+              label="Quantos dias cada pod dura"
+              value={podDays}
+              min={1}
+              max={21}
+              step={1}
+              onChange={setPodDays}
+              formatValue={(v) => `${v} ${v === 1 ? 'dia' : 'dias'}`}
+            />
+            <p className="text-[11px] text-stone-400 -mt-2">
+              Pod descartável (Elf Bar, Vuse, etc.): R$60–150. Pod recarregável (Juul, Vaporesso): R$20–80. Líquido avulso: R$30–80/30ml.
+            </p>
+          </>
+        )}
       </CalculatorCard>
 
       <div role="region" aria-live="polite" aria-label="Resultado do cálculo" className="space-y-4">
@@ -93,9 +148,12 @@ export function SmokeCalculator() {
           <ScaledPreview>
             <ShareCardBase
               id="smoke-share-card"
-              eyebrow="custo do cigarro"
+              eyebrow={productType === 'cigarro' ? 'custo do cigarro' : 'custo do vape'}
               mainValue={formatBRL(monthlyCost) + '/mês'}
-              mainLabel={`${cigarettesPerDay} cigarros/dia · maço a ${formatBRL(packPrice)}`}
+              mainLabel={productType === 'cigarro'
+                ? `${cigarettesPerDay} cigarros/dia · maço a ${formatBRL(packPrice)}`
+                : `pod de ${formatBRL(podCost)} a cada ${podDays} ${podDays === 1 ? 'dia' : 'dias'}`
+              }
               metrics={[
                 { label: 'por ano', value: formatBRL(annualCost) },
                 { label: 'em 10 anos', value: formatBRL(cost10y) },

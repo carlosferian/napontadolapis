@@ -84,6 +84,9 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   const [extraLabel, setExtraLabel] = useState('')
   const [extraAmount, setExtraAmount] = useState('')
   const [showExtras, setShowExtras] = useState(false)
+  const [editingExtraId, setEditingExtraId] = useState<number | null>(null)
+  const [editExtraLabel, setEditExtraLabel] = useState('')
+  const [editExtraAmount, setEditExtraAmount] = useState('')
 
   // Custom style state — pre-populated when switching to custom
   const [customDailyBRL, setCustomDailyBRL] = useState(
@@ -149,6 +152,82 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
 
   function removeExtra(id: number) {
     setExtras((prev) => prev.filter((e) => e.id !== id))
+  }
+
+  function startEditExtra(e: { id: number; label: string; amountBRL: number }) {
+    setEditingExtraId(e.id)
+    setEditExtraLabel(e.label)
+    setEditExtraAmount(String(e.amountBRL))
+  }
+
+  function saveEditExtra(id: number) {
+    const label = editExtraLabel.trim()
+    const amount = parseFloat(editExtraAmount.replace(',', '.'))
+    if (!label || isNaN(amount) || amount <= 0) return
+    setExtras((prev) => prev.map((e) => e.id === id ? { ...e, label, amountBRL: amount } : e))
+    setEditingExtraId(null)
+  }
+
+  function handleClear() {
+    const def = initialDestination ?? destinations[0]
+    setSelectedId(def.id)
+    setTravelers(TRAVEL_CONFIG.defaultTravelers)
+    setDays(def.typicalDays.recommended)
+    setStyleKey(TRAVEL_CONFIG.defaultStyle)
+    setExchangeRate(TRAVEL_CONFIG.defaultUSDtoBRL)
+    setMonthsToSave(TRAVEL_CONFIG.defaultMonthsToSave)
+    setSelicRate(TRAVEL_CONFIG.selicAnnual * 100)
+    setShowRateEditor(false)
+    setShowBreakdown(false)
+    setExtras([])
+    setExtraLabel('')
+    setExtraAmount('')
+    setShowExtras(false)
+    setCustomDailyBRL(Math.round(def.dailyCostUSD['mid'] * TRAVEL_CONFIG.defaultUSDtoBRL))
+    setCustomFlightTotalBRL(def.flightFromGRU.typical * TRAVEL_CONFIG.defaultTravelers)
+  }
+
+  function exportTable() {
+    const styleLabel = STYLE_OPTIONS.find((s) => s.key === styleKey)?.label ?? styleKey
+    const lines = [
+      `VIAGEM: ${destination.flag} ${destination.name}, ${destination.country}`,
+      `Viajantes: ${travelers} pessoa${travelers !== 1 ? 's' : ''} | Dias: ${days} | Estilo: ${styleLabel}`,
+      `Câmbio: R$ ${exchangeRate.toFixed(2)}/USD`,
+      '',
+      '─── CUSTO DA VIAGEM ───────────────────────',
+      `Passagem aérea (${travelers}x, ida e volta)    ${formatBRL(tripCost.flightBRL)}`,
+      `Hospedagem (${days}d, quarto compartilhado)  ${formatBRL(tripCost.accommodationUSD * exchangeRate)}`,
+      `Alimentação + atividades (${days}d × ${travelers}p)  ${formatBRL(tripCost.variableUSD * exchangeRate)}`,
+      ...(tripCost.visaCostBRL > 0 ? [`Visto (${travelers}x)                        ${formatBRL(tripCost.visaCostBRL)}`] : []),
+      ...extras.map((e) => `${e.label.padEnd(36)} ${formatBRL(e.amountBRL)}`),
+      '',
+      ...(!tripCost.isDomestic ? [
+        `IOF + spread (cartão tradicional)     +${formatBRL(tripCost.iofAndSpreadBRL)}`,
+        `Taxa fintech (~1,5%)                  +${formatBRL(tripCost.fintechFeeBRL)}`,
+        '',
+        `TOTAL — cartão tradicional            ${formatBRL(tripCost.grandTotalCard)}`,
+        `TOTAL — fintech (Wise/Nomad)          ${formatBRL(tripCost.grandTotalFintech)}`,
+        `Economia com fintech                  ${formatBRL(tripCost.savingsWithFintech)}`,
+        '',
+      ] : []),
+      `META (com margem de 15%)              ${formatBRL(grandTotal)}`,
+      '',
+      '─── PLANO DE POUPANÇA ─────────────────────',
+      `Prazo desejado                        ${monthsToSave} meses`,
+      `Poupar por mês (sem investir)         ${formatBRL(savingsPlan.monthlyWithoutInvestment)}`,
+      `Poupar por mês (Selic ${selicRate.toFixed(2)}% a.a.)   ${formatBRL(savingsPlan.monthlyWithSelic)}`,
+      `Economia total com Selic              ${formatBRL(savingsPlan.savingsWithInvestment)}`,
+      '',
+      `Calculado em napontadolapis.com.br | ${new Date().toLocaleDateString('pt-BR')}`,
+    ]
+    const text = lines.join('\n')
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `viagem-${destination.id}-${new Date().toISOString().slice(0, 10)}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   const breakdownCategories = styleKey !== 'custom' ? STYLE_BREAKDOWN[styleKey] : null
@@ -360,16 +439,49 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
               {extras.length > 0 && (
                 <div className="space-y-1.5">
                   {extras.map((e) => (
-                    <div key={e.id} className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-stone-100">
-                      <span className="text-sm text-stone-700 flex-1 min-w-0 truncate">{e.label}</span>
-                      <span className="text-sm font-semibold text-stone-800 tabular-nums shrink-0">{formatBRL(e.amountBRL)}</span>
-                      <button
-                        onClick={() => removeExtra(e.id)}
-                        className="text-stone-300 hover:text-red-400 transition-colors ml-1 text-base leading-none"
-                        aria-label="Remover"
-                      >
-                        ×
-                      </button>
+                    <div key={e.id} className="bg-white rounded-lg border border-stone-100">
+                      {editingExtraId === e.id ? (
+                        <div className="flex items-center gap-2 px-3 py-2">
+                          <input
+                            type="text"
+                            value={editExtraLabel}
+                            onChange={(ev) => setEditExtraLabel(ev.target.value)}
+                            onKeyDown={(ev) => ev.key === 'Enter' && saveEditExtra(e.id)}
+                            className="flex-1 min-w-0 border border-stone-200 rounded-lg px-2 py-1 text-sm text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          />
+                          <div className="relative shrink-0 w-24">
+                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-stone-400 text-xs">R$</span>
+                            <input
+                              type="number"
+                              value={editExtraAmount}
+                              onChange={(ev) => setEditExtraAmount(ev.target.value)}
+                              onKeyDown={(ev) => ev.key === 'Enter' && saveEditExtra(e.id)}
+                              className="w-full border border-stone-200 rounded-lg pl-7 pr-2 py-1 text-sm text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 tabular-nums"
+                            />
+                          </div>
+                          <button onClick={() => saveEditExtra(e.id)} className="text-xs text-amber-600 font-semibold hover:text-amber-700 shrink-0">Salvar</button>
+                          <button onClick={() => setEditingExtraId(null)} className="text-xs text-stone-400 hover:text-stone-600 shrink-0">✕</button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between gap-2 px-3 py-2">
+                          <span className="text-sm text-stone-700 flex-1 min-w-0 truncate">{e.label}</span>
+                          <span className="text-sm font-semibold text-stone-800 tabular-nums shrink-0">{formatBRL(e.amountBRL)}</span>
+                          <button
+                            onClick={() => startEditExtra(e)}
+                            className="text-stone-300 hover:text-amber-500 transition-colors ml-1 text-sm leading-none"
+                            aria-label="Editar"
+                          >
+                            ✎
+                          </button>
+                          <button
+                            onClick={() => removeExtra(e.id)}
+                            className="text-stone-300 hover:text-red-400 transition-colors text-base leading-none"
+                            aria-label="Remover"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -407,6 +519,22 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           )}
         </div>
       </CalculatorCard>
+
+      {/* ── ACTIONS ─────────────────────────────────────── */}
+      <div className="flex items-center justify-between gap-2">
+        <button
+          onClick={handleClear}
+          className="text-xs text-stone-400 hover:text-red-500 transition-colors flex items-center gap-1"
+        >
+          ✕ Limpar dados
+        </button>
+        <button
+          onClick={exportTable}
+          className="text-xs text-stone-500 hover:text-stone-700 transition-colors flex items-center gap-1.5 border border-stone-200 hover:border-stone-400 rounded-lg px-3 py-1.5"
+        >
+          ↓ Exportar tabela
+        </button>
+      </div>
 
       {/* ── RESULTS ─────────────────────────────────────── */}
       <div role="region" aria-live="polite" aria-label="Resultado do cálculo" className="space-y-4">
