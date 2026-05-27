@@ -40,6 +40,8 @@ export function ScaledPreview({ children, naturalWidth = 600, className = '' }: 
           transformOrigin: 'top left',
           transform: scale < 1 ? `scale(${scale})` : undefined,
           width: naturalWidth,
+          marginLeft: scale >= 1 ? 'auto' : 0,
+          marginRight: scale >= 1 ? 'auto' : 0,
         }}
       >
         {children}

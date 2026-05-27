@@ -77,6 +77,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   const [styleKey, setStyleKey] = useState<StyleKey>(TRAVEL_CONFIG.defaultStyle)
   const [exchangeRate, setExchangeRate] = useState(TRAVEL_CONFIG.defaultUSDtoBRL)
   const [monthsToSave, setMonthsToSave] = useState(TRAVEL_CONFIG.defaultMonthsToSave)
+  const [alreadySaved, setAlreadySaved] = useState(0)
   const [selicRate, setSelicRate] = useState(TRAVEL_CONFIG.selicAnnual * 100)
   const [showRateEditor, setShowRateEditor] = useState(false)
   const [showBreakdown, setShowBreakdown] = useState(false)
@@ -159,10 +160,12 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   )
 
   const grandTotal = tripCost.grandTotalFintechWithMargin + extrasTotalBRL
+  const remainingTarget = Math.max(0, grandTotal - alreadySaved)
+  const alreadyMet = alreadySaved > 0 && alreadySaved >= grandTotal
 
   const savingsPlan = useMemo(
-    () => calculateSavingsPlan(grandTotal, monthsToSave, selicRate / 100),
-    [grandTotal, monthsToSave, selicRate]
+    () => calculateSavingsPlan(remainingTarget, monthsToSave, selicRate / 100),
+    [remainingTarget, monthsToSave, selicRate]
   )
 
   const currentStyleOption = STYLE_OPTIONS.find((s) => s.key === styleKey)!
@@ -203,6 +206,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
     setExchangeRate(TRAVEL_CONFIG.defaultUSDtoBRL)
     setMonthsToSave(TRAVEL_CONFIG.defaultMonthsToSave)
     setSelicRate(TRAVEL_CONFIG.selicAnnual * 100)
+    setAlreadySaved(0)
     setShowRateEditor(false)
     setShowBreakdown(false)
     setExtras([])
@@ -772,7 +776,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
 
         <SectionDivider label="Plano de poupança" />
 
-        <div className="bg-white rounded-2xl border border-stone-100 p-5">
+        <div className="bg-white rounded-2xl border border-stone-100 p-5 space-y-5">
           <SliderField
             id="months-save"
             label="Quando você quer viajar?"
@@ -783,16 +787,63 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
             onChange={setMonthsToSave}
             formatValue={(v) => `em ${v} meses`}
           />
+
+          {/* Already saved */}
+          <div className="space-y-1.5">
+            <label htmlFor="already-saved" className="text-sm font-medium text-stone-600 flex items-center justify-between">
+              <span>Já tenho guardado</span>
+              {alreadySaved > 0 && !alreadyMet && (
+                <span className="text-xs text-emerald-600 font-semibold">
+                  faltam {formatBRL(remainingTarget)}
+                </span>
+              )}
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 font-medium text-sm">R$</span>
+              <input
+                id="already-saved"
+                type="number"
+                inputMode="decimal"
+                min={0}
+                placeholder="0"
+                value={alreadySaved || ''}
+                onChange={(e) => setAlreadySaved(Math.max(0, Number(e.target.value) || 0))}
+                className="w-full border border-stone-200 rounded-xl pl-10 pr-4 py-3 text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-lg font-semibold tabular-nums"
+              />
+            </div>
+            {alreadyMet ? (
+              <p className="text-xs text-emerald-600 font-semibold">
+                🎉 Você já tem o suficiente para essa viagem!
+              </p>
+            ) : alreadySaved > 0 ? (
+              <p className="text-xs text-stone-400">
+                {formatBRL(alreadySaved)} já guardados · meta restante: {formatBRL(remainingTarget)}
+              </p>
+            ) : (
+              <p className="text-xs text-stone-400">Deixe em branco ou zero se ainda não guardou nada.</p>
+            )}
+          </div>
         </div>
 
         <div className="rounded-2xl border border-stone-100 overflow-hidden bg-white">
           <div className="px-5 py-6 text-center border-b border-stone-50">
-            <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Poupar por mês</p>
-            <p className={`text-5xl font-bold tabular-nums font-serif leading-none ${savingsPlan.monthlyWithSelic < 2000 ? 'text-emerald-600' : 'text-amber-500'}`}>
-              {formatBRL(savingsPlan.monthlyWithSelic)}
-            </p>
-            <p className="text-xs text-stone-400 mt-2">investindo na Selic · {selicRate.toFixed(2)}% a.a.</p>
-            <p className="text-sm font-hand text-stone-500 mt-3 italic">{getSavingsComment(savingsPlan.monthlyWithSelic)}</p>
+            {alreadyMet ? (
+              <>
+                <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Meta atingida</p>
+                <p className="text-5xl font-bold font-serif leading-none text-emerald-600">🎉</p>
+                <p className="text-sm text-emerald-600 font-semibold mt-3">Você já tem o suficiente guardado!</p>
+                <p className="text-xs text-stone-400 mt-1">Agora é só confirmar a passagem.</p>
+              </>
+            ) : (
+              <>
+                <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Poupar por mês</p>
+                <p className={`text-5xl font-bold tabular-nums font-serif leading-none ${savingsPlan.monthlyWithSelic < 2000 ? 'text-emerald-600' : 'text-amber-500'}`}>
+                  {formatBRL(savingsPlan.monthlyWithSelic)}
+                </p>
+                <p className="text-xs text-stone-400 mt-2">investindo na Selic · {selicRate.toFixed(2)}% a.a.</p>
+                <p className="text-sm font-hand text-stone-500 mt-3 italic">{getSavingsComment(savingsPlan.monthlyWithSelic)}</p>
+              </>
+            )}
           </div>
           <div className="divide-y divide-stone-50">
             <div className="flex items-center justify-between px-5 py-3">
