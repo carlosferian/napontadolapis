@@ -66,17 +66,17 @@ export function InvestmentComparison() {
 
         {/* Summary hero */}
         <div className="bg-white rounded-2xl border border-stone-100 overflow-hidden">
-          <div className="grid grid-cols-2">
-            <div className="p-5 border-r border-stone-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2">
+            <div className="p-5 border-b sm:border-b-0 sm:border-r border-stone-100">
               <p className="text-xs text-stone-400 uppercase tracking-wide mb-1">Investindo na {bestInvestment.label}</p>
-              <p className="text-3xl font-bold text-emerald-600 tabular-nums leading-none">
+              <p className="text-3xl font-bold text-emerald-600 tabular-nums leading-none break-all">
                 +{formatBRL(bestGain)}
               </p>
               <p className="text-xs text-stone-400 mt-1">de rendimento em {years} {years === 1 ? 'ano' : 'anos'}</p>
             </div>
             <div className="p-5 bg-red-50/60">
               <p className="text-xs text-stone-400 uppercase tracking-wide mb-1">Nas apostas</p>
-              <p className="text-3xl font-bold text-red-500 tabular-nums leading-none">
+              <p className="text-3xl font-bold text-red-500 tabular-nums leading-none break-all">
                 −{formatBRL(betsLoss)}
               </p>
               <p className="text-xs text-stone-400 mt-1">queimado do seu bolso</p>
@@ -97,12 +97,12 @@ export function InvestmentComparison() {
             const barWidth = bestGain > 0 ? (inv.gain / bestGain) * 100 : 0
             return (
               <div key={inv.key} className="space-y-2">
-                <div className="flex justify-between items-start">
-                  <div>
+                <div className="flex justify-between items-start gap-3">
+                  <div className="min-w-0 shrink">
                     <p className="text-sm font-semibold text-stone-800">{inv.label}</p>
                     <p className="text-xs text-stone-400">{inv.note}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <p className="text-xl font-bold text-emerald-600 tabular-nums leading-none">
                       +{formatBRL(inv.gain)}
                     </p>
@@ -124,12 +124,12 @@ export function InvestmentComparison() {
           <SectionDivider label="Apostas (para comparar)" />
 
           <div className="space-y-2">
-            <div className="flex justify-between items-start">
-              <div>
+            <div className="flex justify-between items-start gap-3">
+              <div className="min-w-0 shrink">
                 <p className="text-sm font-semibold text-stone-800">Apostas</p>
                 <p className="text-xs text-stone-400">retorno médio de 72% — você perde 28%</p>
               </div>
-              <div className="text-right">
+              <div className="text-right shrink-0">
                 <p className="text-xl font-bold text-red-500 tabular-nums leading-none">
                   −{formatBRL(betsLoss)}
                 </p>
