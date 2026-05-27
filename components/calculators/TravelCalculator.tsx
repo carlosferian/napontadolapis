@@ -8,7 +8,7 @@ import { ShareButtons } from '@/components/ui/ShareButtons'
 import { SavingsChart } from '@/components/ui/SavingsChart'
 import { TravelShareCard } from '@/components/share/TravelShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
-import { destinations, TRAVEL_CONFIG, type Destination, type TravelStyle } from '@/config/travel'
+import { destinations, TRAVEL_CONFIG, type Destination, type TravelStyle, type Region } from '@/config/travel'
 import { calculateTripCost } from '@/lib/calculations/travel'
 import { calculateSavingsPlan } from '@/lib/calculations/savings'
 import { formatBRL, formatPct } from '@/lib/formatters'
@@ -88,6 +88,12 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   const [editExtraLabel, setEditExtraLabel] = useState('')
   const [editExtraAmount, setEditExtraAmount] = useState('')
 
+  // Custom destination state
+  const [customDestName, setCustomDestName] = useState('')
+  const [customDestIsDomestic, setCustomDestIsDomestic] = useState(false)
+  const [customDestNeedsVisa, setCustomDestNeedsVisa] = useState(false)
+  const [customDestVisaCostUSD, setCustomDestVisaCostUSD] = useState(100)
+
   // Custom style state — pre-populated when switching to custom
   const [customDailyBRL, setCustomDailyBRL] = useState(
     Math.round(defaultDest.dailyCostUSD['mid'] * TRAVEL_CONFIG.defaultUSDtoBRL)
@@ -96,14 +102,33 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
     defaultDest.flightFromGRU.typical * TRAVEL_CONFIG.defaultTravelers
   )
 
-  const destination = useMemo(
-    () => destinations.find((d) => d.id === selectedId) ?? destinations[0],
-    [selectedId]
-  )
+  const isCustomDest = selectedId === '__custom__'
+
+  const destination = useMemo((): Destination => {
+    if (isCustomDest) {
+      return {
+        id: '__custom__',
+        name: customDestName.trim() || 'Destino personalizado',
+        country: '',
+        flag: customDestIsDomestic ? '🇧🇷' : '🌍',
+        region: (customDestIsDomestic ? 'brasil' : 'europa') as Region,
+        flightFromGRU: { min: 0, typical: 0 },
+        dailyCostUSD: { budget: 0, mid: 0, premium: 0 },
+        typicalDays: { min: 3, recommended: 7, extended: 14 },
+        visa: {
+          required: !customDestIsDomestic && customDestNeedsVisa,
+          costUSD: customDestNeedsVisa ? customDestVisaCostUSD : 0,
+          notes: customDestNeedsVisa ? 'Visto necessário' : undefined,
+        },
+        highlight: '',
+      }
+    }
+    return destinations.find((d) => d.id === selectedId) ?? destinations[0]
+  }, [isCustomDest, selectedId, customDestName, customDestIsDomestic, customDestNeedsVisa, customDestVisaCostUSD])
 
   function handleStyleChange(key: StyleKey) {
+    if (isCustomDest) return // locked to custom mode when destination is custom
     if (key === 'custom' && styleKey !== 'custom') {
-      // styleKey is narrowed to TravelStyle here — safe to index dailyCostUSD
       setCustomDailyBRL(Math.round(destination.dailyCostUSD[styleKey] * exchangeRate))
       setCustomFlightTotalBRL(Math.round(destination.flightFromGRU.typical * travelers))
     }
@@ -111,6 +136,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   }
 
   const effectiveStyle: TravelStyle = styleKey === 'custom' ? 'mid' : styleKey
+  const useCustomCalc = styleKey === 'custom' || isCustomDest
 
   const tripCost = useMemo(
     () =>
@@ -120,11 +146,11 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
         days,
         style: effectiveStyle,
         exchangeRate,
-        ...(styleKey === 'custom'
+        ...(useCustomCalc
           ? { isCustom: true, customDailyBRL, customFlightTotalBRL }
           : {}),
       }),
-    [destination, travelers, days, effectiveStyle, exchangeRate, styleKey, customDailyBRL, customFlightTotalBRL]
+    [destination, travelers, days, effectiveStyle, exchangeRate, useCustomCalc, customDailyBRL, customFlightTotalBRL]
   )
 
   const extrasTotalBRL = useMemo(
@@ -185,6 +211,10 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
     setShowExtras(false)
     setCustomDailyBRL(Math.round(def.dailyCostUSD['mid'] * TRAVEL_CONFIG.defaultUSDtoBRL))
     setCustomFlightTotalBRL(def.flightFromGRU.typical * TRAVEL_CONFIG.defaultTravelers)
+    setCustomDestName('')
+    setCustomDestIsDomestic(false)
+    setCustomDestNeedsVisa(false)
+    setCustomDestVisaCostUSD(100)
   }
 
   function exportTable() {
@@ -230,7 +260,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
     URL.revokeObjectURL(url)
   }
 
-  const breakdownCategories = styleKey !== 'custom' ? STYLE_BREAKDOWN[styleKey] : null
+  const breakdownCategories = styleKey !== 'custom' && !isCustomDest ? STYLE_BREAKDOWN[styleKey] : null
   const dailyBRLReference = styleKey !== 'custom'
     ? destination.dailyCostUSD[styleKey] * exchangeRate
     : customDailyBRL
@@ -246,9 +276,19 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           <select
             value={selectedId}
             onChange={(e) => {
-              setSelectedId(e.target.value)
-              const dest = destinations.find((d) => d.id === e.target.value)
-              if (dest) setDays(dest.typicalDays.recommended)
+              const newId = e.target.value
+              if (newId === '__custom__') {
+                // Pre-populate with current destination's mid values as a starting point
+                if (!isCustomDest) {
+                  setCustomDailyBRL(Math.round(destination.dailyCostUSD['mid'] * exchangeRate))
+                  setCustomFlightTotalBRL(Math.round(destination.flightFromGRU.typical * travelers))
+                }
+                setStyleKey('custom')
+              } else {
+                const dest = destinations.find((d) => d.id === newId)
+                if (dest) setDays(dest.typicalDays.recommended)
+              }
+              setSelectedId(newId)
             }}
             className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm"
           >
@@ -257,11 +297,92 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
                 {d.flag} {d.name}, {d.country}
               </option>
             ))}
+            <option disabled>──────────────</option>
+            <option value="__custom__">✏️ Outro destino (personalizado)</option>
           </select>
-          {destination.highlight && (
+
+          {/* Custom destination fields */}
+          {isCustomDest && (
+            <div className="rounded-xl bg-stone-50 border border-stone-100 p-4 space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-stone-600 uppercase tracking-wide">Nome do destino</label>
+                <input
+                  type="text"
+                  value={customDestName}
+                  onChange={(e) => setCustomDestName(e.target.value)}
+                  placeholder="Ex: Tóquio, Japão"
+                  className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-stone-600 uppercase tracking-wide">Tipo de destino</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { label: '🌍 Internacional', value: false },
+                    { label: '🇧🇷 Nacional', value: true },
+                  ].map((opt) => (
+                    <button
+                      key={String(opt.value)}
+                      type="button"
+                      onClick={() => setCustomDestIsDomestic(opt.value)}
+                      className={`py-2 rounded-xl text-sm font-semibold border transition-colors ${
+                        customDestIsDomestic === opt.value
+                          ? 'bg-amber-500 text-white border-amber-500'
+                          : 'bg-white text-stone-600 border-stone-200 hover:border-amber-300'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-stone-400">
+                  {customDestIsDomestic
+                    ? 'Sem IOF nem câmbio. Pagamentos em reais.'
+                    : 'IOF e câmbio serão calculados. Use Wise ou Nomad para economizar.'}
+                </p>
+              </div>
+              {!customDestIsDomestic && (
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-stone-600 uppercase tracking-wide">Precisa de visto?</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[{ label: 'Não', value: false }, { label: 'Sim', value: true }].map((opt) => (
+                      <button
+                        key={String(opt.value)}
+                        type="button"
+                        onClick={() => setCustomDestNeedsVisa(opt.value)}
+                        className={`py-2 rounded-xl text-sm font-semibold border transition-colors ${
+                          customDestNeedsVisa === opt.value
+                            ? 'bg-amber-500 text-white border-amber-500'
+                            : 'bg-white text-stone-600 border-stone-200 hover:border-amber-300'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                  {customDestNeedsVisa && (
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">US$</span>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        min={0}
+                        value={customDestVisaCostUSD}
+                        onChange={(e) => setCustomDestVisaCostUSD(Number(e.target.value) || 0)}
+                        placeholder="Custo do visto por pessoa"
+                        className="w-full border border-stone-200 rounded-xl pl-11 pr-4 py-2.5 text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm tabular-nums"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {!isCustomDest && destination.highlight && (
             <p className="text-xs italic text-stone-400 pl-1">{destination.highlight}</p>
           )}
-          {destination.visa.required && (
+          {destination.visa.required && !isCustomDest && (
             <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700">
               ⚠ {destination.visa.notes ?? 'Visto necessário'} — custo: US$ {destination.visa.costUSD}/pessoa
             </div>
@@ -296,35 +417,38 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
         <div className="space-y-3">
           <label className="text-sm font-medium text-stone-600">Estilo de viagem</label>
 
-          {/* Top row: 3 preset styles */}
-          <div className="grid grid-cols-3 gap-2">
-            {STYLE_OPTIONS.filter((s) => s.key !== 'custom').map((s) => (
-              <button
-                key={s.key}
-                onClick={() => handleStyleChange(s.key)}
-                className={`py-3 px-2 rounded-xl text-sm font-semibold border transition-colors flex flex-col items-center gap-1 ${
-                  styleKey === s.key
-                    ? 'bg-amber-500 text-white border-amber-500'
-                    : 'bg-white text-stone-600 border-stone-200 hover:border-amber-300'
-                }`}
-              >
-                <span className="text-lg">{s.icon}</span>
-                <span>{s.label}</span>
-              </button>
-            ))}
-          </div>
+          {/* Top row: 3 preset styles — hidden when destination is custom */}
+          {!isCustomDest && (
+            <div className="grid grid-cols-3 gap-2">
+              {STYLE_OPTIONS.filter((s) => s.key !== 'custom').map((s) => (
+                <button
+                  key={s.key}
+                  onClick={() => handleStyleChange(s.key)}
+                  className={`py-3 px-2 rounded-xl text-sm font-semibold border transition-colors flex flex-col items-center gap-1 ${
+                    styleKey === s.key
+                      ? 'bg-amber-500 text-white border-amber-500'
+                      : 'bg-white text-stone-600 border-stone-200 hover:border-amber-300'
+                  }`}
+                >
+                  <span className="text-lg">{s.icon}</span>
+                  <span>{s.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
 
-          {/* Personalizado button — full width */}
+          {/* Personalizado button — full width; locked when destination is custom */}
           <button
             onClick={() => handleStyleChange('custom')}
+            disabled={isCustomDest}
             className={`w-full py-2.5 rounded-xl text-sm font-semibold border transition-colors flex items-center justify-center gap-2 ${
-              styleKey === 'custom'
+              styleKey === 'custom' || isCustomDest
                 ? 'bg-stone-800 text-white border-stone-800'
                 : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400 hover:text-stone-700'
             }`}
           >
             <span>✏️</span>
-            <span>Personalizado — eu sei os valores exatos</span>
+            <span>{isCustomDest ? 'Personalizado (obrigatório para destinos livres)' : 'Personalizado — eu sei os valores exatos'}</span>
           </button>
 
           {/* Style detail: breakdown card for preset, custom inputs for custom */}
@@ -351,7 +475,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
                 Hospedagem calculada por quarto, compartilhada entre os viajantes.
               </p>
             </div>
-          ) : styleKey === 'custom' ? (
+          ) : (styleKey === 'custom' || isCustomDest) ? (
             <div className="rounded-xl bg-stone-50 border border-stone-100 p-4 space-y-4">
               <p className="text-xs text-stone-500 leading-relaxed">
                 Informe seus próprios valores. Pesquise no Google Flights, Booking, Airbnb e some tudo aqui.
