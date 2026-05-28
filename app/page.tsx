@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { MARKET_DATA } from '@/config/market'
 
 export const metadata: Metadata = {
   title: 'A Ponta do Lápis — calculadoras financeiras gratuitas para o brasileiro',
@@ -119,25 +120,30 @@ export default function HomePage() {
       </section>
 
       {/* Market context strip */}
-      <div style={{
-        borderTop: '1px solid var(--c-line)',
-        borderBottom: '1px solid var(--c-line)',
-        padding: '12px 0',
-        display: 'flex',
-        gap: 32,
-        overflowX: 'auto',
-        scrollbarWidth: 'none',
-      }}>
+      <div
+        className="calm-card-surface rounded-2xl p-5 border border-[var(--c-line)] flex items-center justify-between gap-6 overflow-x-auto"
+        style={{ scrollbarWidth: 'none', background: 'var(--c-surface)' }}
+      >
         {[
-          { label: 'APOSTAS 2024', value: 'R$ 130bi' },
-          { label: 'SELIC', value: '10,50% a.a.' },
-          { label: 'USD / BRL', value: '5,20' },
-          { label: 'IOF câmbio', value: '5,38%' },
-          { label: 'IPCA 12m', value: '4,83%' },
-        ].map(({ label, value }) => (
-          <div key={label} className="flex-shrink-0" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span className="c-eyebrow" style={{ fontSize: 9, whiteSpace: 'nowrap' }}>{label}</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, color: 'var(--c-ink)', whiteSpace: 'nowrap' }}>
+          { label: 'APOSTAS 2024', value: MARKET_DATA.apostas, isAccent: true },
+          { label: 'SELIC COPOM', value: MARKET_DATA.selic },
+          { label: 'DÓLAR (USD/BRL)', value: MARKET_DATA.usd },
+          { label: 'IOF CÂMBIO', value: MARKET_DATA.iof },
+          { label: 'IPCA 12M', value: MARKET_DATA.ipca },
+        ].map(({ label, value, isAccent }) => (
+          <div key={label} className="flex-shrink-0 flex flex-col gap-1.5 px-4" style={{ minWidth: 130 }}>
+            <span className="c-eyebrow" style={{ fontSize: 10, letterSpacing: '0.12em', color: 'var(--c-muted)', fontWeight: 600 }}>
+              {label}
+            </span>
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 'clamp(14px, 1.8vw, 17px)',
+                fontWeight: 700,
+                color: isAccent ? 'var(--c-emerald)' : 'var(--c-ink)',
+                whiteSpace: 'nowrap',
+              }}
+            >
               {value}
             </span>
           </div>

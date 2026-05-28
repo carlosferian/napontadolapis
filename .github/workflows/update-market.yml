@@ -1,0 +1,45 @@
+name: Atualizar Taxas de Mercado (SELIC, Dólar, IPCA)
+
+on:
+  schedule:
+    # Diariamente às 6h BRT (9h UTC)
+    - cron: '0 9 * * *'
+  # Permite rodar manualmente pelo GitHub → Actions → Run workflow
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Buscar taxas oficiais via SGS/BCB API
+        run: node scripts/update-market.mjs
+
+      - name: Commit se houver alterações
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git diff --quiet config/market.ts config/rates.ts || (
+            git add config/market.ts config/rates.ts &&
+            git commit -m "chore: atualizar taxas de mercado e indices de calculadoras ($(date +%Y-%m-%d))"
+          )
+
+      - name: Push
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name }}
