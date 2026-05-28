@@ -75,7 +75,7 @@ body {
 
 /* ─── Calm / Equilíbrio design tokens ───────────────────────────────── */
 
-:root {
+:root, [data-theme="light"] {
   --c-bg: #FBFAF7;
   --c-surface: #F4F2EC;
   --c-card-calm: #FFFFFF;
@@ -115,13 +115,19 @@ body {
   --c-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.40);
 }
 
-/* Page background — replaces bg-brand-paper, responds to dark mode */
+/* Page background — responds to dark mode on body/nav/footer */
 .calm-bg {
   background-color: var(--c-bg);
   color: var(--c-ink);
   font-family: 'Inter', 'Manrope', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* Main content area — pinned to light mode so calculator components
+   (bg-white, bg-stone-50, bg-brand-pencil/5) always render correctly */
+.calm-main {
+  background-color: var(--c-bg);
 }
 
 /* Smooth transitions for calm-scoped elements */

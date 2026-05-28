@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen calm-bg overflow-x-hidden">
         <ThemeProvider>
           <Nav />
-          <main className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+          <main data-theme="light" className="calm-main max-w-4xl mx-auto px-4 py-8 sm:py-12">
             {children}
           </main>
           <footer className="calm-footer max-w-4xl mx-auto px-4 py-12 mt-12" style={{ borderTop: '1px solid var(--c-line)' }}>
