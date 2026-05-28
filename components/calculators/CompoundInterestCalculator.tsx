@@ -635,8 +635,9 @@ export function CompoundInterestCalculator() {
           <button
             onClick={() => setShowTable((v) => !v)}
             className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+            style={{ color: 'var(--c-ink)' }}
           >
-            <span className="text-base font-bold" style={{ color: 'var(--c-ink)' }}>Tabela de Evolução Temporal</span>
+            <span className="text-base font-bold">Tabela de Evolução Temporal</span>
             <span className="text-sm font-bold" style={{ color: 'var(--c-muted)' }}>{showTable ? '▲' : '▼'}</span>
           </button>
           
