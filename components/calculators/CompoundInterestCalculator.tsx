@@ -257,7 +257,7 @@ export function CompoundInterestCalculator() {
                   max={5000000}
                   value={initialInvestment || ''}
                   onChange={(e) => setInitialInvestment(Math.max(0, Number(e.target.value) || 0))}
-                  className="w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-455 tabular-nums"
+                  className="w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums"
                   style={{
                     backgroundColor: 'var(--c-bg)',
                     color: 'var(--c-ink)',
@@ -299,7 +299,7 @@ export function CompoundInterestCalculator() {
                   max={500000}
                   value={monthlyContribution || ''}
                   onChange={(e) => setMonthlyContribution(Math.max(0, Number(e.target.value) || 0))}
-                  className="w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-455 tabular-nums"
+                  className="w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums"
                   style={{
                     backgroundColor: 'var(--c-bg)',
                     color: 'var(--c-ink)',
@@ -341,7 +341,7 @@ export function CompoundInterestCalculator() {
                     max={100}
                     value={interestRate || ''}
                     onChange={(e) => setInterestRate(Math.max(0, Number(e.target.value) || 0))}
-                    className="w-full text-right border rounded-xl pr-7 pl-2.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-455 tabular-nums"
+                    className="w-full text-right border rounded-xl pr-7 pl-2.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums"
                     style={{
                       backgroundColor: 'var(--c-bg)',
                       color: 'var(--c-ink)',
@@ -412,7 +412,7 @@ export function CompoundInterestCalculator() {
                     max={480}
                     value={period || ''}
                     onChange={(e) => setPeriod(Math.max(1, Number(e.target.value) || 0))}
-                    className="w-full text-right border rounded-xl px-2.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-455 tabular-nums"
+                    className="w-full text-right border rounded-xl px-2.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums"
                     style={{
                       backgroundColor: 'var(--c-bg)',
                       color: 'var(--c-ink)',
@@ -507,7 +507,7 @@ export function CompoundInterestCalculator() {
           label="Valor Total Acumulado"
           value={formatBRL(results.totalAccumulated)}
           comment={`Seu dinheiro se multiplicou por ${multiplier}x no período.`}
-          colorClass="text-emerald-550"
+          colorClass="text-emerald-600 dark:text-emerald-400"
         />
 
         {/* Grid sub-metrics */}
@@ -517,13 +517,13 @@ export function CompoundInterestCalculator() {
               label: 'Total Investido',
               value: formatBRL(results.totalInvested),
               sublabel: 'soma dos seus aportes',
-              colorClass: 'text-stone-900',
+              colorClass: 'text-stone-900 dark:text-stone-100',
             },
             {
               label: 'Total em Juros',
               value: formatBRL(results.totalInterest),
               sublabel: 'rendimento acumulado',
-              colorClass: 'text-emerald-600',
+              colorClass: 'text-emerald-600 dark:text-emerald-400',
             },
             {
               label: 'Percentual de Juros',
@@ -531,7 +531,7 @@ export function CompoundInterestCalculator() {
                 ? formatPct((results.totalInterest / results.totalAccumulated) * 100)
                 : '0%',
               sublabel: 'participação no total',
-              colorClass: 'text-amber-500',
+              colorClass: 'text-amber-500 dark:text-amber-400',
             },
           ]}
         />
@@ -623,12 +623,15 @@ export function CompoundInterestCalculator() {
           <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>A Diferença Crua</p>
           <p className="text-base leading-relaxed" style={{ color: 'var(--c-ink-2)' }}>
             Se você guardasse o dinheiro no <strong style={{ color: 'var(--c-ink)' }}>"colchão"</strong> (sem render nada), você teria acumulado apenas <strong style={{ color: 'var(--c-ink)' }}>{formatBRL(results.totalInvested)}</strong>. 
-            Graças aos juros compostos, você ganhou <span className="font-bold text-emerald-650 dark:text-emerald-450" style={{ color: 'var(--c-emerald)' }}>+{formatBRL(results.totalInterest)}</span> a mais de rendimentos passivos.
+            Graças aos juros compostos, você ganhou <span className="font-bold text-emerald-600 dark:text-emerald-400">+{formatBRL(results.totalInterest)}</span> a mais de rendimentos passivos.
           </p>
         </div>
 
         {/* Evolution Table Accordion */}
-        <div className="bg-white dark:bg-stone-950 rounded-2xl border border-stone-150 dark:border-stone-850 overflow-hidden">
+        <div 
+          className="rounded-2xl border overflow-hidden"
+          style={{ backgroundColor: 'var(--c-card-calm)', borderColor: 'var(--c-line)' }}
+        >
           <button
             onClick={() => setShowTable((v) => !v)}
             className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
@@ -638,7 +641,7 @@ export function CompoundInterestCalculator() {
           </button>
           
           {showTable && (
-            <div className="px-5 pb-5 pt-2 border-t border-stone-100 dark:border-stone-850 space-y-4 bg-stone-50/30 dark:bg-stone-950">
+            <div className="px-5 pb-5 pt-2 border-t space-y-4 bg-stone-50/30 dark:bg-stone-900/10" style={{ borderColor: 'var(--c-line)' }}>
               <div className="flex justify-between items-center gap-3">
                 <span className="text-xs font-bold" style={{ color: 'var(--c-muted)' }}>Filtro de período da tabela:</span>
                 <div className="flex border rounded-lg p-0.5" style={{ backgroundColor: 'var(--c-bg)', borderColor: 'var(--c-line)' }}>
@@ -694,7 +697,7 @@ export function CompoundInterestCalculator() {
                       <tr key={p.label} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors">
                         <td className="px-4 py-2.5 font-medium" style={{ color: 'var(--c-muted)' }}>{p.label}</td>
                         <td className="px-4 py-2.5" style={{ color: 'var(--c-ink-2)' }}>{formatBRLDecimal(p.invested)}</td>
-                        <td className="px-4 py-2.5 font-semibold text-emerald-600 dark:text-emerald-450">{p.interest > 0 ? `+${formatBRLDecimal(p.interest)}` : formatBRLDecimal(0)}</td>
+                        <td className="px-4 py-2.5 font-semibold text-emerald-600 dark:text-emerald-400">{p.interest > 0 ? `+${formatBRLDecimal(p.interest)}` : formatBRLDecimal(0)}</td>
                         <td className="px-4 py-2.5" style={{ color: 'var(--c-muted)' }}>{formatBRLDecimal(p.cumulativeInterest)}</td>
                         <td className="px-4 py-2.5 font-bold" style={{ color: 'var(--c-ink)' }}>{formatBRLDecimal(p.total)}</td>
                       </tr>
