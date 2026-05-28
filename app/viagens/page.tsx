@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Calculadoras de Viagem — Quanto custa viajar?',
   description: 'Calcule o custo real da sua próxima viagem em reais, com câmbio, IOF e plano de poupança mensal. Você sonha com a viagem. A gente faz a conta.',
   openGraph: {
-    title: 'Viagens — A Ponta do Lápis',
+    title: 'Viagens — Na Ponta do Lápis',
     description: 'Você sonha com a viagem. A gente faz a conta.',
     url: 'https://apontadolapis.com.br/viagens',
     locale: 'pt_BR',
@@ -29,12 +29,24 @@ export default function ViagensPage() {
 
   return (
     <div className="space-y-8">
-      <div className="space-y-3">
-        <h1 className="text-3xl font-bold text-stone-900 tracking-tight">Viagens</h1>
-        <p className="text-stone-500 text-lg italic">Você sonha com a viagem. A gente faz a conta.</p>
+
+      {/* Calm page header */}
+      <div className="calm-header" style={{ paddingBottom: 32, borderBottom: '1px solid var(--c-line)' }}>
+        <span className="c-pill c-pill-blue" style={{ marginBottom: 16, display: 'inline-flex' }}>
+          SONHOS · VIAGENS
+        </span>
+        <h1 className="c-display" style={{ fontSize: 'clamp(32px, 5vw, 56px)', color: 'var(--c-ink)', marginBottom: 12 }}>
+          Você sonha<br />
+          <span className="c-display-500" style={{ color: 'var(--c-muted)' }}>com a viagem.</span>
+        </h1>
+        <p style={{ color: 'var(--c-muted)', fontSize: 16, lineHeight: 1.65, maxWidth: 560, marginBottom: 20 }}>
+          A gente faz a conta. Câmbio, IOF, Wise e plano de poupança real para chegar lá.
+          Escolha um destino abaixo ou planeje o seu próprio.
+        </p>
         <Link
           href="/viagens/planejar"
-          className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-5 py-3 rounded-xl transition-colors text-sm"
+          className="c-btn c-btn-emerald"
+          style={{ fontSize: 14 }}
         >
           ✏ Planejar qualquer destino →
         </Link>

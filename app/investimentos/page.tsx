@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'E se eu tivesse investido? Comparador de investimentos vs apostas',
   description: 'Compare quanto renderia poupança, Selic, CDB e Tesouro Direto contra apostas esportivas. O dinheiro trabalha — ou some.',
   openGraph: {
-    title: 'Comparativo de Investimentos — A Ponta do Lápis',
+    title: 'Comparativo de Investimentos — Na Ponta do Lápis',
     description: 'O dinheiro trabalha — ou some.',
     url: 'https://apontadolapis.com.br/investimentos',
     locale: 'pt_BR',
@@ -19,7 +19,26 @@ export const metadata: Metadata = {
 export default function InvestimentosPage() {
   return (
     <div className="space-y-6">
+
+      {/* Calm page header */}
+      <div className="calm-header" style={{ paddingBottom: 32, borderBottom: '1px solid var(--c-line)', marginBottom: 8 }}>
+        <span className="c-pill" style={{ marginBottom: 16, display: 'inline-flex' }}>
+          CRESCER · INVESTIMENTOS
+        </span>
+        <h1 className="c-display" style={{ fontSize: 'clamp(32px, 5vw, 56px)', color: 'var(--c-ink)', marginBottom: 12 }}>
+          O dinheiro trabalha —<br />
+          <span className="c-display-500" style={{ color: 'var(--c-muted)' }}>ou some.</span>
+        </h1>
+        <p style={{ color: 'var(--c-muted)', fontSize: 16, lineHeight: 1.65, maxWidth: 560 }}>
+          Aqui o número é o número.{' '}
+          <strong style={{ color: 'var(--c-ink)' }}>Selic, CDI, IPCA, IOF: valores reais, fonte BCB e Anbima.</strong>{' '}
+          Sem fundo escondido, sem CDB ofertado por trás. Quando recomendamos Tesouro IPCA+
+          não é porque alguém pagou — é porque é o ativo de menor risco com retorno real positivo no Brasil hoje.
+        </p>
+      </div>
+
       <InvestmentComparison />
+
       <div className="prose prose-sm prose-stone max-w-none">
         <h2 className="text-base font-semibold text-stone-700">Sobre os investimentos</h2>
         <p className="text-stone-500 text-sm leading-relaxed">
@@ -29,6 +48,7 @@ export default function InvestimentosPage() {
           O retorno de 72% nas apostas é baseado em estudos de mercado de apostas esportivas brasileiras.
         </p>
       </div>
+
       <SourcesFooter sources={[
         { label: 'BCB — Taxa Selic vigente e histórico', url: 'https://www.bcb.gov.br/controleinflacao/taxaselic' },
         { label: 'Resolução BCB 4.930/2021 — Regra de remuneração da poupança (0,5%/mês + TR quando Selic > 8,5%)' },

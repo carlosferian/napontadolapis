@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -71,4 +71,203 @@ body {
 
 .card-shadow-hover {
   box-shadow: 0 8px 32px rgba(13, 139, 114, 0.14), 0 2px 8px rgba(23, 32, 48, 0.06);
+}
+
+/* ─── Calm / Equilíbrio design tokens ───────────────────────────────── */
+
+:root {
+  --c-bg: #FBFAF7;
+  --c-surface: #F4F2EC;
+  --c-card-calm: #FFFFFF;
+  --c-line: rgba(15, 17, 16, 0.08);
+  --c-line-strong: rgba(15, 17, 16, 0.16);
+  --c-ink: #0F1110;
+  --c-ink-2: #2A2D2B;
+  --c-muted: #6B6E6A;
+  --c-muted-2: #A6A8A2;
+  --c-emerald: #0E7C5A;
+  --c-emerald-2: #15976F;
+  --c-emerald-soft: #E4F1EB;
+  --c-copper: #B4421B;
+  --c-copper-soft: #FBE6DC;
+  --c-blue-calm: #1F5FBA;
+  --c-blue-soft: #E3ECF8;
+  --c-shadow-card: 0 1px 2px rgba(15, 17, 16, 0.04), 0 12px 32px rgba(15, 17, 16, 0.06);
+}
+
+[data-theme="dark"] {
+  --c-bg: #0E1110;
+  --c-surface: #161A18;
+  --c-card-calm: #1C211E;
+  --c-line: rgba(241, 239, 232, 0.10);
+  --c-line-strong: rgba(241, 239, 232, 0.22);
+  --c-ink: #F1EFE8;
+  --c-ink-2: #D6D3CA;
+  --c-muted: #9CA39E;
+  --c-muted-2: #6A706C;
+  --c-emerald: #4ADE91;
+  --c-emerald-2: #6EE9A8;
+  --c-emerald-soft: rgba(74, 222, 145, 0.10);
+  --c-copper: #FF8A5C;
+  --c-copper-soft: rgba(255, 138, 92, 0.10);
+  --c-blue-calm: #6FA8F0;
+  --c-blue-soft: rgba(111, 168, 240, 0.10);
+  --c-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.40);
+}
+
+/* Page background — replaces bg-brand-paper, responds to dark mode */
+.calm-bg {
+  background-color: var(--c-bg);
+  color: var(--c-ink);
+  font-family: 'Inter', 'Manrope', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* Smooth transitions for calm-scoped elements */
+.calm-section,
+.calm-nav,
+.calm-footer,
+.calm-hero,
+.calm-card,
+.calm-header {
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
+/* ─── Typography ─────────────────────────────────────────────────── */
+
+.c-display {
+  font-family: 'Bricolage Grotesque', 'Manrope', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.c-display-500 {
+  font-family: 'Bricolage Grotesque', 'Manrope', system-ui, sans-serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.c-eyebrow {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  font-weight: 500;
+}
+
+/* ─── Pill / badge ───────────────────────────────────────────────── */
+
+.c-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--c-emerald-soft);
+  color: var(--c-emerald);
+}
+.c-pill-copper { background: var(--c-copper-soft); color: var(--c-copper); }
+.c-pill-blue { background: var(--c-blue-soft); color: var(--c-blue-calm); }
+
+/* ─── Cards ──────────────────────────────────────────────────────── */
+
+.calm-card {
+  background: var(--c-card-calm);
+  border: 1px solid var(--c-line);
+  border-radius: 20px;
+  box-shadow: var(--c-shadow-card);
+}
+
+.calm-card-surface {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 20px;
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────── */
+
+.c-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  cursor: pointer;
+  font-family: 'Inter', 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 14px 22px;
+  border-radius: 14px;
+  background: var(--c-ink);
+  color: var(--c-bg);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: opacity 0.15s ease, transform 0.12s ease;
+}
+.c-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.c-btn-emerald { background: var(--c-emerald); color: #fff; }
+.c-btn-ghost {
+  background: transparent;
+  color: var(--c-ink);
+  border: 1px solid var(--c-line-strong);
+}
+
+/* ─── Pull quote ─────────────────────────────────────────────────── */
+
+.c-pull-quote {
+  padding: 24px 0 24px 28px;
+  border-left: 4px solid var(--c-emerald);
+  font-family: 'Bricolage Grotesque', 'Manrope', sans-serif;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--c-ink);
+}
+
+/* ─── Theme toggle ───────────────────────────────────────────────── */
+
+.c-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.35s ease;
+}
+.c-theme-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+  color: var(--c-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.c-theme-btn.is-active {
+  background: var(--c-card-calm);
+  color: var(--c-ink);
+  box-shadow: 0 1px 3px rgba(15, 17, 16, 0.10);
+}
+
+/* Calm calc card hover effect (CSS-only, safe for Server Components) */
+.calm-calc-link {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.calm-calc-link:hover {
+  transform: translateY(-2px);
 }

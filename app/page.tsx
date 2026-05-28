@@ -1,109 +1,83 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import {
-  TrendingDown,
-  Cigarette,
-  PieChart,
-  Compass,
-  TrendingUp,
-  Users,
-  ArrowRight,
-  type LucideIcon,
-} from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'A Ponta do Lápis — calculadoras financeiras gratuitas para o brasileiro',
+  title: 'Na Ponta do Lápis — calculadoras financeiras gratuitas para o brasileiro',
   description: 'Calculadoras financeiras gratuitas: custo de apostas, cigarro, vape, viagens com câmbio e IOF, dividir conta e comparativo de investimentos. Sem cadastro.',
 }
 
-type CalcItem = {
-  href: string
-  Icon: LucideIcon
-  iconColor: string
-  title: string
-  subtitle: string
-  tag?: string
-  accentClass: string
-}
-
-type Category = {
-  title: string
-  description: string
-  labelColor: string
-  items: CalcItem[]
-}
-
-const categories: Category[] = [
+const calcs = [
   {
-    title: 'Repensar',
-    description: 'Onde o dinheiro está escorrendo sem você perceber.',
-    labelColor: 'text-category-saving',
-    items: [
-      {
-        href: '/apostas',
-        Icon: TrendingDown,
-        iconColor: '#C83333',
-        title: 'Gastos com Apostas',
-        subtitle: 'O custo real e o que esse dinheiro renderia em 10 anos.',
-        tag: 'mais acessado',
-        accentClass: 'hover:border-category-saving/60',
-      },
-      {
-        href: '/fumo',
-        Icon: Cigarette,
-        iconColor: '#C83333',
-        title: 'Custo do Fumo',
-        subtitle: 'A conta que ninguém faz: o preço de fumar por décadas.',
-        accentClass: 'hover:border-category-saving/40',
-      },
-      {
-        href: '/apostas/probabilidades',
-        Icon: PieChart,
-        iconColor: '#C83333',
-        title: 'Probabilidades Reais',
-        subtitle: 'A matemática crua: qual sua chance real de ganhar?',
-        accentClass: 'hover:border-category-saving/40',
-      },
-    ],
+    href: '/apostas',
+    eyebrow: 'HÁBITOS · MAIS ACESSADO',
+    title: 'Gastos com Apostas',
+    body: 'Quanto você queima por mês e o que esse dinheiro viraria em 10 anos de Selic.',
+    pill: 'APOSTAS',
+    pillVariant: 'c-pill-copper',
+    accent: 'var(--c-copper)',
   },
   {
-    title: 'Realizar',
-    description: 'Transforme planos abstratos em números concretos.',
-    labelColor: 'text-category-dream',
-    items: [
-      {
-        href: '/viagens',
-        Icon: Compass,
-        iconColor: '#0A8A7E',
-        title: 'Viagem dos Sonhos',
-        subtitle: 'Câmbio, IOF, Wise e plano de poupança real.',
-        tag: 'novo',
-        accentClass: 'hover:border-category-dream/60',
-      },
-      {
-        href: '/dividir',
-        Icon: Users,
-        iconColor: '#0A8A7E',
-        title: 'Dividir a Conta',
-        subtitle: 'Rateio por pessoa com gorjeta. Sem discussão, só a matemática.',
-        accentClass: 'hover:border-category-dream/40',
-      },
-    ],
+    href: '/fumo',
+    eyebrow: 'HÁBITOS',
+    title: 'Custo do Fumo',
+    body: 'A conta que ninguém faz: o preço de fumar por décadas.',
+    pill: 'CIGARRO',
+    pillVariant: 'c-pill-copper',
+    accent: 'var(--c-copper)',
   },
   {
-    title: 'Crescer',
-    description: 'A força do tempo a seu favor.',
-    labelColor: 'text-category-growth',
-    items: [
-      {
-        href: '/investimentos',
-        Icon: TrendingUp,
-        iconColor: '#1A5E40',
-        title: 'E se eu tivesse investido?',
-        subtitle: 'Compare hábitos comuns com Selic e Tesouro.',
-        accentClass: 'hover:border-category-growth/60',
-      },
-    ],
+    href: '/apostas/probabilidades',
+    eyebrow: 'MATEMÁTICA',
+    title: 'Probabilidades Reais',
+    body: 'A matemática crua: qual sua chance real de ganhar? Spoiler: a casa não é burra.',
+    pill: 'ODDS',
+    pillVariant: 'c-pill-copper',
+    accent: 'var(--c-copper)',
+  },
+  {
+    href: '/viagens',
+    eyebrow: 'SONHOS · NOVO',
+    title: 'Viagem dos Sonhos',
+    body: 'Câmbio, IOF, Wise e plano de poupança real para chegar lá.',
+    pill: 'VIAGENS',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-blue-calm)',
+  },
+  {
+    href: '/dividir',
+    eyebrow: 'SOCIAL',
+    title: 'Dividir a Conta',
+    body: 'Rateio com gorjeta. Sem discussão, só a matemática.',
+    pill: 'DIVIDIR',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-blue-calm)',
+  },
+  {
+    href: '/investimentos',
+    eyebrow: 'CRESCER',
+    title: 'E se tivesse investido?',
+    body: 'Compare hábitos do cotidiano com Selic, CDI e Tesouro. O dinheiro trabalha — ou some.',
+    pill: 'INVESTIMENTOS',
+    pillVariant: '',
+    accent: 'var(--c-emerald)',
+  },
+]
+
+const principles = [
+  {
+    n: '§ 01',
+    title: 'O cérebro ignora.',
+    body: 'R$ 20 num app de delivery, R$ 50 numa aposta no fim de semana... parece nada. Multiplicado por 365, vira dinheiro de carro novo. Não é falha moral — é arquitetura do cérebro. A gente só bota o número na tela.',
+  },
+  {
+    n: '§ 02',
+    title: 'Privacidade radical.',
+    body: 'Não pedimos seu e-mail, CPF, conta bancária, ou sequer um login. Os cálculos rodam no seu navegador. Quando você fecha a aba, nem nós sabemos o que você calculou. Compromisso técnico, não só promessa.',
+  },
+  {
+    n: '§ 03',
+    title: 'Honestidade brasileira.',
+    body: 'Selic, CDI, IPCA, IOF: valores reais do BCB e Anbima. Sem fundo escondido, sem CDB ofertado por trás. Quando recomendamos Tesouro IPCA+, é porque é o ativo de menor risco com retorno real positivo no Brasil hoje.',
   },
 ]
 
@@ -112,257 +86,217 @@ export default function HomePage() {
     <div className="space-y-20 pb-24">
 
       {/* Hero */}
-      <section className="space-y-7 max-w-3xl pt-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-surface border border-brand-border rounded-full text-xs font-semibold text-brand-muted tracking-wide uppercase shadow-sm">
-          <span
-            className="w-1.5 h-1.5 rounded-full"
-            style={{ background: 'linear-gradient(135deg, #1A5E40, #00C4BE)' }}
-          />
-          Dinheiro sem Tabu
-        </div>
+      <section className="pt-4 space-y-8 max-w-3xl">
+        <span className="c-pill">
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--c-emerald)', display: 'inline-block' }} />
+          Calculadoras · Gratuitas · Privadas
+        </span>
 
-        <h1 className="text-5xl sm:text-7xl font-bold text-brand-ink tracking-tight font-serif leading-[1.05]">
-          A verdade dói,
-          <br />
-          <span className="text-brand-muted font-normal italic">mas liberta.</span>
+        <h1 className="c-display" style={{ fontSize: 'clamp(48px, 8vw, 88px)', color: 'var(--c-ink)' }}>
+          Coloca tudo<br />
+          <span className="c-display-500" style={{ color: 'var(--c-muted)' }}>na ponta do</span>{' '}
+          <span style={{ color: 'var(--c-emerald)' }}>lápis.</span>
         </h1>
 
-        <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
-          O <strong className="text-brand-ink font-semibold">A Ponta do Lápis</strong> traduz
-          decisões do dia a dia em números reais. Sem sermão, sem fórmulas mágicas, sem julgamento.
-        </p>
+        <div className="c-pull-quote" style={{ fontSize: 'clamp(16px, 2vw, 22px)', maxWidth: 600 }}>
+          A parte difícil de educação financeira no Brasil não é falta de informação.{' '}
+          <em style={{ color: 'var(--c-emerald)' }}>É a falta de números doloridos, na sua cara, agora.</em>
+        </div>
 
-        <p className="text-brand-ink font-serif italic text-2xl font-medium leading-snug">
-          "É só você, seu hábito e a calculadora."
+        <p style={{ color: 'var(--c-muted)', fontSize: 16, lineHeight: 1.65, maxWidth: 520 }}>
+          Quando você bota o número na tela, o cérebro não consegue mais ignorar.
+          A planilha vence o impulso. <strong style={{ color: 'var(--c-ink)' }}>É só isso.</strong>
         </p>
       </section>
 
-      {/* Categories */}
-      <div className="space-y-16">
-        {categories.map((cat) => (
-          <section key={cat.title} className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-4 border-b border-brand-border pb-4">
-              <h2 className={`text-2xl font-bold font-serif ${cat.labelColor}`}>
-                {cat.title}
-              </h2>
-              <p className="text-brand-muted text-sm font-medium">{cat.description}</p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {cat.items.map((calc) => (
-                <Link
-                  key={calc.href}
-                  href={calc.href}
-                  className={`bg-brand-surface p-7 rounded-2xl border border-brand-border ${calc.accentClass} group transition-all duration-200 hover:-translate-y-1 card-shadow hover:card-shadow-hover flex flex-col justify-between min-h-[210px]`}
-                >
-                  <div>
-                    <div className="flex justify-between items-start mb-5">
-                      <div
-                        className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{ background: `${calc.iconColor}14` }}
-                      >
-                        <calc.Icon
-                          size={20}
-                          style={{ color: calc.iconColor }}
-                          strokeWidth={1.75}
-                        />
-                      </div>
-                      {calc.tag && (
-                        <span
-                          className="text-[10px] px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider"
-                          style={{
-                            background: 'linear-gradient(135deg, #1A5E40, #00C4BE)',
-                            color: '#fff',
-                          }}
-                        >
-                          {calc.tag}
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="font-semibold text-brand-ink text-base mb-1.5 leading-snug group-hover:text-brand-teal transition-colors">
-                      {calc.title}
-                    </h3>
-                    <p className="text-brand-muted text-sm leading-relaxed">{calc.subtitle}</p>
-                  </div>
-
-                  <div className="mt-5 flex items-center gap-1 text-[11px] font-semibold text-brand-muted group-hover:text-brand-teal transition-colors uppercase tracking-widest">
-                    Abrir calculadora
-                    <ArrowRight
-                      size={12}
-                      className="ml-1 group-hover:translate-x-1 transition-transform"
-                    />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
+      {/* Market context strip */}
+      <div style={{
+        borderTop: '1px solid var(--c-line)',
+        borderBottom: '1px solid var(--c-line)',
+        padding: '12px 0',
+        display: 'flex',
+        gap: 32,
+        overflowX: 'auto',
+        scrollbarWidth: 'none',
+      }}>
+        {[
+          { label: 'APOSTAS 2024', value: 'R$ 130bi' },
+          { label: 'SELIC', value: '10,50% a.a.' },
+          { label: 'USD / BRL', value: '5,20' },
+          { label: 'IOF câmbio', value: '5,38%' },
+          { label: 'IPCA 12m', value: '4,83%' },
+        ].map(({ label, value }) => (
+          <div key={label} className="flex-shrink-0" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span className="c-eyebrow" style={{ fontSize: 9, whiteSpace: 'nowrap' }}>{label}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, color: 'var(--c-ink)', whiteSpace: 'nowrap' }}>
+              {value}
+            </span>
+          </div>
         ))}
       </div>
 
-      {/* Philosophy section */}
-      <section className="grid md:grid-cols-2 gap-12 items-start py-16 border-y border-brand-border">
-        <div className="space-y-6">
-          <h2 className="text-4xl font-bold font-serif text-brand-ink leading-tight">
-            Por que colocar tudo<br />
-            <span className="italic font-normal text-brand-muted">a ponta do lápis?</span>
-          </h2>
-          <div className="space-y-4 text-brand-muted text-sm leading-relaxed">
-            <p>
-              A maioria das pessoas não sabe quanto gasta porque o cérebro ignora as
-              "pequenas" saídas. R$ 20 aqui, R$ 50 ali... parece nada, até você multiplicar
-              por 12 meses e somar os juros que esse dinheiro renderia.
-            </p>
-            <p className="font-semibold text-brand-ink text-sm">Nossa filosofia tem três alicerces:</p>
-            <ul className="space-y-4">
-              {[
-                {
-                  n: '01',
-                  title: 'Honestidade Matemática',
-                  body: 'Não arredondamos para baixo para te agradar. Os números são o que são.',
-                },
-                {
-                  n: '02',
-                  title: 'Contexto Brasileiro',
-                  body: 'Nossas taxas — Selic, CDI, IOF — refletem a realidade do Brasil de hoje.',
-                },
-                {
-                  n: '03',
-                  title: 'Privacidade Total',
-                  body: 'Não pedimos e-mail, CPF nem acesso à conta. Seus dados ficam só no seu navegador.',
-                },
-              ].map((item) => (
-                <li key={item.n} className="flex gap-4">
-                  <span
-                    className="text-xs font-bold pt-0.5 flex-shrink-0"
-                    style={{
-                      background: 'linear-gradient(135deg, #1A5E40, #00C4BE)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    {item.n}
-                  </span>
-                  <span className="text-brand-muted">
-                    <strong className="text-brand-ink font-semibold">{item.title}:</strong>{' '}
-                    {item.body}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+      {/* Calculator grid */}
+      <section className="space-y-4">
+        <div className="flex items-baseline gap-3" style={{ borderBottom: '1px solid var(--c-line)', paddingBottom: 16 }}>
+          <h2 className="c-display" style={{ fontSize: 28, color: 'var(--c-ink)' }}>Calculadoras</h2>
+          <span className="c-eyebrow">6 ferramentas</span>
         </div>
 
-        <div className="bg-brand-surface rounded-2xl border border-brand-border p-8 shadow-sm hidden md:block">
-          <div
-            className="w-1 h-16 rounded-full mb-6"
-            style={{ background: 'linear-gradient(to bottom, #1A5E40, #00C4BE)' }}
-          />
-          <blockquote className="space-y-3">
-            <p className="font-serif italic text-xl text-brand-ink leading-relaxed font-medium">
-              "Eu achava que gastava R$ 200 por mês com apostas. A calculadora me mostrou
-              que, em 3 anos, queimei um carro popular."
-            </p>
-            <footer className="text-xs text-brand-muted font-medium pt-2">
-              — Depoimento real (e dolorido)
-            </footer>
-          </blockquote>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {calcs.map((calc) => (
+            <Link
+              key={calc.href}
+              href={calc.href}
+              className="calm-card calm-calc-link group"
+              style={{
+                padding: 28,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                minHeight: 200,
+                textDecoration: 'none',
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                  <span className={`c-pill ${calc.pillVariant}`}>{calc.pill}</span>
+                  <span className="c-eyebrow" style={{ fontSize: 9 }}>{calc.eyebrow}</span>
+                </div>
+                <h3 className="c-display" style={{ fontSize: 20, color: 'var(--c-ink)', marginBottom: 8 }}>{calc.title}</h3>
+                <p style={{ color: 'var(--c-muted)', fontSize: 14, lineHeight: 1.55 }}>{calc.body}</p>
+              </div>
+              <div style={{ marginTop: 20, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span className="c-eyebrow" style={{ fontSize: 10, color: calc.accent }}>
+                  Abrir calculadora
+                </span>
+                <span style={{ color: calc.accent, fontSize: 12 }}>→</span>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
-      {/* App announcement */}
+      {/* Philosophy — manifesto-inspired */}
+      <section className="space-y-0" style={{ borderTop: '1px solid var(--c-line)', paddingTop: 64 }}>
+        <div style={{ marginBottom: 48 }}>
+          <span className="c-eyebrow" style={{ display: 'block', marginBottom: 16 }}>MANIFESTO</span>
+          <h2 className="c-display" style={{ fontSize: 'clamp(32px, 4vw, 52px)', color: 'var(--c-ink)', maxWidth: 600 }}>
+            Por que colocar tudo<br />
+            <span className="c-display-500" style={{ color: 'var(--c-muted)' }}>na ponta do lápis.</span>
+          </h2>
+        </div>
+
+        <div className="space-y-0">
+          {principles.map((p, i) => (
+            <div
+              key={p.n}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '80px 1fr',
+                gap: 32,
+                padding: '32px 0',
+                borderTop: i > 0 ? '1px solid var(--c-line)' : undefined,
+                alignItems: 'start',
+              }}
+            >
+              <div>
+                <span className="c-eyebrow" style={{ fontSize: 10 }}>{p.n}</span>
+                <p className="c-display" style={{ fontSize: 18, color: 'var(--c-ink)', marginTop: 6, lineHeight: 1.2 }}>
+                  {p.title.split('.')[0]}.<br />
+                </p>
+              </div>
+              <div style={{ maxWidth: 560 }}>
+                <p style={{ color: 'var(--c-ink-2)', fontSize: 16, lineHeight: 1.65 }}>{p.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 48 }}>
+          <Link href="/apostas" className="c-btn c-btn-emerald" style={{ fontSize: 14 }}>
+            Ver calculadoras <span style={{ fontSize: 16 }}>→</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* App announcement — dark card */}
       <section
         id="app"
-        className="rounded-3xl p-10 sm:p-14 border space-y-8"
-        style={{ background: 'linear-gradient(145deg, #0D1A2A 0%, #122030 100%)', borderColor: '#1E3040' }}
+        className="calm-section rounded-3xl p-10 sm:p-14 space-y-6"
+        style={{ background: 'var(--c-ink)', border: '1px solid var(--c-line-strong)' }}
       >
-        <div className="flex items-center gap-3">
-          <span
-            className="w-2 h-2 rounded-full animate-pulse"
-            style={{ background: '#00C4BE' }}
-          />
-          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#00C4BE' }}>
-            App em desenvolvimento — Android
+        <div>
+          <span className="c-eyebrow" style={{ color: 'var(--c-emerald)', fontSize: 10 }}>
+            APP EM DESENVOLVIMENTO · ANDROID
           </span>
         </div>
 
-        <div className="space-y-3 max-w-2xl">
-          <h3 className="text-3xl sm:text-4xl font-bold font-serif text-white leading-tight">
-            A Ponta do Lápis<br />
-            <span className="italic font-normal" style={{ color: '#00C4BE' }}>no seu bolso.</span>
+        <div style={{ maxWidth: 560 }}>
+          <h3 className="c-display" style={{ fontSize: 'clamp(28px, 4vw, 44px)', color: 'var(--c-bg)', lineHeight: 1.05 }}>
+            Na Ponta do Lápis<br />
+            <span className="c-display-500" style={{ color: 'var(--c-emerald)' }}>no seu bolso.</span>
           </h3>
-          <p className="text-white/50 text-base leading-relaxed">
-            Calculadoras pontuais são o ponto de partida. O app é para quem quer acompanhar
-            o mês inteiro — cada gasto, cada entrada, cada meta. A mesma honestidade matemática
-            do site, agora como rotina diária.
+          <p style={{ color: 'rgba(241,239,232,0.5)', fontSize: 15, lineHeight: 1.65, marginTop: 16 }}>
+            Calculadoras pontuais são o ponto de partida. O app é para quem quer acompanhar o mês
+            inteiro — cada gasto, cada entrada, cada meta. A mesma honestidade matemática do site,
+            agora como rotina diária.
           </p>
         </div>
 
-        <ul className="grid sm:grid-cols-2 gap-3">
+        <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}>
           {[
-            'Lance despesas em segundos — com ou sem câmera, com ou sem IA',
-            'Divida a conta da mesa sem discussão',
+            'Lance despesas em segundos, sem nuvem, sem CPF',
+            'Seus dados ficam só no seu celular',
+            'Divide a conta da mesa sem discussão',
             'Veja para onde o dinheiro vai, com gráficos que não mentem',
-            'Defina limites por categoria e receba alertas antes de estourar',
             'Importe sua fatura inteira de uma vez',
-            'Sem sincronização em nuvem. Sem e-mail. Sem CPF.',
+            'Defina limites por categoria e receba alertas antes de estourar',
           ].map((item) => (
-            <li key={item} className="flex items-start gap-2.5 text-sm text-white/40">
-              <span className="mt-1 shrink-0 text-xs" style={{ color: '#00C4BE' }}>·</span>
+            <li key={item} style={{ display: 'flex', gap: 10, fontSize: 13, color: 'rgba(241,239,232,0.4)', lineHeight: 1.5 }}>
+              <span style={{ color: 'var(--c-emerald)', flexShrink: 0, marginTop: 2 }}>·</span>
               {item}
             </li>
           ))}
         </ul>
 
-        <p className="text-white/20 text-xs italic">sem data prometida — só quando estiver bom.</p>
+        <p style={{ color: 'rgba(241,239,232,0.2)', fontSize: 11, fontStyle: 'italic' }}>
+          sem data prometida — só quando estiver bom.
+        </p>
       </section>
 
       {/* Coming soon */}
       <section
-        className="rounded-3xl p-10 sm:p-16 relative overflow-hidden text-center space-y-8"
-        style={{ background: 'linear-gradient(145deg, #172030 0%, #1A3A2A 100%)' }}
+        className="calm-section rounded-3xl text-center space-y-6 p-10 sm:p-16 relative overflow-hidden"
+        style={{ background: 'var(--c-surface)' }}
       >
-        <div className="relative z-10 space-y-5">
-          <h3 className="text-3xl sm:text-5xl font-bold font-serif text-white leading-tight">
+        <div className="relative" style={{ zIndex: 1 }}>
+          <span className="c-eyebrow" style={{ display: 'block', marginBottom: 20 }}>EM CONSTRUÇÃO</span>
+          <h3 className="c-display" style={{ fontSize: 'clamp(28px, 4vw, 48px)', color: 'var(--c-ink)' }}>
             O que estamos<br />
-            <span
-              className="italic font-normal"
-              style={{
-                background: 'linear-gradient(90deg, #0D8B72, #00C4BE)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              rabiscando?
-            </span>
+            <span style={{ color: 'var(--c-emerald)' }}>rabiscando?</span>
           </h3>
-          <p className="text-white/50 text-base max-w-sm mx-auto leading-relaxed">
-            Novas calculadoras saindo do papel: Rescisão, Seguro-Desemprego e Pensão Alimentícia.
+          <p style={{ color: 'var(--c-muted)', fontSize: 15, maxWidth: 360, margin: '16px auto 0', lineHeight: 1.65 }}>
+            Novas calculadoras saindo do papel: Rescisão CLT, Seguro-Desemprego e Pensão Alimentícia.
           </p>
-          <div className="pt-2">
+          <div style={{ marginTop: 32 }}>
             <Link
               href="https://github.com/carlosferian/napontadolapis"
-              className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
-              style={{
-                background: 'linear-gradient(135deg, #1A5E40, #00C4BE)',
-                color: '#fff',
-              }}
+              className="c-btn c-btn-emerald"
+              style={{ fontSize: 14 }}
             >
-              Acompanhe no GitHub
-              <ArrowRight size={14} />
+              Acompanhe no GitHub <span style={{ fontSize: 16 }}>↗</span>
             </Link>
           </div>
         </div>
-
-        <div
-          className="absolute top-0 right-0 w-72 h-72 -mr-24 -mt-24 rounded-full opacity-10 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #00C4BE, transparent)' }}
-        />
-        <div
-          className="absolute bottom-0 left-0 w-64 h-64 -ml-24 -mb-24 rounded-full opacity-10 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #1A5E40, transparent)' }}
-        />
+        {/* decorative */}
+        <div style={{
+          position: 'absolute', top: 0, right: 0, width: 200, height: 200,
+          borderRadius: '50%', opacity: 0.06, pointerEvents: 'none',
+          background: 'radial-gradient(circle, var(--c-emerald), transparent)',
+          transform: 'translate(30%, -30%)',
+        }} />
       </section>
+
     </div>
   )
 }
