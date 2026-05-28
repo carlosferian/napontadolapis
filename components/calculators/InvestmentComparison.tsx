@@ -39,58 +39,60 @@ export function InvestmentComparison() {
   const bestInvestment = invested.find((i) => i.gain === bestGain)!
 
   return (
-    <div className="space-y-4">
-      <CalculatorCard title="E se eu tivesse investido?" subtitle="A pergunta que ninguém quer responder.">
-        <SliderField
-          id="monthly-invest"
-          label="Valor mensal"
-          value={monthly}
-          min={50}
-          max={5000}
-          step={50}
-          onChange={setMonthly}
-        />
-        <SliderField
-          id="years-invest"
-          label="Período"
-          value={years}
-          min={1}
-          max={30}
-          step={1}
-          onChange={setYears}
-          formatValue={(v) => `${v} ${v === 1 ? 'ano' : 'anos'}`}
-        />
-      </CalculatorCard>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:items-start">
+      <div className="lg:col-span-5">
+        <CalculatorCard title="E se eu tivesse investido?" subtitle="A pergunta que ninguém quer responder.">
+          <SliderField
+            id="monthly-invest"
+            label="Valor mensal"
+            value={monthly}
+            min={50}
+            max={5000}
+            step={50}
+            onChange={setMonthly}
+          />
+          <SliderField
+            id="years-invest"
+            label="Período"
+            value={years}
+            min={1}
+            max={30}
+            step={1}
+            onChange={setYears}
+            formatValue={(v) => `${v} ${v === 1 ? 'ano' : 'anos'}`}
+          />
+        </CalculatorCard>
+      </div>
 
-      <div role="region" aria-live="polite" aria-label="Resultado do cálculo" className="space-y-4">
+      <div role="region" aria-live="polite" aria-label="Resultado do cálculo" className="space-y-4 lg:col-span-7">
 
         {/* Summary hero */}
-        <div className="bg-white rounded-2xl border border-stone-100 overflow-hidden">
+        <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: 'var(--c-card-calm)', border: '1px solid var(--c-line)' }}>
           <div className="grid grid-cols-1 sm:grid-cols-2">
-            <div className="p-5 border-b sm:border-b-0 sm:border-r border-stone-100">
-              <p className="text-xs text-stone-400 uppercase tracking-wide mb-1">Investindo na {bestInvestment.label}</p>
+            <div className="p-5 border-b sm:border-b-0 sm:border-r" style={{ borderColor: 'var(--c-line)' }}>
+              <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--c-muted)' }}>Investindo na {bestInvestment.label}</p>
               <p className="text-3xl font-bold text-emerald-600 tabular-nums leading-none break-all">
                 +{formatBRL(bestGain)}
               </p>
-              <p className="text-xs text-stone-400 mt-1">de rendimento em {years} {years === 1 ? 'ano' : 'anos'}</p>
+              <p className="text-xs mt-1" style={{ color: 'var(--c-muted)' }}>de rendimento em {years} {years === 1 ? 'ano' : 'anos'}</p>
             </div>
-            <div className="p-5 bg-red-50/60">
-              <p className="text-xs text-stone-400 uppercase tracking-wide mb-1">Nas apostas</p>
+            <div className="p-5" style={{ backgroundColor: 'var(--c-copper-soft)' }}>
+              <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--c-copper)' }}>Nas apostas</p>
               <p className="text-3xl font-bold text-red-500 tabular-nums leading-none break-all">
                 −{formatBRL(betsLoss)}
               </p>
-              <p className="text-xs text-stone-400 mt-1">queimado do seu bolso</p>
+              <p className="text-xs mt-1" style={{ color: 'var(--c-copper)', opacity: 0.8 }}>queimado do seu bolso</p>
             </div>
           </div>
-          <div className="px-5 py-3 bg-stone-50 border-t border-stone-100">
-            <p className="text-xs text-stone-500 text-center">
-              Total aportado: <span className="font-semibold text-stone-700">{formatBRL(totalContributed)}</span>
+          <div className="px-5 py-3 border-t" style={{ backgroundColor: 'var(--c-surface)', borderColor: 'var(--c-line)' }}>
+            <p className="text-xs text-center" style={{ color: 'var(--c-muted)' }}>
+              Total aportado: <span className="font-semibold" style={{ color: 'var(--c-ink)' }}>{formatBRL(totalContributed)}</span>
             </p>
           </div>
         </div>
 
         {/* Investments detail */}
-        <div className="bg-white rounded-2xl border border-stone-100 p-5 space-y-5">
+        <div className="rounded-2xl p-5 space-y-5" style={{ backgroundColor: 'var(--c-card-calm)', border: '1px solid var(--c-line)' }}>
           <SectionDivider label="Rendimento por investimento" />
 
           {invested.map((inv) => {
@@ -99,19 +101,19 @@ export function InvestmentComparison() {
               <div key={inv.key} className="space-y-2">
                 <div className="flex justify-between items-start gap-3">
                   <div className="min-w-0 shrink">
-                    <p className="text-sm font-semibold text-stone-800">{inv.label}</p>
-                    <p className="text-xs text-stone-400">{inv.note}</p>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--c-ink)' }}>{inv.label}</p>
+                    <p className="text-xs" style={{ color: 'var(--c-muted)' }}>{inv.note}</p>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-xl font-bold text-emerald-600 tabular-nums leading-none">
                       +{formatBRL(inv.gain)}
                     </p>
-                    <p className="text-xs text-stone-400 mt-0.5">
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>
                       total: {formatBRL(inv.total)}
                     </p>
                   </div>
                 </div>
-                <div className="w-full bg-stone-100 rounded-full h-2">
+                <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--c-surface)' }}>
                   <div
                     className="h-2 rounded-full transition-all duration-500"
                     style={{ width: `${barWidth}%`, backgroundColor: inv.color }}
@@ -126,19 +128,19 @@ export function InvestmentComparison() {
           <div className="space-y-2">
             <div className="flex justify-between items-start gap-3">
               <div className="min-w-0 shrink">
-                <p className="text-sm font-semibold text-stone-800">Apostas</p>
-                <p className="text-xs text-stone-400">retorno médio de 72% — você perde 28%</p>
+                <p className="text-sm font-semibold" style={{ color: 'var(--c-ink)' }}>Apostas</p>
+                <p className="text-xs" style={{ color: 'var(--c-muted)' }}>retorno médio de 72% — você perde 28%</p>
               </div>
               <div className="text-right shrink-0">
                 <p className="text-xl font-bold text-red-500 tabular-nums leading-none">
                   −{formatBRL(betsLoss)}
                 </p>
-                <p className="text-xs text-stone-400 mt-0.5">
+                <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>
                   devolveu apenas: {formatBRL(betsBack)}
                 </p>
               </div>
             </div>
-            <div className="w-full bg-stone-100 rounded-full h-2">
+            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--c-surface)' }}>
               <div
                 className="h-2 rounded-full bg-red-400 transition-all duration-500"
                 style={{ width: `${bestGain > 0 ? Math.max((betsBack / (totalContributed + bestGain)) * 100, 4) : 100}%` }}
@@ -148,8 +150,8 @@ export function InvestmentComparison() {
         </div>
 
         {/* Share */}
-        <div className="bg-stone-50 rounded-2xl p-4">
-          <p className="text-xs text-stone-400 mb-3 text-center">Compartilhe o resultado</p>
+        <div className="rounded-2xl p-4" style={{ backgroundColor: 'var(--c-surface)' }}>
+          <p className="text-xs mb-3 text-center" style={{ color: 'var(--c-muted)' }}>Compartilhe o resultado</p>
           <ScaledPreview>
             <ShareCardBase
               id="invest-share-card"

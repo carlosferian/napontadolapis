@@ -9,7 +9,7 @@ import { SavingsChart } from '@/components/ui/SavingsChart'
 import { TravelShareCard } from '@/components/share/TravelShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { destinations, TRAVEL_CONFIG, type Destination, type TravelStyle, type Region } from '@/config/travel'
-import { calculateTripCost } from '@/lib/calculations/travel'
+import { calculateTripCost, type TripCost } from '@/lib/calculations/travel'
 import { calculateSavingsPlan } from '@/lib/calculations/savings'
 import { formatBRL, formatPct } from '@/lib/formatters'
 
@@ -95,13 +95,33 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   const [customDestNeedsVisa, setCustomDestNeedsVisa] = useState(false)
   const [customDestVisaCostUSD, setCustomDestVisaCostUSD] = useState(100)
 
-  // Custom style state — pre-populated when switching to custom
-  const [customDailyBRL, setCustomDailyBRL] = useState(
-    Math.round(defaultDest.dailyCostUSD['mid'] * TRAVEL_CONFIG.defaultUSDtoBRL)
-  )
-  const [customFlightTotalBRL, setCustomFlightTotalBRL] = useState(
-    defaultDest.flightFromGRU.typical * TRAVEL_CONFIG.defaultTravelers
-  )
+  // Custom states for each of the 5 travel expense categories (BRL amounts)
+  const [customAccommodationBRL, setCustomAccommodationBRL] = useState(() => {
+    const costUSD = defaultDest.dailyCostUSD[TRAVEL_CONFIG.defaultStyle]
+    const accPct = TRAVEL_CONFIG.accommodationPct[TRAVEL_CONFIG.defaultStyle]
+    return Math.round(costUSD * accPct * TRAVEL_CONFIG.defaultUSDtoBRL)
+  })
+  const [customFoodBRL, setCustomFoodBRL] = useState(() => {
+    const costUSD = defaultDest.dailyCostUSD[TRAVEL_CONFIG.defaultStyle]
+    const accPct = TRAVEL_CONFIG.accommodationPct[TRAVEL_CONFIG.defaultStyle]
+    return Math.round(costUSD * (1 - accPct) * 0.50 * TRAVEL_CONFIG.defaultUSDtoBRL)
+  })
+  const [customTransportBRL, setCustomTransportBRL] = useState(() => {
+    const costUSD = defaultDest.dailyCostUSD[TRAVEL_CONFIG.defaultStyle]
+    const accPct = TRAVEL_CONFIG.accommodationPct[TRAVEL_CONFIG.defaultStyle]
+    return Math.round(costUSD * (1 - accPct) * 0.20 * TRAVEL_CONFIG.defaultUSDtoBRL)
+  })
+  const [customActivitiesBRL, setCustomActivitiesBRL] = useState(() => {
+    const costUSD = defaultDest.dailyCostUSD[TRAVEL_CONFIG.defaultStyle]
+    const accPct = TRAVEL_CONFIG.accommodationPct[TRAVEL_CONFIG.defaultStyle]
+    return Math.round(costUSD * (1 - accPct) * 0.30 * TRAVEL_CONFIG.defaultUSDtoBRL)
+  })
+  const [customFlightBRL, setCustomFlightBRL] = useState(() => {
+    return defaultDest.flightFromGRU.typical
+  })
+
+  // To check if the user has edited the defaults of the current preset
+  const [isCustomized, setIsCustomized] = useState(false)
 
   const isCustomDest = selectedId === '__custom__'
 
@@ -127,32 +147,90 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
     return destinations.find((d) => d.id === selectedId) ?? destinations[0]
   }, [isCustomDest, selectedId, customDestName, customDestIsDomestic, customDestNeedsVisa, customDestVisaCostUSD])
 
+  // Helper function to populate defaults for a destination and style
+  const populateStyleDefaults = (dest: Destination, style: TravelStyle, rate: number) => {
+    if (dest.id === '__custom__') return
+    const dailyCostUSD = dest.dailyCostUSD[style]
+    const accommodationPct = TRAVEL_CONFIG.accommodationPct[style]
+    
+    setCustomAccommodationBRL(Math.round(dailyCostUSD * accommodationPct * rate))
+    const varTotalBRL = dailyCostUSD * (1 - accommodationPct) * rate
+    setCustomFoodBRL(Math.round(varTotalBRL * 0.50))
+    setCustomTransportBRL(Math.round(varTotalBRL * 0.20))
+    setCustomActivitiesBRL(Math.round(varTotalBRL * 0.30))
+    setCustomFlightBRL(dest.flightFromGRU.typical)
+    setIsCustomized(false)
+  }
+
   function handleStyleChange(key: StyleKey) {
     if (isCustomDest) return // locked to custom mode when destination is custom
-    if (key === 'custom' && styleKey !== 'custom') {
-      setCustomDailyBRL(Math.round(destination.dailyCostUSD[styleKey] * exchangeRate))
-      setCustomFlightTotalBRL(Math.round(destination.flightFromGRU.typical * travelers))
+    if (key !== 'custom') {
+      populateStyleDefaults(destination, key, exchangeRate)
+    } else {
+      setIsCustomized(true)
     }
     setStyleKey(key)
   }
 
-  const effectiveStyle: TravelStyle = styleKey === 'custom' ? 'mid' : styleKey
-  const useCustomCalc = styleKey === 'custom' || isCustomDest
+  const effectiveStyle: TravelStyle = (styleKey === 'custom' || isCustomized) ? 'mid' : styleKey as TravelStyle
+  const useCustomCalc = styleKey === 'custom' || isCustomDest || isCustomized
 
-  const tripCost = useMemo(
-    () =>
-      calculateTripCost({
-        destination,
-        travelers,
-        days,
-        style: effectiveStyle,
-        exchangeRate,
-        ...(useCustomCalc
-          ? { isCustom: true, customDailyBRL, customFlightTotalBRL }
-          : {}),
-      }),
-    [destination, travelers, days, effectiveStyle, exchangeRate, useCustomCalc, customDailyBRL, customFlightTotalBRL]
-  )
+  const tripCost = useMemo((): TripCost => {
+    const isDomestic = destination.region === 'brasil'
+    
+    const accommodationBRL = customAccommodationBRL * days
+    const variableBRL = (customFoodBRL + customTransportBRL + customActivitiesBRL) * days * travelers
+    const baseCostBRL = accommodationBRL + variableBRL
+    const flightBRL = customFlightBRL * travelers
+    
+    const iof = TRAVEL_CONFIG.iofCreditCard
+    const spread = TRAVEL_CONFIG.bankSpreadEstimate
+    const fintechFee = TRAVEL_CONFIG.fintechFeeEstimate
+    
+    const iofAndSpreadBRL = isDomestic ? 0 : baseCostBRL * (iof + spread)
+    const fintechFeeBRL = isDomestic ? 0 : baseCostBRL * fintechFee
+    
+    const totalWithCard = baseCostBRL + iofAndSpreadBRL + flightBRL
+    const totalWithFintech = baseCostBRL + fintechFeeBRL + flightBRL
+    const savingsWithFintech = totalWithCard - totalWithFintech
+    
+    const visaCostBRL = destination.visa.required
+      ? (destination.visa.costUSD ?? 0) * exchangeRate * travelers
+      : 0
+      
+    const grandTotalCard = totalWithCard + visaCostBRL
+    const grandTotalFintech = totalWithFintech + visaCostBRL
+    const grandTotalFintechWithMargin = grandTotalFintech * (1 + TRAVEL_CONFIG.safetyMargin)
+    
+    return {
+      isDomestic,
+      subtotalUSD: baseCostBRL / exchangeRate,
+      accommodationUSD: accommodationBRL / exchangeRate,
+      variableUSD: variableBRL / exchangeRate,
+      flightBRL,
+      dailyCostUSD: (customAccommodationBRL + (customFoodBRL + customTransportBRL + customActivitiesBRL) * travelers) / exchangeRate,
+      iofAndSpreadBRL,
+      fintechFeeBRL,
+      totalWithCard,
+      totalWithFintech,
+      savingsWithFintech,
+      savingsPct: totalWithCard > 0 ? (savingsWithFintech / totalWithCard) * 100 : 0,
+      visaCostBRL,
+      grandTotalCard,
+      grandTotalFintech,
+      grandTotalFintechWithMargin,
+    }
+  }, [
+    destination,
+    travelers,
+    days,
+    exchangeRate,
+    customAccommodationBRL,
+    customFoodBRL,
+    customTransportBRL,
+    customActivitiesBRL,
+    customFlightBRL,
+  ])
 
   const extrasTotalBRL = useMemo(
     () => extras.reduce((sum, e) => sum + e.amountBRL, 0),
@@ -213,8 +291,18 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
     setExtraLabel('')
     setExtraAmount('')
     setShowExtras(false)
-    setCustomDailyBRL(Math.round(def.dailyCostUSD['mid'] * TRAVEL_CONFIG.defaultUSDtoBRL))
-    setCustomFlightTotalBRL(def.flightFromGRU.typical * TRAVEL_CONFIG.defaultTravelers)
+    
+    // Reset to the 5 granular default BRL values
+    const dailyCostUSD = def.dailyCostUSD[TRAVEL_CONFIG.defaultStyle]
+    const accommodationPct = TRAVEL_CONFIG.accommodationPct[TRAVEL_CONFIG.defaultStyle]
+    setCustomAccommodationBRL(Math.round(dailyCostUSD * accommodationPct * TRAVEL_CONFIG.defaultUSDtoBRL))
+    const varTotalBRL = dailyCostUSD * (1 - accommodationPct) * TRAVEL_CONFIG.defaultUSDtoBRL
+    setCustomFoodBRL(Math.round(varTotalBRL * 0.50))
+    setCustomTransportBRL(Math.round(varTotalBRL * 0.20))
+    setCustomActivitiesBRL(Math.round(varTotalBRL * 0.30))
+    setCustomFlightBRL(def.flightFromGRU.typical)
+    setIsCustomized(false)
+    
     setCustomDestName('')
     setCustomDestIsDomestic(false)
     setCustomDestNeedsVisa(false)
@@ -229,28 +317,30 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
       `Câmbio: R$ ${exchangeRate.toFixed(2)}/USD`,
       '',
       '─── CUSTO DA VIAGEM ───────────────────────',
-      `Passagem aérea (${travelers}x, ida e volta)    ${formatBRL(tripCost.flightBRL)}`,
-      `Hospedagem (${days}d, quarto compartilhado)  ${formatBRL(tripCost.accommodationUSD * exchangeRate)}`,
-      `Alimentação + atividades (${days}d × ${travelers}p)  ${formatBRL(tripCost.variableUSD * exchangeRate)}`,
-      ...(tripCost.visaCostBRL > 0 ? [`Visto (${travelers}x)                        ${formatBRL(tripCost.visaCostBRL)}`] : []),
-      ...extras.map((e) => `${e.label.padEnd(36)} ${formatBRL(e.amountBRL)}`),
+      `Passagem aérea (${travelers}x, ida e volta)`.padEnd(38) + ` ${formatBRL(customFlightBRL * travelers)}`,
+      `Hospedagem (${days}d, total do quarto)`.padEnd(38) + ` ${formatBRL(customAccommodationBRL * days)}`,
+      `Alimentação (${days}d × ${travelers}p)`.padEnd(38) + ` ${formatBRL(customFoodBRL * days * travelers)}`,
+      `Transporte local (${days}d × ${travelers}p)`.padEnd(38) + ` ${formatBRL(customTransportBRL * days * travelers)}`,
+      `Atividades (${days}d × ${travelers}p)`.padEnd(38) + ` ${formatBRL(customActivitiesBRL * days * travelers)}`,
+      ...(tripCost.visaCostBRL > 0 ? [`Visto (${travelers}x)`.padEnd(38) + ` ${formatBRL(tripCost.visaCostBRL)}`] : []),
+      ...extras.map((e) => `${e.label.padEnd(38)} ${formatBRL(e.amountBRL)}`),
       '',
       ...(!tripCost.isDomestic ? [
-        `IOF + spread (cartão tradicional)     +${formatBRL(tripCost.iofAndSpreadBRL)}`,
-        `Taxa fintech (~1,5%)                  +${formatBRL(tripCost.fintechFeeBRL)}`,
+        `IOF + spread (cartão tradicional)`.padEnd(38) + `+${formatBRL(tripCost.iofAndSpreadBRL)}`,
+        `Taxa fintech (~1,5%)`.padEnd(38) + `+${formatBRL(tripCost.fintechFeeBRL)}`,
         '',
-        `TOTAL — cartão tradicional            ${formatBRL(tripCost.grandTotalCard)}`,
-        `TOTAL — fintech (Wise/Nomad)          ${formatBRL(tripCost.grandTotalFintech)}`,
-        `Economia com fintech                  ${formatBRL(tripCost.savingsWithFintech)}`,
+        `TOTAL — cartão tradicional`.padEnd(38) + ` ${formatBRL(tripCost.grandTotalCard)}`,
+        `TOTAL — fintech (Wise/Nomad)`.padEnd(38) + ` ${formatBRL(tripCost.grandTotalFintech)}`,
+        `Economia com fintech`.padEnd(38) + ` ${formatBRL(tripCost.savingsWithFintech)}`,
         '',
       ] : []),
-      `META (com margem de 15%)              ${formatBRL(grandTotal)}`,
+      `META (com margem de 15%)`.padEnd(38) + ` ${formatBRL(grandTotal)}`,
       '',
       '─── PLANO DE POUPANÇA ─────────────────────',
-      `Prazo desejado                        ${monthsToSave} meses`,
-      `Poupar por mês (sem investir)         ${formatBRL(savingsPlan.monthlyWithoutInvestment)}`,
-      `Poupar por mês (Selic ${selicRate.toFixed(2)}% a.a.)   ${formatBRL(savingsPlan.monthlyWithSelic)}`,
-      `Economia total com Selic              ${formatBRL(savingsPlan.savingsWithInvestment)}`,
+      `Prazo desejado`.padEnd(38) + ` ${monthsToSave} meses`,
+      `Poupar por mês (sem investir)`.padEnd(38) + ` ${formatBRL(savingsPlan.monthlyWithoutInvestment)}`,
+      `Poupar por mês (Selic ${selicRate.toFixed(2)}% a.a.)`.padEnd(38) + ` ${formatBRL(savingsPlan.monthlyWithSelic)}`,
+      `Economia total com Selic`.padEnd(38) + ` ${formatBRL(savingsPlan.savingsWithInvestment)}`,
       '',
       `Calculado em apontadolapis.com.br | ${new Date().toLocaleDateString('pt-BR')}`,
     ]
@@ -265,9 +355,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
   }
 
   const breakdownCategories = styleKey !== 'custom' && !isCustomDest ? STYLE_BREAKDOWN[styleKey] : null
-  const dailyBRLReference = styleKey !== 'custom'
-    ? destination.dailyCostUSD[styleKey] * exchangeRate
-    : customDailyBRL
+  const dailyBRLReference = customAccommodationBRL + (customFoodBRL + customTransportBRL + customActivitiesBRL) * travelers
 
   return (
     <div className="space-y-4">
@@ -284,8 +372,15 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
               if (newId === '__custom__') {
                 // Pre-populate with current destination's mid values as a starting point
                 if (!isCustomDest) {
-                  setCustomDailyBRL(Math.round(destination.dailyCostUSD['mid'] * exchangeRate))
-                  setCustomFlightTotalBRL(Math.round(destination.flightFromGRU.typical * travelers))
+                  const dailyCostUSD = destination.dailyCostUSD['mid']
+                  const accommodationPct = TRAVEL_CONFIG.accommodationPct['mid']
+                  setCustomAccommodationBRL(Math.round(dailyCostUSD * accommodationPct * exchangeRate))
+                  const varTotalBRL = dailyCostUSD * (1 - accommodationPct) * exchangeRate
+                  setCustomFoodBRL(Math.round(varTotalBRL * 0.50))
+                  setCustomTransportBRL(Math.round(varTotalBRL * 0.20))
+                  setCustomActivitiesBRL(Math.round(varTotalBRL * 0.30))
+                  setCustomFlightBRL(destination.flightFromGRU.typical)
+                  setIsCustomized(true)
                 }
                 setStyleKey('custom')
               } else {
@@ -418,127 +513,231 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
         </div>
 
         {/* Travel style */}
-        <div className="space-y-3">
-          <label className="text-sm font-medium text-stone-600">Estilo de viagem</label>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-semibold" style={{ color: 'var(--c-ink)' }}>Estilo de viagem e itens do cálculo</label>
+            {isCustomized && (
+              <button
+                type="button"
+                onClick={() => {
+                  const style = styleKey === 'custom' ? 'mid' : styleKey as TravelStyle
+                  populateStyleDefaults(destination, style, exchangeRate)
+                }}
+                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition-colors bg-emerald-50 dark:bg-emerald-950/40 px-2 py-1 rounded-md"
+              >
+                ↺ Restaurar padrões recomendados
+              </button>
+            )}
+          </div>
 
-          {/* Top row: 3 preset styles — hidden when destination is custom */}
+          {/* Preset styles buttons */}
           {!isCustomDest && (
             <div className="grid grid-cols-3 gap-2">
-              {STYLE_OPTIONS.filter((s) => s.key !== 'custom').map((s) => (
-                <button
-                  key={s.key}
-                  onClick={() => handleStyleChange(s.key)}
-                  className={`py-3 px-2 rounded-xl text-sm font-semibold border transition-colors flex flex-col items-center gap-1 ${
-                    styleKey === s.key
-                      ? 'bg-amber-500 text-white border-amber-500'
-                      : 'bg-white text-stone-600 border-stone-200 hover:border-amber-300'
-                  }`}
-                >
-                  <span className="text-lg">{s.icon}</span>
-                  <span>{s.label}</span>
-                </button>
-              ))}
+              {STYLE_OPTIONS.filter((s) => s.key !== 'custom').map((s) => {
+                const isActive = styleKey === s.key
+                return (
+                  <button
+                    key={s.key}
+                    type="button"
+                    onClick={() => {
+                      handleStyleChange(s.key)
+                      const dailyCostUSD = destination.dailyCostUSD[s.key as TravelStyle]
+                      const accommodationPct = TRAVEL_CONFIG.accommodationPct[s.key as TravelStyle]
+                      setCustomAccommodationBRL(Math.round(dailyCostUSD * accommodationPct * exchangeRate))
+                      const varTotalBRL = dailyCostUSD * (1 - accommodationPct) * exchangeRate
+                      setCustomFoodBRL(Math.round(varTotalBRL * 0.50))
+                      setCustomTransportBRL(Math.round(varTotalBRL * 0.20))
+                      setCustomActivitiesBRL(Math.round(varTotalBRL * 0.30))
+                      setCustomFlightBRL(destination.flightFromGRU.typical)
+                      setIsCustomized(false)
+                    }}
+                    className={`py-3 px-2 rounded-xl text-sm font-semibold border transition-colors flex flex-col items-center gap-1 ${
+                      isActive
+                        ? 'bg-amber-500 text-white border-amber-500 shadow-sm'
+                        : 'bg-white text-stone-600 border-stone-200 hover:border-amber-300'
+                    }`}
+                  >
+                    <span className="text-lg">{s.icon}</span>
+                    <span className="flex items-center gap-1 text-xs">
+                      {s.label}
+                      {isActive && isCustomized && <span className="text-[10px] bg-amber-600 text-white px-1 py-0.5 rounded">*</span>}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           )}
 
-          {/* Personalizado button — full width; locked when destination is custom */}
-          <button
-            onClick={() => handleStyleChange('custom')}
-            disabled={isCustomDest}
-            className={`w-full py-2.5 rounded-xl text-sm font-semibold border transition-colors flex items-center justify-center gap-2 ${
-              styleKey === 'custom' || isCustomDest
-                ? 'bg-stone-800 text-white border-stone-800'
-                : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400 hover:text-stone-700'
-            }`}
-          >
-            <span>✏️</span>
-            <span>{isCustomDest ? 'Personalizado (obrigatório para destinos livres)' : 'Personalizado — eu sei os valores exatos'}</span>
-          </button>
-
-          {/* Style detail: breakdown card for preset, custom inputs for custom */}
-          {styleKey !== 'custom' && breakdownCategories ? (
-            <div className="rounded-xl bg-stone-50 border border-stone-100 p-3 space-y-2">
-              <div className="flex items-center justify-between mb-0.5">
-                <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">O que está incluído</p>
-                <p className="text-[10px] text-stone-400">
-                  ≈ {formatBRL(dailyBRLReference)}<span className="text-stone-300">/pessoa/dia</span>
-                </p>
-              </div>
-              <div className="space-y-2">
-                {breakdownCategories.map((cat) => (
-                  <div key={cat.label} className="flex items-start gap-2.5">
-                    <span className="text-sm w-5 shrink-0 mt-px">{cat.icon}</span>
-                    <div className="min-w-0 flex-1">
-                      <span className="text-xs font-semibold text-stone-600">{cat.label}</span>
-                      <span className="text-xs text-stone-400"> · {cat.detail}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-[10px] text-stone-400 italic pt-0.5">
-                Hospedagem calculada por quarto, compartilhada entre os viajantes.
+          {/* Interactive customization card */}
+          <div className="rounded-2xl border p-5 space-y-4" style={{ backgroundColor: 'var(--c-surface)', borderColor: 'var(--c-line)' }}>
+            <div className="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+              <h4 className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>
+                {isCustomDest 
+                  ? 'Estimativa de Custos' 
+                  : `Personalizar Itens: ${currentStyleOption.label} ${isCustomized ? '(Ajustado)' : '(Recomendado)'}`
+                }
+              </h4>
+              <p className="text-sm font-bold" style={{ color: 'var(--c-emerald)' }}>
+                Diária Total: {formatBRL(customAccommodationBRL + (customFoodBRL + customTransportBRL + customActivitiesBRL) * travelers)}/dia
               </p>
             </div>
-          ) : (styleKey === 'custom' || isCustomDest) ? (
-            <div className="rounded-xl bg-stone-50 border border-stone-100 p-4 space-y-4">
-              <p className="text-xs text-stone-500 leading-relaxed">
-                Informe seus próprios valores. Pesquise no Google Flights, Booking, Airbnb e some tudo aqui.
-              </p>
 
-              {/* Custom daily cost */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-stone-600 uppercase tracking-wide">
-                  Custo diário por pessoa
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">R$</span>
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min={1}
-                    value={customDailyBRL}
-                    onChange={(e) => setCustomDailyBRL(Number(e.target.value) || 0)}
-                    className="w-full border border-stone-200 rounded-xl pl-9 pr-4 py-3 text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-lg font-semibold tabular-nums"
-                  />
+            <div className="space-y-4 divide-y" style={{ borderColor: 'var(--c-line)' }}>
+              {/* 1. Flight tickets */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 first:pt-0 first:border-0">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">✈️</span>
+                    <span className="text-base font-semibold" style={{ color: 'var(--c-ink)' }}>Passagem aérea (por pessoa)</span>
+                  </div>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>Voo de ida e volta saindo de São Paulo (GRU)</p>
                 </div>
-                <p className="text-[10px] text-stone-400">
-                  Hospedagem + alimentação + transporte local + atividades. A hospedagem é dividida entre os viajantes.
-                </p>
-              </div>
-
-              {/* Custom flight */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-stone-600 uppercase tracking-wide">
-                  Passagem aérea — total ida e volta
-                </label>
-                <div className="relative">
+                <div className="relative w-full sm:w-36 shrink-0">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">R$</span>
                   <input
                     type="number"
                     inputMode="decimal"
                     min={0}
-                    value={customFlightTotalBRL}
-                    onChange={(e) => setCustomFlightTotalBRL(Number(e.target.value) || 0)}
-                    className="w-full border border-stone-200 rounded-xl pl-9 pr-4 py-3 text-stone-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-lg font-semibold tabular-nums"
+                    value={customFlightBRL || ''}
+                    onChange={(e) => {
+                      setCustomFlightBRL(Math.max(0, Number(e.target.value) || 0))
+                      setIsCustomized(true)
+                    }}
+                    className="w-full border rounded-xl pl-9 pr-3.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-amber-400 tabular-nums"
+                    style={{
+                      backgroundColor: 'var(--c-bg)',
+                      color: 'var(--c-ink)',
+                      borderColor: 'var(--c-line)'
+                    }}
                   />
                 </div>
-                <p className="text-[10px] text-stone-400">
-                  Total para {travelers} pessoa{travelers !== 1 ? 's' : ''}, ida e volta. Pesquise no Google Flights com datas flexíveis.
-                </p>
               </div>
 
-              {/* Custom summary hint */}
-              <div className="rounded-lg bg-amber-50 border border-amber-100 px-3 py-2">
-                <p className="text-xs text-amber-700">
-                  Custo total estimado (sem voo, sem margem):{' '}
-                  <strong>
-                    {formatBRL(customDailyBRL * 0.45 * days + customDailyBRL * 0.55 * days * travelers)}
-                  </strong>{' '}
-                  · {travelers}p × {days}d
-                </p>
+              {/* 2. Accommodation */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t" style={{ borderColor: 'var(--c-line)' }}>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🏨</span>
+                    <span className="text-base font-semibold" style={{ color: 'var(--c-ink)' }}>Hospedagem (diária do quarto)</span>
+                  </div>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>Custo total do hotel/Airbnb por noite (dividido entre todos)</p>
+                </div>
+                <div className="relative w-full sm:w-36 shrink-0">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">R$</span>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    value={customAccommodationBRL || ''}
+                    onChange={(e) => {
+                      setCustomAccommodationBRL(Math.max(0, Number(e.target.value) || 0))
+                      setIsCustomized(true)
+                    }}
+                    className="w-full border rounded-xl pl-9 pr-3.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-amber-400 tabular-nums"
+                    style={{
+                      backgroundColor: 'var(--c-bg)',
+                      color: 'var(--c-ink)',
+                      borderColor: 'var(--c-line)'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* 3. Food */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t" style={{ borderColor: 'var(--c-line)' }}>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🍽️</span>
+                    <span className="text-base font-semibold" style={{ color: 'var(--c-ink)' }}>Alimentação (por dia/pessoa)</span>
+                  </div>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>Refeições, lanches, cafés e bebidas</p>
+                </div>
+                <div className="relative w-full sm:w-36 shrink-0">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">R$</span>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    value={customFoodBRL || ''}
+                    onChange={(e) => {
+                      setCustomFoodBRL(Math.max(0, Number(e.target.value) || 0))
+                      setIsCustomized(true)
+                    }}
+                    className="w-full border rounded-xl pl-9 pr-3.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-amber-400 tabular-nums"
+                    style={{
+                      backgroundColor: 'var(--c-bg)',
+                      color: 'var(--c-ink)',
+                      borderColor: 'var(--c-line)'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* 4. Transport */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t" style={{ borderColor: 'var(--c-line)' }}>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🚕</span>
+                    <span className="text-base font-semibold" style={{ color: 'var(--c-ink)' }}>Transporte local (por dia/pessoa)</span>
+                  </div>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>Metrô, ônibus, táxi, transfer ou Uber</p>
+                </div>
+                <div className="relative w-full sm:w-36 shrink-0">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">R$</span>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    value={customTransportBRL || ''}
+                    onChange={(e) => {
+                      setCustomTransportBRL(Math.max(0, Number(e.target.value) || 0))
+                      setIsCustomized(true)
+                    }}
+                    className="w-full border rounded-xl pl-9 pr-3.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-amber-400 tabular-nums"
+                    style={{
+                      backgroundColor: 'var(--c-bg)',
+                      color: 'var(--c-ink)',
+                      borderColor: 'var(--c-line)'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* 5. Activities */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t" style={{ borderColor: 'var(--c-line)' }}>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🎫</span>
+                    <span className="text-base font-semibold" style={{ color: 'var(--c-ink)' }}>Atividades (por dia/pessoa)</span>
+                  </div>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>Museus, passeios pagos, guias e shows</p>
+                </div>
+                <div className="relative w-full sm:w-36 shrink-0">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">R$</span>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    value={customActivitiesBRL || ''}
+                    onChange={(e) => {
+                      setCustomActivitiesBRL(Math.max(0, Number(e.target.value) || 0))
+                      setIsCustomized(true)
+                    }}
+                    className="w-full border rounded-xl pl-9 pr-3.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-amber-400 tabular-nums"
+                    style={{
+                      backgroundColor: 'var(--c-bg)',
+                      color: 'var(--c-ink)',
+                      borderColor: 'var(--c-line)'
+                    }}
+                  />
+                </div>
               </div>
             </div>
-          ) : null}
+
+            <div className="pt-2 text-xs leading-relaxed italic" style={{ color: 'var(--c-muted)' }}>
+              📌 Hospedagem calculada de forma única por noite (dividida pelo grupo), enquanto passagem aérea, alimentação, transporte e atividades são multiplicados pelo número de viajantes ({travelers}p) e dias ({days}d).
+            </div>
+          </div>
         </div>
 
         {/* Extras */}
@@ -731,16 +930,24 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
           {showBreakdown && (
             <div className="px-5 pb-4 space-y-2 border-t border-stone-50">
               <div className="flex items-center justify-between gap-3 text-sm pt-3">
-                <span className="text-stone-500 min-w-0">✈ Voo ({travelers}x, ida e volta)</span>
-                <span className="font-medium tabular-nums shrink-0">{formatBRL(tripCost.flightBRL)}</span>
+                <span className="text-stone-500 min-w-0">✈ Passagem aérea ({travelers}x, ida e volta)</span>
+                <span className="font-medium tabular-nums shrink-0">{formatBRL(customFlightBRL * travelers)}</span>
               </div>
               <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="text-stone-500 min-w-0">🏨 Hospedagem ({days}d, quarto compartilhado)</span>
-                <span className="font-medium tabular-nums shrink-0">{formatBRL(tripCost.accommodationUSD * exchangeRate)}</span>
+                <span className="text-stone-500 min-w-0">🏨 Hospedagem ({days}d, total do quarto)</span>
+                <span className="font-medium tabular-nums shrink-0">{formatBRL(customAccommodationBRL * days)}</span>
               </div>
               <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="text-stone-500 min-w-0">🍽 Alimentação + atividades ({days}d × {travelers}p)</span>
-                <span className="font-medium tabular-nums shrink-0">{formatBRL(tripCost.variableUSD * exchangeRate)}</span>
+                <span className="text-stone-500 min-w-0">🍽 Alimentação ({days}d × {travelers}p)</span>
+                <span className="font-medium tabular-nums shrink-0">{formatBRL(customFoodBRL * days * travelers)}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span className="text-stone-500 min-w-0">🚕 Transporte local ({days}d × {travelers}p)</span>
+                <span className="font-medium tabular-nums shrink-0">{formatBRL(customTransportBRL * days * travelers)}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span className="text-stone-500 min-w-0">🎫 Atividades ({days}d × {travelers}p)</span>
+                <span className="font-medium tabular-nums shrink-0">{formatBRL(customActivitiesBRL * days * travelers)}</span>
               </div>
               {tripCost.visaCostBRL > 0 && (
                 <div className="flex items-center justify-between gap-3 text-sm">

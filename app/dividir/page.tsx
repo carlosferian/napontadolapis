@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Dividir a Conta — Calculadora de rateio por pessoa',
   description: 'Divida a conta do restaurante sem discussão. Adicione os nomes, escolha a gorjeta e pronto. Sem julgamento, só a matemática.',
   openGraph: {
-    title: 'Dividir a Conta — Na Ponta do Lápis',
+    title: 'Dividir a Conta — A Ponta do Lápis',
     description: 'Sem discussão. Só a matemática.',
     url: 'https://apontadolapis.com.br/dividir',
     locale: 'pt_BR',

@@ -30,6 +30,20 @@
   --gradient-brand: linear-gradient(135deg, #1A5E40 0%, #0D8B72 55%, #00C4BE 100%);
 }
 
+html {
+  font-size: 16px;
+}
+@media (min-width: 1024px) {
+  html {
+    font-size: 17px;
+  }
+}
+@media (min-width: 1400px) {
+  html {
+    font-size: 18px;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -93,6 +107,12 @@ body {
   --c-blue-calm: #1F5FBA;
   --c-blue-soft: #E3ECF8;
   --c-shadow-card: 0 1px 2px rgba(15, 17, 16, 0.04), 0 12px 32px rgba(15, 17, 16, 0.06);
+  --c-banner-bg: #111513;
+  --c-banner-border: rgba(255, 255, 255, 0.08);
+  --c-banner-title: #FBFAF7;
+  --c-banner-text: rgba(251, 250, 247, 0.7);
+  --c-banner-muted: rgba(251, 250, 247, 0.45);
+  --c-banner-accent: #4ADE91;
 }
 
 [data-theme="dark"] {
@@ -113,6 +133,12 @@ body {
   --c-blue-calm: #6FA8F0;
   --c-blue-soft: rgba(111, 168, 240, 0.10);
   --c-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.40);
+  --c-banner-bg: #161A18;
+  --c-banner-border: rgba(241, 239, 232, 0.15);
+  --c-banner-title: #F1EFE8;
+  --c-banner-text: rgba(241, 239, 232, 0.7);
+  --c-banner-muted: rgba(241, 239, 232, 0.45);
+  --c-banner-accent: #4ADE91;
 }
 
 /* Page background — responds to dark mode on body/nav/footer */

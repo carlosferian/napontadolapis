@@ -27,10 +27,10 @@ export function SliderField({
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-baseline">
-        <label htmlFor={id} className="text-sm font-medium text-stone-600">
+        <label htmlFor={id} className="text-base font-semibold" style={{ color: 'var(--c-muted)' }}>
           {label}
         </label>
-        <span className="text-lg font-bold text-stone-900 tabular-nums">
+        <span className="text-xl sm:text-2xl font-bold tabular-nums" style={{ color: 'var(--c-ink)' }}>
           {formatValue(value)}
         </span>
       </div>
@@ -47,9 +47,10 @@ export function SliderField({
         aria-valuemax={max}
         aria-valuenow={value}
         aria-valuetext={formatValue(value)}
-        className="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
+        className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+        style={{ backgroundColor: 'var(--c-line)' }}
       />
-      <div className="flex justify-between text-xs text-stone-400">
+      <div className="flex justify-between text-sm text-stone-400">
         <span>{formatValue(min)}</span>
         <span>{formatValue(max)}</span>
       </div>

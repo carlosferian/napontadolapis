@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Calculadoras de Viagem — Quanto custa viajar?',
   description: 'Calcule o custo real da sua próxima viagem em reais, com câmbio, IOF e plano de poupança mensal. Você sonha com a viagem. A gente faz a conta.',
   openGraph: {
-    title: 'Viagens — Na Ponta do Lápis',
+    title: 'Viagens — A Ponta do Lápis',
     description: 'Você sonha com a viagem. A gente faz a conta.',
     url: 'https://apontadolapis.com.br/viagens',
     locale: 'pt_BR',

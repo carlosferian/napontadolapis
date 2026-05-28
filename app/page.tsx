@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Na Ponta do Lápis — calculadoras financeiras gratuitas para o brasileiro',
+  title: 'A Ponta do Lápis — calculadoras financeiras gratuitas para o brasileiro',
   description: 'Calculadoras financeiras gratuitas: custo de apostas, cigarro, vape, viagens com câmbio e IOF, dividir conta e comparativo de investimentos. Sem cadastro.',
 }
 
@@ -59,6 +59,15 @@ const calcs = [
     body: 'Compare hábitos do cotidiano com Selic, CDI e Tesouro. O dinheiro trabalha — ou some.',
     pill: 'INVESTIMENTOS',
     pillVariant: '',
+    accent: 'var(--c-emerald)',
+  },
+  {
+    href: '/juros-compostos',
+    eyebrow: 'CRESCER · SIMULADOR',
+    title: 'Juros Compostos',
+    body: 'Projete o crescimento de seus aportes mensais e visualize o efeito bola de neve.',
+    pill: 'JUROS COMPOSTOS',
+    pillVariant: 'c-pill-blue',
     accent: 'var(--c-emerald)',
   },
 ]
@@ -139,10 +148,10 @@ export default function HomePage() {
       <section className="space-y-4">
         <div className="flex items-baseline gap-3" style={{ borderBottom: '1px solid var(--c-line)', paddingBottom: 16 }}>
           <h2 className="c-display" style={{ fontSize: 28, color: 'var(--c-ink)' }}>Calculadoras</h2>
-          <span className="c-eyebrow">6 ferramentas</span>
+          <span className="c-eyebrow">7 ferramentas</span>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {calcs.map((calc) => (
             <Link
               key={calc.href}
@@ -223,20 +232,20 @@ export default function HomePage() {
       <section
         id="app"
         className="calm-section rounded-3xl p-10 sm:p-14 space-y-6"
-        style={{ background: 'var(--c-ink)', border: '1px solid var(--c-line-strong)' }}
+        style={{ background: 'var(--c-banner-bg)', border: '1px solid var(--c-banner-border)' }}
       >
         <div>
-          <span className="c-eyebrow" style={{ color: 'var(--c-emerald)', fontSize: 10 }}>
+          <span className="c-eyebrow" style={{ color: 'var(--c-banner-accent)', fontSize: 10 }}>
             APP EM DESENVOLVIMENTO · ANDROID
           </span>
         </div>
 
         <div style={{ maxWidth: 560 }}>
-          <h3 className="c-display" style={{ fontSize: 'clamp(28px, 4vw, 44px)', color: 'var(--c-bg)', lineHeight: 1.05 }}>
-            Na Ponta do Lápis<br />
-            <span className="c-display-500" style={{ color: 'var(--c-emerald)' }}>no seu bolso.</span>
+          <h3 className="c-display" style={{ fontSize: 'clamp(28px, 4vw, 44px)', color: 'var(--c-banner-title)', lineHeight: 1.05 }}>
+            A Ponta do Lápis<br />
+            <span className="c-display-500" style={{ color: 'var(--c-banner-accent)' }}>no seu bolso.</span>
           </h3>
-          <p style={{ color: 'rgba(241,239,232,0.5)', fontSize: 15, lineHeight: 1.65, marginTop: 16 }}>
+          <p style={{ color: 'var(--c-banner-text)', fontSize: 15, lineHeight: 1.65, marginTop: 16 }}>
             Calculadoras pontuais são o ponto de partida. O app é para quem quer acompanhar o mês
             inteiro — cada gasto, cada entrada, cada meta. A mesma honestidade matemática do site,
             agora como rotina diária.
@@ -252,14 +261,14 @@ export default function HomePage() {
             'Importe sua fatura inteira de uma vez',
             'Defina limites por categoria e receba alertas antes de estourar',
           ].map((item) => (
-            <li key={item} style={{ display: 'flex', gap: 10, fontSize: 13, color: 'rgba(241,239,232,0.4)', lineHeight: 1.5 }}>
-              <span style={{ color: 'var(--c-emerald)', flexShrink: 0, marginTop: 2 }}>·</span>
+            <li key={item} style={{ display: 'flex', gap: 10, fontSize: 13, color: 'var(--c-banner-text)', opacity: 0.85, lineHeight: 1.5 }}>
+              <span style={{ color: 'var(--c-banner-accent)', flexShrink: 0, marginTop: 2 }}>·</span>
               {item}
             </li>
           ))}
         </ul>
 
-        <p style={{ color: 'rgba(241,239,232,0.2)', fontSize: 11, fontStyle: 'italic' }}>
+        <p style={{ color: 'var(--c-banner-muted)', fontSize: 11, fontStyle: 'italic' }}>
           sem data prometida — só quando estiver bom.
         </p>
       </section>

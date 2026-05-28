@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Quanto custa fumar ou vapear? Calculadora do custo real do cigarro e vape',
   description: 'Calcule quanto você gasta por mês com cigarro ou vape e o que esse dinheiro renderia investido na Selic em 10 ou 30 anos. Sem moralismo. Só a conta.',
   openGraph: {
-    title: 'Custo do Fumo — Na Ponta do Lápis',
+    title: 'Custo do Fumo — A Ponta do Lápis',
     description: 'Sem moralismo. Só a conta.',
     url: 'https://apontadolapis.com.br/fumo',
     locale: 'pt_BR',

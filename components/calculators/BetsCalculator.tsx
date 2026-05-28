@@ -32,30 +32,32 @@ export function BetsCalculator() {
   const difference = invested5y - projection5y
 
   return (
-    <div className="space-y-4">
-      <CalculatorCard title="Calculadora de Apostas" subtitle="Sem julgamento. Só os números.">
-        <SliderField
-          id="monthly-bet"
-          label="Valor apostado por mês"
-          value={monthly}
-          min={50}
-          max={5000}
-          step={50}
-          onChange={setMonthly}
-        />
-        <SliderField
-          id="months-bet"
-          label="Há quantos meses aposta"
-          value={months}
-          min={1}
-          max={60}
-          step={1}
-          onChange={setMonths}
-          formatValue={(v) => `${v} ${v === 1 ? 'mês' : 'meses'}`}
-        />
-      </CalculatorCard>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:items-start">
+      <div className="lg:col-span-5">
+        <CalculatorCard title="Calculadora de Apostas" subtitle="Sem julgamento. Só os números.">
+          <SliderField
+            id="monthly-bet"
+            label="Valor apostado por mês"
+            value={monthly}
+            min={50}
+            max={5000}
+            step={50}
+            onChange={setMonthly}
+          />
+          <SliderField
+            id="months-bet"
+            label="Há quantos meses aposta"
+            value={months}
+            min={1}
+            max={60}
+            step={1}
+            onChange={setMonths}
+            formatValue={(v) => `${v} ${v === 1 ? 'mês' : 'meses'}`}
+          />
+        </CalculatorCard>
+      </div>
 
-      <div role="region" aria-live="polite" aria-label="Resultado do cálculo" className="space-y-4">
+      <div role="region" aria-live="polite" aria-label="Resultado do cálculo" className="space-y-4 lg:col-span-7">
         <ResultHero
           label="O que saiu do seu bolso"
           value={formatBRL(totalSpent)}
@@ -77,8 +79,8 @@ export function BetsCalculator() {
 
         <ComparisonList monthlyAmount={monthly} comparisons={comparisons} />
 
-        <div className="bg-stone-50 rounded-2xl p-4">
-          <p className="text-xs text-stone-400 mb-3 text-center">Compartilhe o resultado</p>
+        <div className="rounded-2xl p-4" style={{ backgroundColor: 'var(--c-surface)' }}>
+          <p className="text-xs mb-3 text-center" style={{ color: 'var(--c-muted)' }}>Compartilhe o resultado</p>
           <ScaledPreview>
             <ShareCardBase
               id="bets-share-card"
