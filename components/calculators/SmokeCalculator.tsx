@@ -16,10 +16,10 @@ import { comments } from '@/lib/contextualComments'
 import { RATES } from '@/config/rates'
 
 const comparisons = [
-  { icon: '🏥', label: 'Plano de saúde básico', value: 250, unit: 'meses' },
-  { icon: '📱', label: 'Celular intermediário à vista (÷12)', value: 100, unit: 'meses' },
-  { icon: '📚', label: 'Livros por mês', value: 45, unit: 'livros' },
-  { icon: '✈️', label: 'Viagens domésticas/ano', value: 800 / 12, unit: 'meses' },
+  { icon: '🏥', label: 'Planos de saúde básicos', value: 250, unit: 'meses' },
+  { icon: '🛒', label: 'Carrinhos de supermercado (médios)', value: 250, unit: 'compras' },
+  { icon: '📚', label: 'Livros físicos impressos', value: 50, unit: 'livros' },
+  { icon: '📺', label: 'Assinaturas de streaming premium', value: 60, unit: 'meses' },
 ]
 
 type ProductType = 'cigarro' | 'vape'
@@ -123,6 +123,7 @@ export function SmokeCalculator() {
           value={formatBRL(monthlyCost)}
           comment={comments.fumoMensal(monthlyCost)}
           colorClass="text-orange-500"
+          infoTooltip="Esta comparação ilustra o poder de compra real do valor gasto mensalmente com cigarros ou vape, equivalente a serviços básicos recorrentes (como planos de saúde ou viagens) de mesma faixa de preço no Brasil."
         />
 
         <MetricGrid

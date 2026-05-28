@@ -8,10 +8,12 @@ function getComment(value: number, ranges: CommentRange[]): string {
 }
 
 const apostasRanges: CommentRange[] = [
-  [0, 500, 'equivale a uma semana de mercado.'],
-  [500, 2000, 'isso dá umas férias em Maragogi.'],
-  [2000, 8000, 'deu pra comprar um carro popular usado.'],
-  [8000, 99999999, 'seria entrada de um apartamento.'],
+  [0, 500, 'dá para fazer compras básicas de supermercado.'],
+  [500, 2000, 'dá para comprar um celular intermediário.'],
+  [2000, 7000, 'compra um console de última geração completo.'],
+  [7000, 20000, 'deu o preço de uma moto seminova de 150cc.'],
+  [20000, 60000, 'já paga um excelente carro popular usado.'],
+  [60000, 99999999, 'seria a entrada de um excelente apartamento.'],
 ]
 
 const fumoRanges: CommentRange[] = [

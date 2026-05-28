@@ -16,10 +16,10 @@ import { comments } from '@/lib/contextualComments'
 import { RATES } from '@/config/rates'
 
 const comparisons = [
-  { icon: '🛒', label: 'Semanas de mercado', value: 800 / 4, unit: 'semanas' },
-  { icon: '📱', label: 'Mensalidades de celular', value: 60, unit: 'meses' },
-  { icon: '✈️', label: 'Passagens SP→RJ', value: 350, unit: 'passagens' },
-  { icon: '📚', label: 'Livros por mês', value: 45, unit: 'livros' },
+  { icon: '🛒', label: 'Carrinhos de supermercado (médios)', value: 250, unit: 'compras' },
+  { icon: '📺', label: 'Assinaturas de streaming premium', value: 60, unit: 'meses' },
+  { icon: '⛽', label: 'Tanques de combustível cheios (50L)', value: 280, unit: 'tanques' },
+  { icon: '📚', label: 'Livros físicos impressos', value: 50, unit: 'livros' },
 ]
 
 export function BetsCalculator() {
@@ -63,6 +63,7 @@ export function BetsCalculator() {
           value={formatBRL(totalSpent)}
           comment={comments.apostasTotal(totalSpent)}
           colorClass="text-red-500"
+          infoTooltip="Esta comparação ilustra o poder de compra real do montante total acumulado que saiu do seu bolso, baseado em valores médios de bens e serviços de consumo vigentes no Brasil."
         />
 
         <SectionDivider label="Projeção em 5 anos" />
