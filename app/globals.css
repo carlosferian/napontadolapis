@@ -303,3 +303,66 @@ body {
 .calm-calc-link:hover {
   transform: translateY(-2px);
 }
+
+/* ─── Infinite Stock Ticker Marquee Effect ────────────────────────── */
+@keyframes ticker-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.c-ticker-container {
+  overflow: hidden;
+  width: 100%;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 20px;
+  padding: 16px 0;
+  display: flex;
+  position: relative;
+}
+
+/* Elegant fade gradient masks on the sides for a high-end overlay effect */
+.c-ticker-container::before,
+.c-ticker-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  z-index: 10;
+  pointer-events: none;
+  transition: background-color 0.35s ease;
+}
+.c-ticker-container::before {
+  left: 0;
+  background: linear-gradient(to right, var(--c-surface) 0%, transparent 100%);
+}
+.c-ticker-container::after {
+  right: 0;
+  background: linear-gradient(to left, var(--c-surface) 0%, transparent 100%);
+}
+
+.c-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 32s linear infinite;
+}
+
+.c-ticker-track:hover {
+  animation-play-state: paused;
+}
+
+.c-ticker-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 48px;
+  border-right: 1px solid var(--c-line);
+  flex-shrink: 0;
+  min-width: 190px;
+}
+

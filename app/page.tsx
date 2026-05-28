@@ -119,35 +119,40 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* Market context strip */}
-      <div
-        className="calm-card-surface rounded-2xl p-5 border border-[var(--c-line)] flex items-center justify-between gap-6 overflow-x-auto"
-        style={{ scrollbarWidth: 'none', background: 'var(--c-surface)' }}
-      >
-        {[
-          { label: 'APOSTAS 2024', value: MARKET_DATA.apostas, isAccent: true },
-          { label: 'SELIC COPOM', value: MARKET_DATA.selic },
-          { label: 'DÓLAR (USD/BRL)', value: MARKET_DATA.usd },
-          { label: 'IOF CÂMBIO', value: MARKET_DATA.iof },
-          { label: 'IPCA 12M', value: MARKET_DATA.ipca },
-        ].map(({ label, value, isAccent }) => (
-          <div key={label} className="flex-shrink-0 flex flex-col gap-1.5 px-4" style={{ minWidth: 130 }}>
-            <span className="c-eyebrow" style={{ fontSize: 10, letterSpacing: '0.12em', color: 'var(--c-muted)', fontWeight: 600 }}>
-              {label}
-            </span>
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 'clamp(14px, 1.8vw, 17px)',
-                fontWeight: 700,
-                color: isAccent ? 'var(--c-emerald)' : 'var(--c-ink)',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {value}
-            </span>
-          </div>
-        ))}
+      {/* Market context strip — Infinite marquee stock ticker */}
+      <div className="c-ticker-container">
+        <div className="c-ticker-track">
+          {[
+            { label: 'APOSTAS 2024', value: MARKET_DATA.apostas, isAccent: true },
+            { label: 'SELIC COPOM', value: MARKET_DATA.selic },
+            { label: 'DÓLAR (USD/BRL)', value: MARKET_DATA.usd },
+            { label: 'IOF CÂMBIO', value: MARKET_DATA.iof },
+            { label: 'IPCA 12M', value: MARKET_DATA.ipca },
+          ].concat([
+            { label: 'APOSTAS 2024', value: MARKET_DATA.apostas, isAccent: true },
+            { label: 'SELIC COPOM', value: MARKET_DATA.selic },
+            { label: 'DÓLAR (USD/BRL)', value: MARKET_DATA.usd },
+            { label: 'IOF CÂMBIO', value: MARKET_DATA.iof },
+            { label: 'IPCA 12M', value: MARKET_DATA.ipca },
+          ]).map(({ label, value, isAccent }, idx) => (
+            <div key={idx} className="c-ticker-item">
+              <span className="c-eyebrow" style={{ fontSize: 10, letterSpacing: '0.12em', color: 'var(--c-muted)', fontWeight: 600 }}>
+                {label}
+              </span>
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: isAccent ? 'var(--c-emerald)' : 'var(--c-ink)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {value}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Calculator grid */}
