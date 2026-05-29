@@ -326,20 +326,20 @@ export function IncomeCalculator() {
 
         {/* Insight card */}
         {results.isPerpetual ? (
-          <div className="rounded-2xl border p-4 flex gap-3 bg-emerald-500/5 border-emerald-500/10 text-xs text-emerald-800 dark:text-emerald-300 leading-relaxed">
+          <div className="rounded-2xl border p-4 flex gap-3 bg-emerald-500/5 border-emerald-500/10 text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed">
             <ShieldCheck className="shrink-0 text-emerald-600 dark:text-emerald-400 animate-bounce" size={20} />
             <div>
-              <p className="font-bold">Independência Financeira Perpétua Atingida! 🎓</p>
+              <p className="font-extrabold text-emerald-950 dark:text-emerald-100 text-sm mb-1">Independência Financeira Perpétua Atingida! 🎓</p>
               <p>
                 Os juros mensais gerados pelo seu patrimônio cobrem com folga sua retirada de **{formatBRL(results.R)}**. Isso significa que o capital principal nunca acabará, e seus investimentos continuarão crescendo de forma estável. Você atingiu a perpetuidade e pode viver de renda para sempre!
               </p>
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl border p-4 flex gap-3 bg-amber-500/5 border-amber-500/10 text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+          <div className="rounded-2xl border p-4 flex gap-3 bg-amber-500/5 border-amber-500/10 text-xs text-amber-950 dark:text-amber-200 leading-relaxed">
             <Flame className="shrink-0 text-amber-600 dark:text-amber-400" size={20} />
             <div>
-              <p className="font-bold">Consumo de Capital Ativo</p>
+              <p className="font-extrabold text-amber-950 dark:text-amber-100 text-sm mb-1">Consumo de Capital Ativo</p>
               <p>
                 Sua retirada de **{formatBRL(results.R)}** é superior aos rendimentos gerados. O capital principal está sendo gradualmente consumido para suprir as retiradas. Sob estas taxas e período, seu patrimônio durará exatamente **{results.T.toFixed(1).replace('.', ',')} anos** antes de zerar por completo.
               </p>
