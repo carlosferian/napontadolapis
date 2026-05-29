@@ -9,6 +9,14 @@ import { ChevronDown } from 'lucide-react'
 const investmentItems = [
   { href: '/investimentos', label: 'E se tivesse investido?', desc: 'Compare hábitos do cotidiano com renda fixa.' },
   { href: '/juros-compostos', label: 'Juros Compostos', desc: 'Simule seus aportes mensais no tempo.' },
+  { href: '/investimentos/viver-de-renda', label: 'Viver de Renda', desc: 'Planeje sua aposentadoria e independência financeira.' },
+]
+
+const workItems = [
+  { href: '/trabalho/realidade-brasileira', label: 'Realidade Brasileira', desc: 'Onde seu salário se situa na pirâmide real.' },
+  { href: '/trabalho/seguro-desemprego', label: 'Seguro-Desemprego 2026', desc: 'Calcule parcelas e sua pista financeira de transição.' },
+  { href: '/trabalho/rescisao', label: 'Rescisão CLT', desc: 'Simule seus proventos e descontos demissionais.' },
+  { href: '/viagens/custo-de-vida', label: 'Custo de Vida entre Cidades', desc: 'Compare orçamentos para mudança ou trabalho remoto.' },
 ]
 
 const habitItems = [
@@ -19,9 +27,11 @@ const habitItems = [
 
 export function Nav() {
   const [investmentsOpen, setInvestmentsOpen] = useState(false)
+  const [workOpen, setWorkOpen] = useState(false)
   const [habitsOpen, setHabitsOpen] = useState(false)
 
   const investmentsRef = useRef<HTMLDivElement>(null)
+  const workRef = useRef<HTMLDivElement>(null)
   const habitsRef = useRef<HTMLDivElement>(null)
 
   // Close dropdowns on click outside
@@ -29,6 +39,9 @@ export function Nav() {
     function handleClickOutside(event: MouseEvent) {
       if (investmentsRef.current && !investmentsRef.current.contains(event.target as Node)) {
         setInvestmentsOpen(false)
+      }
+      if (workRef.current && !workRef.current.contains(event.target as Node)) {
+        setWorkOpen(false)
       }
       if (habitsRef.current && !habitsRef.current.contains(event.target as Node)) {
         setHabitsOpen(false)
@@ -81,6 +94,47 @@ export function Nav() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setInvestmentsOpen(false)}
+                    className="block p-2 rounded-lg hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <p className="text-sm font-semibold transition-colors group-hover:text-[var(--c-emerald)]" style={{ color: 'var(--c-ink)' }}>
+                      {item.label}
+                    </p>
+                    <p className="text-[11px] leading-normal mt-0.5" style={{ color: 'var(--c-muted)' }}>
+                      {item.desc}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Trabalho Dropdown */}
+          <div 
+            ref={workRef} 
+            className="relative"
+            onMouseEnter={() => setWorkOpen(true)}
+            onMouseLeave={() => setWorkOpen(false)}
+          >
+            <button
+              onClick={() => setWorkOpen(!workOpen)}
+              className="px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] cursor-pointer"
+              style={{ color: 'var(--c-ink)' }}
+            >
+              Trabalho
+              <ChevronDown size={12} className={`transition-transform duration-200 ${workOpen ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {workOpen && (
+              <div 
+                className="absolute left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 mt-1 w-64 rounded-xl shadow-xl border p-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                style={{ backgroundColor: 'var(--c-card-calm)', borderColor: 'var(--c-line)' }}
+              >
+                {workItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setWorkOpen(false)}
                     className="block p-2 rounded-lg hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group"
                     style={{ textDecoration: 'none' }}
                   >
@@ -160,3 +214,4 @@ export function Nav() {
     </nav>
   )
 }
+

@@ -45,6 +45,15 @@ const calcs = [
     accent: 'var(--c-blue-calm)',
   },
   {
+    href: '/viagens/custo-de-vida',
+    eyebrow: 'GEOGRAFIA · NOVO',
+    title: 'Custo de Vida entre Cidades',
+    body: 'Compare o custo de vida real entre mais de 30 cidades brasileiras para planejar sua mudança ou trabalho remoto.',
+    pill: 'CUSTO DE VIDA',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-blue-calm)',
+  },
+  {
     href: '/dividir',
     eyebrow: 'SOCIAL',
     title: 'Dividir a Conta',
@@ -68,6 +77,42 @@ const calcs = [
     title: 'Juros Compostos',
     body: 'Projete o crescimento de seus aportes mensais e visualize o efeito bola de neve.',
     pill: 'JUROS COMPOSTOS',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
+  {
+    href: '/trabalho/realidade-brasileira',
+    eyebrow: 'TRABALHO · NOVO',
+    title: 'Realidade Brasileira',
+    body: 'Onde seu salário líquido te posiciona na pirâmide da desigualdade social brasileira.',
+    pill: 'REALIDADE BR',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
+  {
+    href: '/trabalho/seguro-desemprego',
+    eyebrow: 'TRABALHO · 2026',
+    title: 'Seguro-Desemprego & Pista',
+    body: 'Projete suas parcelas oficiais de 2026 e planeje sua pista financeira de transição pós-demissão.',
+    pill: 'SEGURO',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
+  {
+    href: '/trabalho/rescisao',
+    eyebrow: 'TRABALHO · NOVO',
+    title: 'Rescisão Trabalhista CLT',
+    body: 'Projete detalhadamente todos os proventos, férias, 13º proporcional e descontos de INSS/IRRF da sua demissão.',
+    pill: 'RESCISÃO',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
+  {
+    href: '/investimentos/viver-de-renda',
+    eyebrow: 'CRESCER · NOVO',
+    title: 'Viver de Renda',
+    body: 'Planeje sua aposentadoria: altere qualquer campo e o sistema calcula e projeta juros ou tempo de retirada automaticamente.',
+    pill: 'VIVER DE RENDA',
     pillVariant: 'c-pill-blue',
     accent: 'var(--c-emerald)',
   },
@@ -159,7 +204,7 @@ export default function HomePage() {
       <section className="space-y-4">
         <div className="flex items-baseline gap-3" style={{ borderBottom: '1px solid var(--c-line)', paddingBottom: 16 }}>
           <h2 className="c-display" style={{ fontSize: 28, color: 'var(--c-ink)' }}>Calculadoras</h2>
-          <span className="c-eyebrow">7 ferramentas</span>
+          <span className="c-eyebrow">12 ferramentas</span>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

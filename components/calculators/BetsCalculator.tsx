@@ -14,12 +14,37 @@ import { compoundMonthly } from '@/lib/calculations/compound'
 import { formatBRL } from '@/lib/formatters'
 import { comments } from '@/lib/contextualComments'
 import { RATES } from '@/config/rates'
+import { ShoppingCart, Tv, Fuel, BookOpen } from 'lucide-react'
 
 const comparisons = [
-  { icon: '🛒', label: 'Carrinhos de supermercado (médios)', value: 250, unit: 'compras' },
-  { icon: '📺', label: 'Assinaturas de streaming premium', value: 60, unit: 'meses' },
-  { icon: '⛽', label: 'Tanques de combustível cheios (50L)', value: 280, unit: 'tanques' },
-  { icon: '📚', label: 'Livros físicos impressos', value: 50, unit: 'livros' },
+  { 
+    icon: ShoppingCart, 
+    label: 'Carrinhos de supermercado', 
+    value: 250, 
+    unit: 'compras',
+    explanation: 'Calculado com base em um carrinho de compras básico de supermercado no valor de R$ 250,00.' 
+  },
+  { 
+    icon: Tv, 
+    label: 'Assinaturas de streaming premium', 
+    value: 60, 
+    unit: 'meses',
+    explanation: 'Baseado no custo médio mensal de R$ 60,00 para planos familiares de streaming de vídeo ou música.' 
+  },
+  { 
+    icon: Fuel, 
+    label: 'Tanques de combustível (50L)', 
+    value: 280, 
+    unit: 'tanques',
+    explanation: 'Estimado a partir do preço médio nacional de R$ 5,60/L da gasolina comum para encher um tanque de 50 litros.' 
+  },
+  { 
+    icon: BookOpen, 
+    label: 'Livros físicos impressos', 
+    value: 50, 
+    unit: 'livros',
+    explanation: 'Considerando o preço médio de capa de R$ 50,00 para livros físicos novos de literatura ou técnicos.' 
+  },
 ]
 
 export function BetsCalculator() {

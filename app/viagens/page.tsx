@@ -41,15 +41,24 @@ export default function ViagensPage() {
         </h1>
         <p style={{ color: 'var(--c-muted)', fontSize: 16, lineHeight: 1.65, maxWidth: 560, marginBottom: 20 }}>
           A gente faz a conta. Câmbio, IOF, Wise e plano de poupança real para chegar lá.
-          Escolha um destino abaixo ou planeje o seu próprio.
+          Escolha um destino abaixo, planeje o seu próprio ou compare custos entre cidades brasileiras.
         </p>
-        <Link
-          href="/viagens/planejar"
-          className="c-btn c-btn-emerald"
-          style={{ fontSize: 14 }}
-        >
-          ✏ Planejar qualquer destino →
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/viagens/planejar"
+            className="c-btn c-btn-emerald"
+            style={{ fontSize: 14 }}
+          >
+            ✏ Planejar qualquer destino →
+          </Link>
+          <Link
+            href="/viagens/custo-de-vida"
+            className="c-btn c-btn-ghost"
+            style={{ fontSize: 14 }}
+          >
+            🌍 Comparar Custo de Vida →
+          </Link>
+        </div>
       </div>
 
       {byRegion.map(({ region, label, dests }) => (

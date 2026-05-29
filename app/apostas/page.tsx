@@ -30,10 +30,9 @@ export default function ApostasPage() {
           <span className="c-display-500" style={{ color: 'var(--c-muted)' }}>Mas você pode ser mais esperto.</span>
         </h1>
         <p style={{ color: 'var(--c-muted)', fontSize: 16, lineHeight: 1.65, maxWidth: 560 }}>
-          A indústria de apostas brasileira movimentou{' '}
-          <strong style={{ color: 'var(--c-ink)' }}>R$ 130 bilhões em 2024</strong>.
-          Cada odd tem uma margem matemática garantida — em média 5% a 7%.{' '}
-          <em>Você está pagando isso tudo.</em> Veja os números abaixo.
+          Em 2024, os brasileiros transferiram{' '}
+          <strong style={{ color: 'var(--c-ink)' }}>R$ 130 bilhões para bancas de apostas</strong>.{' '}
+          O que começa como "só uma fezinha" vira um ralo silencioso que financia jatinhos e mansões de influenciadores. A matemática das plataformas é blindada para você perder. Simule o seu gasto abaixo e veja o tamanho real do estrago.
         </p>
       </div>
 

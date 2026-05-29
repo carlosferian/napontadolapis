@@ -61,11 +61,11 @@ function CustomChartTooltip({ active, payload, label }: CustomTooltipProps) {
 
 export function CompoundInterestCalculator() {
   // Input states
-  const [initialInvestment, setInitialInvestment] = useState(10000)
-  const [monthlyContribution, setMonthlyContribution] = useState(500)
-  const [interestRate, setInterestRate] = useState(10.5)
+  const [initialInvestment, setInitialInvestment] = useState(0)
+  const [monthlyContribution, setMonthlyContribution] = useState(0)
+  const [interestRate, setInterestRate] = useState(0)
   const [interestType, setInterestType] = useState<'annual' | 'monthly'>('annual')
-  const [period, setPeriod] = useState(10)
+  const [period, setPeriod] = useState(0)
   const [periodType, setPeriodType] = useState<'years' | 'months'>('years')
 
   // UI states
@@ -177,8 +177,8 @@ export function CompoundInterestCalculator() {
   }, [results])
 
   const multiplier = results.totalInvested > 0 
-    ? (results.totalAccumulated / results.totalInvested).toFixed(1).replace('.', ',')
-    : '1,0'
+    ? (results.totalAccumulated / results.totalInvested).toFixed(2).replace('.', ',')
+    : '1,00'
 
   function exportTable() {
     const rateLabel = interestType === 'annual' ? 'a.a.' : 'a.m.'
@@ -226,11 +226,11 @@ export function CompoundInterestCalculator() {
   }
 
   function handleReset() {
-    setInitialInvestment(10000)
-    setMonthlyContribution(500)
-    setInterestRate(10.5)
+    setInitialInvestment(0)
+    setMonthlyContribution(0)
+    setInterestRate(0)
     setInterestType('annual')
-    setPeriod(10)
+    setPeriod(0)
     setPeriodType('years')
     setShowTable(false)
   }
@@ -253,9 +253,11 @@ export function CompoundInterestCalculator() {
                   id="initial-investment"
                   type="number"
                   inputMode="decimal"
+                  step="0.01"
                   min={0}
                   max={5000000}
-                  value={initialInvestment || ''}
+                  value={initialInvestment === 0 ? '' : initialInvestment}
+                  placeholder="0,00"
                   onChange={(e) => setInitialInvestment(Math.max(0, Number(e.target.value) || 0))}
                   className="w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums"
                   style={{
@@ -295,9 +297,11 @@ export function CompoundInterestCalculator() {
                   id="monthly-contribution"
                   type="number"
                   inputMode="decimal"
+                  step="0.01"
                   min={0}
                   max={500000}
-                  value={monthlyContribution || ''}
+                  value={monthlyContribution === 0 ? '' : monthlyContribution}
+                  placeholder="0,00"
                   onChange={(e) => setMonthlyContribution(Math.max(0, Number(e.target.value) || 0))}
                   className="w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums"
                   style={{
@@ -339,7 +343,8 @@ export function CompoundInterestCalculator() {
                     step={0.1}
                     min={0}
                     max={100}
-                    value={interestRate || ''}
+                    value={interestRate === 0 ? '' : interestRate}
+                    placeholder="0,0"
                     onChange={(e) => setInterestRate(Math.max(0, Number(e.target.value) || 0))}
                     className="w-full text-right border rounded-xl pr-7 pl-2.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums"
                     style={{
@@ -408,10 +413,11 @@ export function CompoundInterestCalculator() {
                   <input
                     id="period"
                     type="number"
-                    min={1}
+                    min={0}
                     max={480}
-                    value={period || ''}
-                    onChange={(e) => setPeriod(Math.max(1, Number(e.target.value) || 0))}
+                    value={period === 0 ? '' : period}
+                    placeholder="0"
+                    onChange={(e) => setPeriod(Math.max(0, Number(e.target.value) || 0))}
                     className="w-full text-right border rounded-xl px-2.5 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums"
                     style={{
                       backgroundColor: 'var(--c-bg)',
@@ -462,7 +468,7 @@ export function CompoundInterestCalculator() {
             </div>
             <input
               type="range"
-              min={1}
+              min={0}
               max={periodType === 'years' ? 40 : 360}
               step={1}
               value={period}
@@ -472,7 +478,7 @@ export function CompoundInterestCalculator() {
               style={{ backgroundColor: 'var(--c-line)' }}
             />
             <div className="flex justify-between text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
-              <span>1 {periodType === 'years' ? 'ano' : 'mês'}</span>
+              <span>0 {periodType === 'years' ? 'anos' : 'meses'}</span>
               <span>{periodType === 'years' ? '40 anos' : '360 meses'}</span>
             </div>
           </div>
@@ -517,7 +523,7 @@ export function CompoundInterestCalculator() {
               label: 'Total Investido',
               value: formatBRL(results.totalInvested),
               sublabel: 'soma dos seus aportes',
-              colorClass: 'text-stone-900 dark:text-stone-100',
+              colorClass: 'text-brand-graphite',
             },
             {
               label: 'Total em Juros',
@@ -529,7 +535,7 @@ export function CompoundInterestCalculator() {
               label: 'Percentual de Juros',
               value: results.totalAccumulated > 0 
                 ? formatPct((results.totalInterest / results.totalAccumulated) * 100)
-                : '0%',
+                : formatPct(0),
               sublabel: 'participação no total',
               colorClass: 'text-amber-500 dark:text-amber-400',
             },
