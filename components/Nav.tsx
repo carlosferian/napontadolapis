@@ -10,6 +10,7 @@ const investmentItems = [
   { href: '/investimentos', label: 'E se tivesse investido?', desc: 'Compare hábitos do cotidiano com renda fixa.' },
   { href: '/juros-compostos', label: 'Juros Compostos', desc: 'Simule seus aportes mensais no tempo.' },
   { href: '/investimentos/viver-de-renda', label: 'Viver de Renda', desc: 'Planeje sua aposentadoria e independência financeira.' },
+  { href: '/investimentos/amortizacao', label: 'Amortizar Financiamento', desc: 'Simule quitação acelerada (SAC vs Price).' },
 ]
 
 const workItems = [

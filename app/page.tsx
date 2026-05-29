@@ -116,6 +116,15 @@ const calcs = [
     pillVariant: 'c-pill-blue',
     accent: 'var(--c-emerald)',
   },
+  {
+    href: '/investimentos/amortizacao',
+    eyebrow: 'CRESCER · NOVO · VIRAL',
+    title: 'Amortizar Financiamento',
+    body: 'Simule quitação acelerada de imóveis ou veículos. Veja na tela quanto economizará de juros e anos de boleto do banco.',
+    pill: 'AMORTIZAÇÃO',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
 ]
 
 const principles = [
@@ -204,7 +213,7 @@ export default function HomePage() {
       <section className="space-y-4">
         <div className="flex items-baseline gap-3" style={{ borderBottom: '1px solid var(--c-line)', paddingBottom: 16 }}>
           <h2 className="c-display" style={{ fontSize: 28, color: 'var(--c-ink)' }}>Calculadoras</h2>
-          <span className="c-eyebrow">12 ferramentas</span>
+          <span className="c-eyebrow">13 ferramentas</span>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
