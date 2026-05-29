@@ -270,10 +270,12 @@ export function IncomeCalculator() {
                   disabled={target === 'T' && results.isPerpetual}
                   onChange={(e) => handleInputChange('T', Math.max(0, Number(e.target.value) || 0))}
                   onFocus={() => prepareForEdit('T')}
-                  className={`w-full text-right border rounded-xl pr-3.5 pl-3 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'T' ? 'bg-emerald-500/[0.04] text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : 'bg-transparent'}`}
+                  className={`w-full text-right border rounded-xl pr-3.5 pl-3 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'T' ? 'bg-emerald-500/[0.04] text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : 'bg-transparent'} disabled:opacity-100`}
                   style={{
-                    color: target === 'T' ? undefined : 'var(--c-ink)',
-                    borderColor: target === 'T' ? undefined : 'var(--c-line)'
+                    color: target === 'T' ? (results.isPerpetual ? 'var(--c-emerald)' : undefined) : 'var(--c-ink)',
+                    borderColor: target === 'T' ? undefined : 'var(--c-line)',
+                    opacity: 1,
+                    WebkitTextFillColor: target === 'T' && results.isPerpetual ? 'var(--c-emerald)' : undefined
                   }}
                 />
               </div>
@@ -301,7 +303,7 @@ export function IncomeCalculator() {
         <div className="flex justify-between items-center text-xs">
           <button
             onClick={handleReset}
-            className="text-stone-400 font-bold hover:text-red-500 transition-colors flex items-center gap-1 cursor-pointer"
+            className="text-stone-500 dark:text-stone-400 font-bold hover:text-red-500 transition-colors flex items-center gap-1 cursor-pointer"
           >
             ✕ Limpar tudo
           </button>
@@ -364,7 +366,7 @@ export function IncomeCalculator() {
               label: 'Juros Gerados',
               value: formatBRL(results.totalInterestEarned),
               sublabel: 'dinheiro gerado passivamente',
-              colorClass: 'text-amber-500 dark:text-amber-400',
+              colorClass: 'text-amber-700 dark:text-amber-400',
             },
           ]}
         />
@@ -430,7 +432,7 @@ export function IncomeCalculator() {
               />
             </AreaChart>
           </ResponsiveContainer>
-          <p className="text-[10px] text-stone-400 text-center italic">
+          <p className="text-[10px] text-stone-500 dark:text-stone-400 text-center italic">
             *A projeção assume reinvestimentos e taxa líquida constante sem considerar perdas inflacionárias adicionais.
           </p>
         </div>
