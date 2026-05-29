@@ -59,6 +59,7 @@ const IATA = {
   'bangkok':             'BKK',
   'fernando-de-noronha': 'FEN',
   'gramado':             'POA',  // Porto Alegre + transfer
+  'curitiba':            'CWB',
 }
 
 async function getToken() {

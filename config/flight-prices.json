@@ -25,6 +25,7 @@
     "dubai":               { "min": 3800, "typical": 6000 },
     "bangkok":             { "min": 4000, "typical": 6500 },
     "fernando-de-noronha": { "min": 1200, "typical": 2200 },
-    "gramado":             { "min": 400,  "typical": 900  }
+    "gramado":             { "min": 400,  "typical": 900  },
+    "curitiba":            { "min": 250,  "typical": 500  }
   }
 }

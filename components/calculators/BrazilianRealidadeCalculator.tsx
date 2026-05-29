@@ -266,7 +266,6 @@ export function BrazilianRealidadeCalculator() {
               label: `No estado: ${selectedState.code}`,
               value: salary > 0 ? `Supera ${stateDisplay}%` : '0,0%',
               sublabel: 'da população local',
-              colorClass: 'text-stone-900 dark:text-stone-100',
             },
             {
               label: 'Em salários mínimos',

@@ -203,6 +203,14 @@ const rawDestinations: Destination[] = [
     visa: { required: false },
     highlight: 'chocolate + fondue + frio. destino parcelável.',
   },
+  {
+    id: 'curitiba', name: 'Curitiba', country: 'Brasil', flag: '🇧🇷', region: 'brasil',
+    flightFromGRU: { min: 250, typical: 500 },
+    dailyCostUSD: { budget: 35, mid: 70, premium: 150 },
+    typicalDays: { min: 2, recommended: 4, extended: 6 },
+    visa: { required: false },
+    highlight: 'Jardim Botânico + Ópera de Arame + parques incríveis.',
+  },
 ]
 
 export const destinations: Destination[] = rawDestinations.map((d) => ({
