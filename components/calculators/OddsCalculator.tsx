@@ -118,8 +118,8 @@ function OddsShareCard({ odd, betAmount, houseEdge, ev, profit1000 }: OddsShareC
     <div
       id="odds-share-card"
       style={{
-        backgroundColor: '#060814',
-        backgroundImage: 'radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.02), transparent 40%), radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.01), transparent 40%)',
+        backgroundColor: '#1E2538',
+        backgroundImage: 'radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.04), transparent 45%), radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.02), transparent 45%)',
         width: 600,
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         borderRadius: 24,
@@ -139,7 +139,7 @@ function OddsShareCard({ odd, betAmount, houseEdge, ev, profit1000 }: OddsShareC
           height: 350,
           borderRadius: '50%',
           backgroundColor: accentColor,
-          opacity: 0.06,
+          opacity: 0.12,
           filter: 'blur(80px)',
           pointerEvents: 'none',
         }}
@@ -153,7 +153,7 @@ function OddsShareCard({ odd, betAmount, houseEdge, ev, profit1000 }: OddsShareC
           height: 350,
           borderRadius: '50%',
           backgroundColor: accentColor,
-          opacity: 0.03,
+          opacity: 0.08,
           filter: 'blur(80px)',
           pointerEvents: 'none',
         }}
@@ -162,7 +162,7 @@ function OddsShareCard({ odd, betAmount, houseEdge, ev, profit1000 }: OddsShareC
       {/* Header bar */}
       <div
         style={{
-          backgroundColor: '#0B0D1B',
+          backgroundColor: '#141A29',
           padding: '18px 28px',
           display: 'flex',
           alignItems: 'center',
@@ -307,7 +307,7 @@ function OddsShareCard({ odd, betAmount, houseEdge, ev, profit1000 }: OddsShareC
       {/* Footer bar */}
       <div
         style={{
-          backgroundColor: '#0B0D1B',
+          backgroundColor: '#141A29',
           padding: '16px 36px',
           display: 'flex',
           alignItems: 'center',

@@ -48,7 +48,34 @@ Tipografia: `Cormorant Garamond` (serif editorial) + `Manrope` (sans-serif limpo
 
 ---
 
-## O que foi feito — sessão atual (2026-05-25)
+## O que foi feito — sessão atual (2026-05-28)
+
+### 1. Comparador de Custo de Vida entre Cidades (`/viagens/custo-de-vida`)
+*   **Banco de Dados Integrado (`config/cities-cost.ts`):** Cobertura geográfica de 100% do território nacional com paridade de preços normalizada (São Paulo = 100). Mapeia as 27 capitais, 12 polos econômicos regionais de grande porte e 26 regiões de "Interior" unificadas para representar os demais municípios menores por estado.
+*   **Componente Interativo (`CostOfLivingCalculator.tsx`):** Entrada de custo mensal atual, seletor com botão swap e sliders dinâmicos de peso (Moradia e Alimentação com resíduo automático de Serviços somando 100%).
+*   **Diferencial por Categoria:** Barras de decaimento de preços e métricas para tomada de decisão e arbitragem geográfica (trabalho remoto para capitais vivendo no interior).
+
+### 2. Calculadora de Amortização de Financiamento SAC vs. Price (`/investimentos/amortizacao`)
+*   **Mecanismo Matemático (`lib/calculations/amortization.ts`):** Projeção de financiamento SAC e Tabela Price amortizando aportes extraordinários (mensais adicionais) com opções de redução de prazo (quitação acelerada) ou redução de parcelas.
+*   **Visualização Gráfica (`AmortizationCalculator.tsx`):** Gráfico Recharts de decaimento de saldo devedor comparando o contrato original vs. contrato acelerado (amostrado anualmente para excelente performance e visualização).
+*   **Métricas de Juros Economizados:** ResultHero detalhando exatamente quantos juros e anos de boleto foram dizimados pela amortização extra.
+
+### 3. Overhaul Artístico de Luxo dos Cartões de Compartilhamento (Share Cards)
+*   **Identidade Premium Luminous Dark-Slate (`ShareCard.tsx` e `TravelShareCard.tsx`):** Conversão total do layout simplório claro para um modelo Black Premium de altíssimo luxo editorial:
+    *   Fundo slate-navy escuro (`#1E2538`) e auras de iluminação neonatal radial glow baseadas na cor do tema (opacidades 12% e 8%).
+    *   Fronteiras finas e discretas, cabeçalhos/rodapés em slate escuro (`#141A29`), indicador neon dot ativo e tipografia Inter ultra-bold de 64px para o valor principal.
+    *   **Frosted-Glass Panels (Glassmorphism):** Blocos de métricas convertidos para panels de vidro translúcido (`rgba(255, 255, 255, 0.02)` com bordas sutis e reflexos internos).
+*   **Propagação Global:** Atualiza automaticamente 10 calculadoras que usam `ShareCardBase`/`TravelShareCard`.
+*   **Odds de Apostas (`OddsCalculator.tsx`):** Redesenho correspondente na calculadora de probabilidades esportivas, que possuía o cartão `OddsShareCard` customizado inline, aplicando auras na cor de risco coral-vermelho (`#ef4444`).
+
+### 4. Padronização Global do Rodapé de Referências (`SourcesFooter`)
+*   **Dividir a Conta (`/dividir`):** Adicionada menção de fontes à Lei da Gorjeta nº 13.419/2017 e Código de Defesa do Consumidor (Art. 39) sobre taxas facultativas.
+*   **Probabilidades de Apostas (`/apostas/probabilidades`):** Substituição do rodapé manual pelo componente de fontes unificado, citando Valor Esperado, Teorema Central do Limite e o relatório sobre bets do Banco Central do Brasil.
+*   **Branding Check:** Correção de typos legados trocando "Na Ponta" por "A Ponta do Lápis" nos metadados da página de probabilidades.
+
+---
+
+## O que foi feito — sessão anterior (2026-05-25)
 
 ### Rebrand: Na Ponta do Lápis → A Ponta do Lápis
 
@@ -232,14 +259,23 @@ napontadolapis/
 ├── app/
 │   ├── layout.tsx
 │   ├── page.tsx
-│   ├── apostas/page.tsx
-│   ├── apostas/probabilidades/page.tsx
-│   ├── investimentos/page.tsx
+│   ├── apostas/
+│   │   ├── page.tsx
+│   │   └── probabilidades/page.tsx
+│   ├── investimentos/
+│   │   ├── page.tsx
+│   │   ├── viver-de-renda/page.tsx
+│   │   └── amortizacao/page.tsx          ← Novo! Amortização SAC vs Price
 │   ├── fumo/page.tsx
 │   ├── dividir/page.tsx
+│   ├── trabalho/
+│   │   ├── realidade-brasileira/page.tsx
+│   │   ├── seguro-desemprego/page.tsx
+│   │   └── rescisao/page.tsx
 │   ├── viagens/
 │   │   ├── page.tsx
 │   │   ├── planejar/page.tsx
+│   │   ├── custo-de-vida/page.tsx        ← Novo! Comparador de Custo de Vida
 │   │   └── [destino]/page.tsx            ← 21 páginas SSG
 │   ├── sitemap.ts
 │   └── robots.ts
@@ -251,10 +287,16 @@ napontadolapis/
 │   │   ├── InvestmentComparison.tsx
 │   │   ├── SmokeCalculator.tsx
 │   │   ├── TravelCalculator.tsx
-│   │   └── SplitBillCalculator.tsx
+│   │   ├── SplitBillCalculator.tsx
+│   │   ├── BrazilianRealidadeCalculator.tsx
+│   │   ├── UnemploymentCalculator.tsx
+│   │   ├── RescissionCalculator.tsx
+│   │   ├── IncomeCalculator.tsx
+│   │   ├── CostOfLivingCalculator.tsx    ← Novo! Custo de vida UI
+│   │   └── AmortizationCalculator.tsx    ← Novo! Amortização UI
 │   ├── share/
-│   │   ├── ShareCard.tsx
-│   │   └── TravelShareCard.tsx
+│   │   ├── ShareCard.tsx                ← Upgradado para Black Luminous Mode!
+│   │   └── TravelShareCard.tsx           ← Upgradado para Black Luminous Mode!
 │   └── ui/
 │       ├── CalculatorCard.tsx
 │       ├── ResultHero.tsx
@@ -265,16 +307,19 @@ napontadolapis/
 │       ├── ShareButtons.tsx
 │       ├── SavingsChart.tsx
 │       ├── ScaledPreview.tsx
-│       └── SectionDivider.tsx
+│       ├── SectionDivider.tsx
+│       └── SourcesFooter.tsx
 ├── config/
 │   ├── rates.ts
 │   ├── travel.ts
-│   └── flight-prices.json               ← atualizado via GitHub Actions
+│   ├── flight-prices.json
+│   ├── realidade.ts
+│   └── cities-cost.ts                    ← Novo! Banco de custos das cidades
 ├── scripts/
 │   └── update-prices.mjs
 ├── .github/
 │   └── workflows/
-│       └── update-prices.yml            ← cron toda segunda 8h BRT
+│       └── update-prices.yml
 ├── public/
 │   └── logo.png
 └── lib/
@@ -282,7 +327,11 @@ napontadolapis/
     │   ├── compound.ts
     │   ├── probability.ts
     │   ├── travel.ts
-    │   └── savings.ts
+    │   ├── savings.ts
+    │   ├── income.ts
+    │   ├── rescission.ts
+    │   ├── unemployment.ts
+    │   └── amortization.ts               ← Novo! Engine matemática de amortização
     ├── formatters.ts
     ├── shareCard.ts
     └── contextualComments.ts
