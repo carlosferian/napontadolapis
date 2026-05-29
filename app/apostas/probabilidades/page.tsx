@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import { OddsCalculator } from '@/components/calculators/OddsCalculator'
+import { SourcesFooter } from '@/components/ui/SourcesFooter'
 
 export const metadata: Metadata = {
   title: 'Qual é a chance real de ganhar na bet? Calculadora de probabilidades',
   description: 'Descubra qual é sua chance matemática real de lucrar com apostas esportivas. A casa não é burra — veja os números.',
   openGraph: {
-    title: 'Probabilidades Reais — Na Ponta do Lápis',
+    title: 'Probabilidades Reais — A Ponta do Lápis',
     description: 'A casa não é burra. Veja os números.',
     url: 'https://apontadolapis.com.br/apostas/probabilidades',
     locale: 'pt_BR',
@@ -55,44 +56,11 @@ export default function ProbabilidadesPage() {
           Como o valor esperado é negativo para o apostador, a probabilidade de lucro converge para zero com o tempo.
         </p>
 
-        <div className="bg-stone-50 rounded-xl p-4 space-y-2 border border-stone-100">
-          <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide">Referências</p>
-          <ul className="space-y-1.5 text-xs text-stone-500">
-            <li>
-              <a
-                href="https://pt.wikipedia.org/wiki/Valor_esperado"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-brand-teal hover:text-brand-green underline underline-offset-2 transition-colors"
-              >
-                Wikipedia — Valor Esperado
-              </a>
-              {' '}— o conceito estatístico que explica por que a repetição não reverte a desvantagem.
-            </li>
-            <li>
-              <a
-                href="https://pt.wikipedia.org/wiki/Teorema_central_do_limite"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-brand-teal hover:text-brand-green underline underline-offset-2 transition-colors"
-              >
-                Wikipedia — Teorema Central do Limite
-              </a>
-              {' '}— base do cálculo de &ldquo;chance de estar no lucro após N apostas&rdquo;.
-            </li>
-            <li>
-              <a
-                href="https://www.bcb.gov.br/estabilidadefinanceira/apostasesportivas"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-brand-teal hover:text-brand-green underline underline-offset-2 transition-colors"
-              >
-                Banco Central do Brasil — Apostas Esportivas
-              </a>
-              {' '}— dados sobre o impacto das bets no orçamento das famílias brasileiras.
-            </li>
-          </ul>
-        </div>
+        <SourcesFooter sources={[
+          { label: 'Wikipedia — Valor Esperado (Estatística e expectativa matemática)', url: 'https://pt.wikipedia.org/wiki/Valor_esperado' },
+          { label: 'Wikipedia — Teorema Central do Limite (Base de probabilidade de retornos)', url: 'https://pt.wikipedia.org/wiki/Teorema_central_do_limite' },
+          { label: 'Banco Central do Brasil — Impacto das apostas esportivas nas finanças familiares', url: 'https://www.bcb.gov.br/estabilidadefinanceira/apostasesportivas' }
+        ]} />
 
         <p className="text-xs text-stone-400">
           Os cálculos assumem apostas simples (não acumuladas) com probabilidade implícita igual a 1 ÷ odd.

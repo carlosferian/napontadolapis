@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { SplitBillCalculator } from '@/components/calculators/SplitBillCalculator'
+import { SourcesFooter } from '@/components/ui/SourcesFooter'
 
 export const metadata: Metadata = {
   title: 'Dividir a Conta — Calculadora de rateio por pessoa',
@@ -40,9 +41,14 @@ export default function DividirPage() {
         <p className="text-brand-muted text-sm leading-relaxed">
           Divisão simples e igual entre todos. Digite o total, selecione a gorjeta (opcional)
           e adicione os nomes de quem vai pagar. O app A Ponta do Lápis, em desenvolvimento
-          para Android, vai além: foto do cardápio, divisão por item e cálculo individualizado com IA.
+          para Android, vai além: divisão por item, gorjeta ponderada proporcional e muito mais.
         </p>
       </div>
+
+      <SourcesFooter sources={[
+        { label: 'Planalto — Lei da Gorjeta nº 13.419/2017 (Regulamentação e repasse de taxas de serviço)', url: 'https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/lei/l13419.htm' },
+        { label: 'Código de Defesa do Consumidor — Cobrança opcional de taxa de serviço (Art. 39, V)', url: 'https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm' }
+      ]} />
     </div>
   )
 }
