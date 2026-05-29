@@ -31,200 +31,256 @@ export function TravelShareCard({
   savingsWise,
   sharePhrase,
 }: TravelShareCardProps) {
+  const accentColor = '#00C4BE'
+
   return (
     <div
       id="travel-share-card"
       style={{
-        backgroundColor: '#EEF2F9',
+        backgroundColor: '#060814',
+        backgroundImage: 'radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.02), transparent 40%), radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.01), transparent 40%)',
         width: 600,
-        fontFamily: 'Georgia, "Times New Roman", serif',
-        borderRadius: 20,
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        borderRadius: 24,
         overflow: 'hidden',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+        position: 'relative',
       }}
     >
+      {/* Background Decorative Glow */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: -120,
+          right: -120,
+          width: 320,
+          height: 320,
+          borderRadius: '50%',
+          backgroundColor: accentColor,
+          opacity: 0.06,
+          filter: 'blur(70px)',
+          pointerEvents: 'none',
+        }}
+      />
+      <div 
+        style={{
+          position: 'absolute',
+          bottom: -120,
+          left: -120,
+          width: 320,
+          height: 320,
+          borderRadius: '50%',
+          backgroundColor: accentColor,
+          opacity: 0.03,
+          filter: 'blur(70px)',
+          pointerEvents: 'none',
+        }}
+      />
+
       {/* Header bar */}
       <div
         style={{
-          backgroundColor: '#172030',
-          padding: '14px 24px',
+          backgroundColor: '#0B0D1B',
+          padding: '16px 28px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Glowing neon dot */}
           <div
             style={{
-              width: 6,
-              height: 6,
+              width: 8,
+              height: 8,
               borderRadius: '50%',
-              backgroundColor: '#00C4BE',
+              backgroundColor: accentColor,
+              boxShadow: `0 0 12px 3px ${accentColor}`,
             }}
           />
           <span
             style={{
-              color: '#00C4BE',
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: 3,
-              fontFamily: 'Georgia, serif',
+              color: '#FFFFFF',
+              fontSize: 12,
+              fontWeight: 800,
+              letterSpacing: '5px',
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             A PONTA DO LÁPIS
           </span>
         </div>
-        <span
-          style={{
-            color: '#00C4BE',
-            opacity: 0.35,
-            fontSize: 9,
-            letterSpacing: 1,
-            fontFamily: 'sans-serif',
-          }}
-        >
+        <span style={{ color: accentColor, opacity: 0.65, fontSize: 10, fontWeight: 700, letterSpacing: '1.5px', fontFamily: 'monospace' }}>
           apontadolapis.com.br
         </span>
       </div>
 
-      {/* Destination banner */}
+      {/* Destination banner (Luxury Glassmorphic Panel) */}
       <div
         style={{
-          background: 'linear-gradient(135deg, #1A3A5C 0%, #0D2A42 100%)',
-          padding: '18px 28px',
+          background: 'linear-gradient(135deg, rgba(0, 196, 190, 0.08) 0%, rgba(6, 8, 20, 0.85) 100%)',
+          padding: '24px 28px',
           display: 'flex',
           alignItems: 'center',
-          gap: 12,
+          gap: 16,
+          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          position: 'relative',
         }}
       >
-        <span style={{ fontSize: 32 }}>{destination.flag}</span>
+        {/* Flag with neon circular frame */}
+        <div
+          style={{
+            width: 54,
+            height: 54,
+            borderRadius: '50%',
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 32,
+            border: `2px solid ${accentColor}`,
+            boxShadow: `0 0 15px rgba(0, 196, 190, 0.25)`,
+            flexShrink: 0,
+          }}
+        >
+          {destination.flag}
+        </div>
         <div>
           <div
             style={{
-              color: '#fff',
-              fontSize: 20,
-              fontWeight: 700,
-              letterSpacing: -0.5,
+              color: '#FFFFFF',
+              fontSize: 24,
+              fontWeight: 900,
+              letterSpacing: '-0.75px',
             }}
           >
             {destination.name}
           </div>
           <div
             style={{
-              color: '#94B4C8',
-              fontSize: 11,
-              fontFamily: 'sans-serif',
-              marginTop: 2,
+              color: '#94A3B8',
+              fontSize: 12,
+              marginTop: 4,
+              fontWeight: 500,
             }}
           >
             {days} dias · {travelers} pessoa{travelers !== 1 ? 's' : ''} · {STYLE_LABELS[style]}
           </div>
         </div>
-        <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-          <div style={{ color: '#94B4C8', fontSize: 9, textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: 'sans-serif', marginBottom: 3 }}>
-            custo total
+        <div style={{ marginLeft: 'auto', textAlign: 'right', backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 16px', borderRadius: 16, border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <div style={{ color: '#64748B', fontSize: 9, textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 700, marginBottom: 3 }}>
+            CUSTO TOTAL
           </div>
-          <div style={{ color: '#00C4BE', fontSize: 26, fontWeight: 700, letterSpacing: -1 }}>
+          <div style={{ color: accentColor, fontSize: 24, fontWeight: 900, letterSpacing: '-1px' }}>
             {formatBRL(totalBRL)}
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div style={{ padding: '22px 28px 0' }}>
+      <div style={{ padding: '32px 32px 0', position: 'relative', zIndex: 2 }}>
         {/* Eyebrow */}
         <div
           style={{
-            color: '#8B8F9A',
+            color: '#8E9CAE',
             fontSize: 10,
             textTransform: 'uppercase',
-            letterSpacing: 2,
-            marginBottom: 10,
-            fontFamily: 'sans-serif',
-            fontWeight: 600,
+            letterSpacing: '2.5px',
+            marginBottom: 12,
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
           }}
         >
-          para realizar essa viagem, vou poupar
+          <span style={{ width: 12, height: 1, backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
+          PARA REALIZAR ESSA VIAGEM, VOU POUPAR
         </div>
 
         {/* Monthly savings hero */}
         <div
           style={{
-            color: '#172030',
-            fontSize: 46,
-            fontWeight: 700,
-            letterSpacing: -2,
-            lineHeight: 1,
-            marginBottom: 6,
+            color: '#FFFFFF',
+            fontSize: 58,
+            fontWeight: 950,
+            letterSpacing: '-2px',
+            lineHeight: 1.05,
+            marginBottom: 8,
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           {formatBRL(monthlyBRL)}
-          <span style={{ fontSize: 18, color: '#8B8F9A', fontWeight: 400, letterSpacing: 0, marginLeft: 8 }}>
+          <span style={{ fontSize: 20, color: '#8E9CAE', fontWeight: 500, letterSpacing: 0, marginLeft: 8 }}>
             /mês
           </span>
         </div>
 
         <div
           style={{
-            color: '#6B7280',
-            fontSize: 13,
-            marginBottom: 20,
-            fontFamily: 'sans-serif',
+            color: '#94A3B8',
+            fontSize: 14,
+            marginBottom: 28,
+            fontWeight: 500,
           }}
         >
-          chegando lá em{' '}
-          <strong style={{ color: '#172030' }}>
+          atingindo a meta em{' '}
+          <strong style={{ color: '#FFFFFF', fontWeight: 800 }}>
             {months} {months === 1 ? 'mês' : 'meses'}
           </strong>
         </div>
-
-        {/* Divider */}
-        <div style={{ height: 1, backgroundColor: '#D6E1EF', marginBottom: 18 }} />
 
         {/* Metrics grid */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: 10,
-            marginBottom: 22,
+            gap: 12,
+            marginBottom: 36,
           }}
         >
           {[
             { label: 'CUSTO DA VIAGEM', value: formatBRL(totalBRL) },
             { label: 'PRAZO', value: `${months} meses` },
             ...(savingsWise > 0
-              ? [{ label: 'ECONOMIA WISE/NOMAD', value: formatBRL(savingsWise) }]
+              ? [{ label: 'ECONOMIA ESTIMADA (WISE)', value: formatBRL(savingsWise) }]
               : [{ label: 'PAGAMENTOS', value: 'em reais' }]),
             { label: 'ESTILO', value: STYLE_LABELS[style] },
           ].map((m, i) => (
             <div
               key={i}
               style={{
-                backgroundColor: '#fff',
-                borderRadius: 12,
-                padding: '14px 16px',
-                borderLeft: '3px solid #00C4BE',
+                backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 16,
+                padding: '18px 20px',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderLeft: `4px solid ${accentColor}`,
+                boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.05)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
               }}
             >
               <div
                 style={{
-                  color: '#9CA3AF',
+                  color: '#64748B',
                   fontSize: 9,
                   textTransform: 'uppercase',
-                  letterSpacing: 1.5,
-                  marginBottom: 5,
-                  fontFamily: 'sans-serif',
-                  fontWeight: 600,
+                  letterSpacing: '1.5px',
+                  marginBottom: 6,
+                  fontWeight: 700,
                 }}
               >
                 {m.label}
               </div>
               <div
                 style={{
-                  color: '#172030',
+                  color: '#F8FAFC',
                   fontSize: 18,
-                  fontWeight: 700,
-                  letterSpacing: -0.5,
+                  fontWeight: 800,
+                  letterSpacing: '-0.5px',
                 }}
               >
                 {m.value}
@@ -237,27 +293,31 @@ export function TravelShareCard({
       {/* Footer bar */}
       <div
         style={{
-          backgroundColor: '#172030',
-          padding: '12px 28px',
+          backgroundColor: '#0B0D1B',
+          padding: '16px 36px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+          position: 'relative',
+          zIndex: 2,
         }}
       >
         <span
           style={{
-            color: '#6B7A8D',
+            color: '#64748B',
             fontSize: 11,
             fontStyle: 'italic',
             fontFamily: 'Georgia, serif',
+            fontWeight: 500,
           }}
         >
-          {sharePhrase}
+          “ {sharePhrase} ”
         </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 4, height: 4, borderRadius: '50%', backgroundColor: '#00C4BE', opacity: 0.6 }} />
-          <span style={{ color: '#00C4BE', opacity: 0.4, fontSize: 9, letterSpacing: 1, fontFamily: 'sans-serif' }}>
-            CALCULADO COM DADOS REAIS
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 5, height: 5, borderRadius: '50%', backgroundColor: accentColor, opacity: 0.8, boxShadow: `0 0 8px 1px ${accentColor}` }} />
+          <span style={{ color: '#64748B', fontSize: 9, fontWeight: 700, letterSpacing: '1.5px' }}>
+            METRICAS VERIFICADAS
           </span>
         </div>
       </div>

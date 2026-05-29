@@ -23,63 +23,103 @@ export function ShareCardBase({
     <div
       id={id}
       style={{
-        backgroundColor: '#EEF2F9',
+        backgroundColor: '#060814',
+        backgroundImage: 'radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.02), transparent 40%), radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.01), transparent 40%)',
         width: 600,
-        fontFamily: 'Georgia, "Times New Roman", serif',
-        borderRadius: 20,
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        borderRadius: 24,
         overflow: 'hidden',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+        position: 'relative',
       }}
     >
+      {/* Dynamic Background Glow representing the Accent Color */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: -150,
+          right: -150,
+          width: 350,
+          height: 350,
+          borderRadius: '50%',
+          backgroundColor: accentColor,
+          opacity: 0.07,
+          filter: 'blur(80px)',
+          pointerEvents: 'none',
+        }}
+      />
+      <div 
+        style={{
+          position: 'absolute',
+          bottom: -150,
+          left: -150,
+          width: 350,
+          height: 350,
+          borderRadius: '50%',
+          backgroundColor: accentColor,
+          opacity: 0.04,
+          filter: 'blur(80px)',
+          pointerEvents: 'none',
+        }}
+      />
+
       {/* Header bar */}
       <div
         style={{
-          backgroundColor: '#172030',
-          padding: '14px 24px',
+          backgroundColor: '#0B0D1B',
+          padding: '18px 28px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Glowing neon dot */}
           <div
             style={{
-              width: 6,
-              height: 6,
+              width: 8,
+              height: 8,
               borderRadius: '50%',
-              backgroundColor: '#00C4BE',
+              backgroundColor: accentColor,
+              boxShadow: `0 0 12px 3px ${accentColor}`,
             }}
           />
           <span
             style={{
-              color: '#00C4BE',
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: 3,
-              fontFamily: 'Georgia, serif',
+              color: '#FFFFFF',
+              fontSize: 12,
+              fontWeight: 800,
+              letterSpacing: '5px',
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             A PONTA DO LÁPIS
           </span>
         </div>
-        <span style={{ color: '#00C4BE', opacity: 0.35, fontSize: 9, letterSpacing: 1, fontFamily: 'sans-serif' }}>
+        <span style={{ color: accentColor, opacity: 0.65, fontSize: 10, fontWeight: 700, letterSpacing: '1.5px', fontFamily: 'monospace' }}>
           apontadolapis.com.br
         </span>
       </div>
 
       {/* Main content */}
-      <div style={{ padding: '28px 28px 0' }}>
+      <div style={{ padding: '36px 36px 0', position: 'relative', zIndex: 2 }}>
         {/* Eyebrow */}
         <div
           style={{
-            color: '#8B8F9A',
+            color: '#8E9CAE',
             fontSize: 10,
             textTransform: 'uppercase',
-            letterSpacing: 2,
-            marginBottom: 10,
-            fontFamily: 'sans-serif',
-            fontWeight: 600,
+            letterSpacing: '2.5px',
+            marginBottom: 12,
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
           }}
         >
+          <span style={{ width: 12, height: 1, backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
           {eyebrow}
         </div>
 
@@ -87,11 +127,13 @@ export function ShareCardBase({
         <div
           style={{
             color: accentColor,
-            fontSize: 54,
-            fontWeight: 700,
-            letterSpacing: -2,
-            lineHeight: 1,
-            marginBottom: 8,
+            fontSize: 64,
+            fontWeight: 900,
+            letterSpacing: '-2.5px',
+            lineHeight: 1.05,
+            marginBottom: 10,
+            textShadow: `0 0 20px rgba(${accentColor === '#10b981' ? '16, 185, 129' : '0, 196, 190'}, 0.15)`,
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           {mainValue}
@@ -100,57 +142,59 @@ export function ShareCardBase({
         {/* Main label */}
         <div
           style={{
-            color: '#6B7280',
-            fontSize: 13,
-            marginBottom: 24,
-            fontFamily: 'sans-serif',
-            fontWeight: 400,
+            color: '#94A3B8',
+            fontSize: 14,
+            marginBottom: 32,
+            fontWeight: 500,
+            lineHeight: 1.5,
           }}
         >
           {mainLabel}
         </div>
-
-        {/* Divider */}
-        <div style={{ height: 1, backgroundColor: '#D6E1EF', marginBottom: 20 }} />
 
         {/* Metrics grid */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: 10,
-            marginBottom: 24,
+            gap: 12,
+            marginBottom: 36,
           }}
         >
           {metrics.map((m, i) => (
             <div
               key={i}
               style={{
-                backgroundColor: '#fff',
-                borderRadius: 12,
-                padding: '14px 16px',
-                borderLeft: `3px solid ${accentColor}`,
+                backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 16,
+                padding: '18px 20px',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderLeft: `4px solid ${accentColor}`,
+                boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.05)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
               }}
             >
               <div
                 style={{
-                  color: '#9CA3AF',
+                  color: '#64748B',
                   fontSize: 9,
                   textTransform: 'uppercase',
-                  letterSpacing: 1.5,
-                  marginBottom: 5,
-                  fontFamily: 'sans-serif',
-                  fontWeight: 600,
+                  letterSpacing: '1.5px',
+                  marginBottom: 6,
+                  fontWeight: 700,
                 }}
               >
                 {m.label}
               </div>
               <div
                 style={{
-                  color: '#172030',
-                  fontSize: 18,
-                  fontWeight: 700,
-                  letterSpacing: -0.5,
+                  color: '#F8FAFC',
+                  fontSize: 20,
+                  fontWeight: 800,
+                  letterSpacing: '-0.5px',
                 }}
               >
                 {m.value}
@@ -163,27 +207,31 @@ export function ShareCardBase({
       {/* Footer bar */}
       <div
         style={{
-          backgroundColor: '#172030',
-          padding: '12px 28px',
+          backgroundColor: '#0B0D1B',
+          padding: '16px 36px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+          position: 'relative',
+          zIndex: 2,
         }}
       >
         <span
           style={{
-            color: '#6B7A8D',
+            color: '#64748B',
             fontSize: 11,
             fontStyle: 'italic',
             fontFamily: 'Georgia, serif',
+            fontWeight: 500,
           }}
         >
-          {footer}
+          “ {footer} ”
         </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 4, height: 4, borderRadius: '50%', backgroundColor: '#00C4BE', opacity: 0.6 }} />
-          <span style={{ color: '#00C4BE', opacity: 0.4, fontSize: 9, letterSpacing: 1, fontFamily: 'sans-serif' }}>
-            CALCULADO COM DADOS REAIS
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 5, height: 5, borderRadius: '50%', backgroundColor: accentColor, opacity: 0.8, boxShadow: `0 0 8px 1px ${accentColor}` }} />
+          <span style={{ color: '#64748B', fontSize: 9, fontWeight: 700, letterSpacing: '1.5px' }}>
+            METRICAS VERIFICADAS
           </span>
         </div>
       </div>
