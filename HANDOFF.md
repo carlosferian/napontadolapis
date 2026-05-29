@@ -73,6 +73,10 @@ Tipografia: `Cormorant Garamond` (serif editorial) + `Manrope` (sans-serif limpo
 *   **Probabilidades de Apostas (`/apostas/probabilidades`):** Substituição do rodapé manual pelo componente de fontes unificado, citando Valor Esperado, Teorema Central do Limite e o relatório sobre bets do Banco Central do Brasil.
 *   **Branding Check:** Correção de typos legados trocando "Na Ponta" por "A Ponta do Lápis" nos metadados da página de probabilidades.
 
+### 5. Correção de Contraste na Calculadora de Viver de Renda (`/investimentos/viver-de-renda`)
+*   **Ajuste de Cores do Tema:** Trocada a classe `text-amber-500` (amarelo de baixíssimo contraste em modo claro) para `text-amber-700` (marrom-âmbar de alto contraste) no card de "Juros Gerados". Atualizados os elementos com `text-stone-400` para `text-stone-500 dark:text-stone-400` (botão de reset e disclaimer do gráfico) para melhor legibilidade sob fundo claro.
+*   **Overriding de Inputs Desabilitados (Safari/iOS):** Quando o capital é perpétuo, o campo `T` (Tempo) é desabilitado e preenchido com "Perpétuo". Para evitar que navegadores forcem um cinza nativo ilegível, adicionamos explicitamente as propriedades `-webkit-text-fill-color: var(--c-emerald)`, `color: var(--c-emerald)`, `opacity: 1` no objeto `style` com a classe `disabled:opacity-100`, mantendo o verde vivo e perfeitamente legível tanto em modo light quanto dark.
+
 ---
 
 ## O que foi feito — sessão anterior (2026-05-25)
