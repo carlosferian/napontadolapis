@@ -134,6 +134,15 @@ const calcs = [
     pillVariant: 'c-pill-blue',
     accent: 'var(--c-emerald)',
   },
+  {
+    href: '/viagens/milhas-ou-dinheiro',
+    eyebrow: 'VIAGENS · NOVO · VIRAL',
+    title: 'Milhas ou Dinheiro?',
+    body: 'Converta milhas em reais de forma séria (CPP). Compare a emissão de voos em milhas vs. dinheiro e avalie promoções de pontos.',
+    pill: 'MILHAS & PONTOS',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-blue-calm)',
+  },
 ]
 
 const principles = [

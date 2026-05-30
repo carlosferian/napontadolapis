@@ -28,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/trabalho/seguro-desemplego`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/viagens`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/viagens/custo-de-vida`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${base}/viagens/milhas-ou-dinheiro`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/viagens/planejar`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     ...destinationPages,
   ]
