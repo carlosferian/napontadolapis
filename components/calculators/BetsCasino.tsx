@@ -229,12 +229,6 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
   const [totalIn, setTotalIn]               = useState(0)
   const [usedCreditIds, setUsedCreditIds]   = useState<string[]>([])
 
-  // Oculta nav e cabeçalho da página no mobile durante o jogo
-  useEffect(() => {
-    document.body.setAttribute('data-casino-playing', 'true')
-    return () => document.body.removeAttribute('data-casino-playing')
-  }, [])
-
   // Decay: 0 (pristine) → 100 (colapso). Guarda contra decayBase=0 (antes do 1º depósito)
   const decay = useMemo(
     () => decayBase > 0 ? Math.max(0, Math.round((decayBase - balance) / (decayBase / 100))) : 0,
@@ -409,7 +403,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
         >💸</div>
       ))}
 
-      <div className="relative z-10 p-3 sm:p-5 space-y-3 sm:space-y-4">
+      <div className="relative z-10 p-2 sm:p-4 space-y-2 sm:space-y-3">
         {/* Header */}
         <div className="flex justify-between items-center pb-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <div className="flex items-center gap-1.5">
