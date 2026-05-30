@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import Script from 'next/script'
 import './globals.css'
 import { Nav } from '@/components/Nav'
 import { ThemeProvider } from '@/components/ThemeProvider'
@@ -21,9 +22,27 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID
+
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className="min-h-screen calm-bg overflow-x-hidden">
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}');
+              `}
+            </Script>
+          </>
+        )}
         <ThemeProvider>
           <Nav />
           <main className="calm-main max-w-7xl mx-auto px-4 py-8 sm:py-12">
