@@ -6,6 +6,7 @@ import { formatBRL } from '@/lib/formatters'
 
 // ── Modalidades ──────────────────────────────────────────────────────────
 const MODALITIES = [
+  // rtp not used in Phase 1 — scripted rounds override outcome. Used in BetsNarrative odds calculator.
   { id: 'slots',    emoji: '🐯', name: 'Tigrinho',  rtp: 0.85, edge: '15% de perda embutida' },
   { id: 'crash',    emoji: '🚀', name: 'Foguetinho', rtp: 0.90, edge: '10% de perda embutida' },
   { id: 'sports',   emoji: '⚽', name: 'Múltiplas',  rtp: 0.75, edge: '25% de perda embutida' },
@@ -62,7 +63,6 @@ interface StageConfig {
   showSpider: boolean
   showCrack: boolean
   crackOpacity: number
-  showAlertBadge: boolean
 }
 
 const STAGE_CONFIGS: StageConfig[] = [
@@ -86,7 +86,6 @@ const STAGE_CONFIGS: StageConfig[] = [
     showSpider: false,
     showCrack: false,
     crackOpacity: 0,
-    showAlertBadge: false,
   },
   // Estágio 1 — Primeiros Sinais (20-40%)
   {
@@ -108,7 +107,6 @@ const STAGE_CONFIGS: StageConfig[] = [
     showSpider: false,
     showCrack: false,
     crackOpacity: 0,
-    showAlertBadge: false,
   },
   // Estágio 2 — Alerta (40-60%)
   {
@@ -130,7 +128,6 @@ const STAGE_CONFIGS: StageConfig[] = [
     showSpider: true,
     showCrack: false,
     crackOpacity: 0,
-    showAlertBadge: false,
   },
   // Estágio 3 — Crítico (60-80%)
   {
@@ -152,7 +149,6 @@ const STAGE_CONFIGS: StageConfig[] = [
     showSpider: true,
     showCrack: true,
     crackOpacity: 0.5,
-    showAlertBadge: true,
   },
   // Estágio 4 — Colapso (80-100%)
   {
@@ -174,7 +170,6 @@ const STAGE_CONFIGS: StageConfig[] = [
     showSpider: true,
     showCrack: true,
     crackOpacity: 0.8,
-    showAlertBadge: false,
   },
 ]
 
