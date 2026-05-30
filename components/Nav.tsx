@@ -21,27 +21,35 @@ const workItems = [
   { href: '/trabalho/seguro-desemprego', label: 'Seguro-Desemprego 2026', desc: 'Calcule parcelas e sua pista financeira de transição.' },
   { href: '/trabalho/rescisao', label: 'Rescisão CLT', desc: 'Simule seus proventos e descontos demissionais.' },
   { href: '/viagens/custo-de-vida', label: 'Custo de Vida entre Cidades', desc: 'Compare orçamentos para mudança ou trabalho remoto.' },
-  { href: '/viagens/milhas-ou-dinheiro', label: 'Milhas ou Dinheiro?', desc: 'Calcule o benefício real de comprar ou resgatar milhas.' },
+]
+
+const travelItems = [
+  { href: '/viagens', label: 'Hub de Viagens', desc: 'Todas as ferramentas de planejamento de viagem.' },
+  { href: '/viagens/milhas-ou-dinheiro', label: 'Milhas ou Dinheiro?', desc: 'Calcule o CPP e saiba se vale a pena emitir ou comprar milhas.' },
+  { href: '/viagens/planejar', label: 'Planejar Viagem', desc: 'Simule o custo total de uma viagem internacional.' },
+  { href: '/viagens/custo-de-vida', label: 'Custo de Vida entre Cidades', desc: 'Compare orçamentos para mudança ou trabalho remoto.' },
 ]
 
 const habitItems = [
-  { href: '/apostas', label: 'Gastos com Apostas', desc: 'O custo de queimar dinheiro em bets.' },
+  { href: '/apostas', label: 'Gastos com Apostas', desc: 'Cassino imersivo que revela a matemática real das bets.' },
   { href: '/fumo', label: 'Custo do Fumo', desc: 'O preço de cigarros, vape ou pod por décadas.' },
-  { href: '/apostas/probabilidades', label: 'Probabilidades Reais', desc: 'A matemática por trás das odds e margens.' },
 ]
 
 export function Nav() {
   const [investmentsOpen, setInvestmentsOpen] = useState(false)
   const [workOpen, setWorkOpen] = useState(false)
   const [habitsOpen, setHabitsOpen] = useState(false)
+  const [travelOpen, setTravelOpen] = useState(false)
 
   const investmentsRef = useRef<HTMLDivElement>(null)
   const workRef = useRef<HTMLDivElement>(null)
   const habitsRef = useRef<HTMLDivElement>(null)
+  const travelRef = useRef<HTMLDivElement>(null)
 
   const investmentsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const workTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const habitsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const travelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const openInvestments = () => {
     if (investmentsTimeoutRef.current) clearTimeout(investmentsTimeoutRef.current)
@@ -73,6 +81,16 @@ export function Nav() {
     }, 150)
   }
 
+  const openTravel = () => {
+    if (travelTimeoutRef.current) clearTimeout(travelTimeoutRef.current)
+    setTravelOpen(true)
+  }
+  const closeTravel = () => {
+    travelTimeoutRef.current = setTimeout(() => {
+      setTravelOpen(false)
+    }, 150)
+  }
+
   // Close dropdowns on click outside and clean up timeouts
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -85,6 +103,9 @@ export function Nav() {
       if (habitsRef.current && !habitsRef.current.contains(event.target as Node)) {
         setHabitsOpen(false)
       }
+      if (travelRef.current && !travelRef.current.contains(event.target as Node)) {
+        setTravelOpen(false)
+      }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
@@ -92,6 +113,7 @@ export function Nav() {
       if (investmentsTimeoutRef.current) clearTimeout(investmentsTimeoutRef.current)
       if (workTimeoutRef.current) clearTimeout(workTimeoutRef.current)
       if (habitsTimeoutRef.current) clearTimeout(habitsTimeoutRef.current)
+      if (travelTimeoutRef.current) clearTimeout(travelTimeoutRef.current)
     }
   }, [])
 
@@ -235,13 +257,46 @@ export function Nav() {
             )}
           </div>
 
-          <Link
-            href="/viagens"
-            className="px-3 py-2 rounded-lg text-sm font-medium transition-all hidden sm:block hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
-            style={{ color: 'var(--c-ink)' }}
+          {/* Viagens Dropdown */}
+          <div
+            ref={travelRef}
+            className="relative"
+            onMouseEnter={openTravel}
+            onMouseLeave={closeTravel}
           >
-            Viagens
-          </Link>
+            <button
+              onClick={() => setTravelOpen(!travelOpen)}
+              className="px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] cursor-pointer"
+              style={{ color: 'var(--c-ink)' }}
+            >
+              Viagens
+              <ChevronDown size={12} className={`transition-transform duration-200 ${travelOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {travelOpen && (
+              <div
+                className="absolute right-0 mt-1 w-64 rounded-xl shadow-xl border p-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                style={{ backgroundColor: 'var(--c-card-calm)', borderColor: 'var(--c-line)' }}
+              >
+                {travelItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setTravelOpen(false)}
+                    className="block p-2 rounded-lg hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <p className="text-sm font-semibold transition-colors group-hover:text-[var(--c-emerald)]" style={{ color: 'var(--c-ink)' }}>
+                      {item.label}
+                    </p>
+                    <p className="text-[11px] leading-normal mt-0.5" style={{ color: 'var(--c-muted)' }}>
+                      {item.desc}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
           <Link
             href="/dividir"
             className="px-3 py-2 rounded-lg text-sm font-medium transition-all hidden sm:block hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"

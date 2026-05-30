@@ -37,7 +37,9 @@ export default function MilesPage() {
         </p>
       </div>
 
-           <div className="prose prose-sm prose-stone max-w-none space-y-6">
+      <MilesCalculator />
+
+      <div className="prose prose-sm prose-stone max-w-none space-y-6">
         <div>
           <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Você não precisa calcular nada na mão</h2>
           <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
