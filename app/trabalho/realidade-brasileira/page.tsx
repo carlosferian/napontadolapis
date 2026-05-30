@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { BrazilianRealidadeCalculator } from '@/components/calculators/BrazilianRealidadeCalculator'
 import { AppCTA } from '@/components/AppCTA'
 import { SourcesFooter } from '@/components/ui/SourcesFooter'
+import { AdBanner } from '@/components/AdBanner'
 
 export const metadata: Metadata = {
   title: 'Calculadora de Realidade Brasileira — Onde você está na pirâmide de renda?',
@@ -47,6 +48,9 @@ export default function RealidadeBrasileiraPage() {
           Essa distorção ocorre porque vivemos em bolhas sociais segregadas. O Brasil é uma das nações mais desiguais do planeta, com um dos índices de Gini mais concentrados do mundo. De acordo com o IBGE, metade dos trabalhadores brasileiros sobrevive com menos de um salário mínimo por mês, e a maior fatia da massa de rendimentos está extremamente concentrada no topo da pirâmide (os 1% e 0,1% mais ricos).
         </p>
       </div>
+
+      {/* Bloco de anúncio discreto antes do rodapé de fontes */}
+      <AdBanner slot="5432109876" format="horizontal" />
 
       <SourcesFooter sources={[
         { label: 'IBGE — PNAD Contínua (Pesquisa Nacional por Amostra de Domicílios Contínua) sobre rendimentos', url: 'https://www.ibge.gov.br/estatisticas/sociais/trabalho/17270-pnad-continua.html' },

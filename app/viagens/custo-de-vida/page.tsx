@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { CostOfLivingCalculator } from '@/components/calculators/CostOfLivingCalculator'
 import { AppCTA } from '@/components/AppCTA'
 import { SourcesFooter } from '@/components/ui/SourcesFooter'
+import { AdBanner } from '@/components/AdBanner'
 
 export const metadata: Metadata = {
   title: 'Comparador de Custo de Vida entre Cidades — Vale a pena mudar?',
@@ -61,6 +62,9 @@ export default function CostOfLivingPage() {
           </p>
         </div>
       </div>
+
+      {/* Bloco de anúncio discreto antes do rodapé de fontes */}
+      <AdBanner slot="9876543210" format="horizontal" />
 
       <SourcesFooter sources={[
         { label: 'DIEESE — Pesquisa Nacional da Cesta Básica de Alimentos', url: 'https://www.dieese.org.br/' },

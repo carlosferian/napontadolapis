@@ -43,6 +43,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Script>
           </>
         )}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+          <Script
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+          />
+        )}
         <ThemeProvider>
           <Nav />
           <main className="calm-main max-w-7xl mx-auto px-4 py-8 sm:py-12">
