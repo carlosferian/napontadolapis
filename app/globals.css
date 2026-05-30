@@ -61,6 +61,7 @@ body {
   background-color: #EEF2F9;
   color: #172030;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 .brand-gradient {

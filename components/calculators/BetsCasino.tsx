@@ -434,21 +434,22 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
         </div>
 
         {/* Seletor de modalidades */}
-        <div className="grid grid-cols-2 gap-2">
+        {/* Mobile: 4 chips em linha. Desktop: grid 2x2 com info completa */}
+        <div className="grid grid-cols-4 sm:grid-cols-2 gap-1.5 sm:gap-2">
           {MODALITIES.map(m => (
             <button
               key={m.id}
               onClick={() => !isRolling && setModality(m.id)}
               disabled={isRolling || bankrupt}
-              className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border text-left transition-all cursor-pointer disabled:opacity-40"
+              className="flex flex-col items-center sm:items-start p-1.5 sm:p-2.5 sm:rounded-2xl rounded-xl border transition-all cursor-pointer disabled:opacity-40 text-center sm:text-left"
               style={modality === m.id
                 ? { background: `${cfg.border}18`, borderColor: cfg.border, color: 'white' }
                 : { background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.07)', color: '#6b7280' }
               }
             >
-              <span className="text-2xl sm:text-4xl block mb-0.5 sm:mb-1">{m.emoji}</span>
-              <span className="text-[10px] font-extrabold block truncate">{m.name}</span>
-              <span className="text-[9px] block mt-0.5" style={{ color: cfg.border }}>{m.edge}</span>
+              <span className="text-xl sm:text-2xl lg:text-4xl block leading-none mb-0.5">{m.emoji}</span>
+              <span className="text-[8px] sm:text-[10px] font-extrabold block truncate w-full leading-tight">{m.name}</span>
+              <span className="hidden sm:block text-[9px] mt-0.5" style={{ color: cfg.border }}>{m.edge}</span>
             </button>
           ))}
         </div>
@@ -479,7 +480,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
 
         {/* Saldo */}
         <div
-          className="rounded-xl p-4 flex justify-between items-center border"
+          className="rounded-xl p-3 sm:p-4 flex justify-between items-center border"
           style={{
             background:  'rgba(0,0,0,0.4)',
             borderColor: `${cfg.border}66`,
@@ -518,7 +519,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
           const bc    = isDep ? 'rgba(245,158,11,0.3)'  : entry.result === 'win' ? 'rgba(74,222,128,0.2)'  : 'rgba(248,113,113,0.2)'
           const vc    = isDep ? '#fbbf24'               : entry.result === 'win' ? '#4ade80'               : '#f87171'
           return (
-            <div className="rounded-xl p-4 border" style={{ background: bg, borderColor: bc }}>
+            <div className="rounded-xl p-2.5 sm:p-4 border" style={{ background: bg, borderColor: bc }}>
               <div className="flex justify-between items-start gap-3">
                 <div className="flex gap-2 min-w-0">
                   <span className="text-xl shrink-0">{entry.mod}</span>
