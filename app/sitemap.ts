@@ -14,12 +14,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: base, lastModified: now, changeFrequency: 'monthly', priority: 1 },
-    { url: `${base}/apostas`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${base}/apostas/probabilidades`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${base}/apostas`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${base}/apostas/probabilidades`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/investimentos`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${base}/fumo`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${base}/investimentos/amortizacao`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
+    { url: `${base}/investimentos/viver-de-renda`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
+    { url: `${base}/juros-compostos`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/fumo`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
+    { url: `${base}/dividir`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
+    { url: `${base}/trabalho/realidade-brasileira`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
+    { url: `${base}/trabalho/rescisao`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/trabalho/seguro-desemplego`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/viagens`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
-    { url: `${base}/viagens/planejar`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
+    { url: `${base}/viagens/custo-de-vida`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${base}/viagens/planejar`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     ...destinationPages,
   ]
 }
