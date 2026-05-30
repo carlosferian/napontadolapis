@@ -143,6 +143,24 @@ const calcs = [
     pillVariant: 'c-pill-blue',
     accent: 'var(--c-blue-calm)',
   },
+  {
+    href: '/investimentos/parcelado-ou-a-vista',
+    eyebrow: 'JUROS · NOVO · COTIDIANO',
+    title: 'Parcelado ou À Vista?',
+    body: 'Descubra a taxa de juros real embutida no parcelamento "sem juros" do varejo em comparação ao desconto Pix.',
+    pill: 'JUROS EMBUTIDOS',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
+  {
+    href: '/investimentos/fuga-do-rotativo',
+    eyebrow: 'SAÚDE · NOVO · CRÍTICO',
+    title: 'Fuga do Rotativo',
+    body: 'Troque a espiral infinita de juros do cartão de crédito por um empréstimo saudável de baixo custo.',
+    pill: 'ESCAPE DÍVIDAS',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
 ]
 
 const principles = [

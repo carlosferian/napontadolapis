@@ -20,6 +20,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/investimentos/amortizacao`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
     { url: `${base}/investimentos/itbi-e-cartorio`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/investimentos/viver-de-renda`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
+    { url: `${base}/investimentos/parcelado-ou-a-vista`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/investimentos/fuga-do-rotativo`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/juros-compostos`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/fumo`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
     { url: `${base}/dividir`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },

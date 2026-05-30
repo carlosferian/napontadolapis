@@ -12,6 +12,8 @@ const investmentItems = [
   { href: '/investimentos/viver-de-renda', label: 'Viver de Renda', desc: 'Planeje sua aposentadoria e independência financeira.' },
   { href: '/investimentos/amortizacao', label: 'Amortizar Financiamento', desc: 'Simule quitação acelerada (SAC vs Price).' },
   { href: '/investimentos/itbi-e-cartorio', label: 'ITBI e Custos de Cartório', desc: 'Calcule as taxas extras de transferência de imóvel.' },
+  { href: '/investimentos/parcelado-ou-a-vista', label: 'Parcelado ou À Vista?', desc: 'Descubra os juros embutidos no parcelamento "sem juros".' },
+  { href: '/investimentos/fuga-do-rotativo', label: 'Fuga do Rotativo', desc: 'Troque dívida de cartão de crédito por uma linha saudável.' },
 ]
 
 const workItems = [

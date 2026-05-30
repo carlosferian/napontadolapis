@@ -17,7 +17,29 @@ Toda a infraestrutura do site roda de forma **100% independente, autônoma e com
 
 ## O que foi feito — Sessão Atual (2026-05-30)
 
-### 1. Nova Calculadora de Milhas ou Dinheiro (Inteligência em Milhas)
+### 1. Nova Calculadora de Parcelado ou À Vista? (Juros Ocultos)
+Desenvolvemos uma calculadora de alto apelo para consumo inteligente, revelando a taxa invisível do "sem juros":
+* **Matemática do Solver Financeiro (`config/parcelado.ts`)**:
+  * Utilização do método de Bissecção em Javascript para deduzir a Taxa Interna de Retorno (TIR) implícita de anuidade/parcelas iguais, comparando com o desconto à vista.
+  * Cálculo dinâmico do equivalente ao CDI (percentual da taxa Selic líquida) e rentabilidade equivalente anualizada.
+* **Componente de UI Premium (`components/calculators/ParceladoCalculator.tsx`)**:
+  * Inputs com formatação BRL inteligente em tempo real e sliders interativos.
+  * Painel de veredito visual com coloração reativa (Verde para parcelar se os juros forem irrelevantes; Vermelho/Amarelo para pagar à vista no Pix).
+  * Análise de custo de oportunidade detalhada e wrapped de compartilhamento modular.
+  * Rota registrada: `/investimentos/parcelado-ou-a-vista`
+
+### 2. Novo Simulador de Fuga do Rotativo (Substituição de Dívidas)
+Criamos um simulador crítico sobre endividamento com o objetivo de salvar famílias de faturas abusivas:
+* **Matemática de Amortização Comparativa (`config/rotativo.ts`)**:
+  * Projeção mês a mês em dois cenários paralelos: manter a dívida de cartão de crédito no rotativo (~15% a.m.) contra a troca por um empréstimo pessoal ou consignado estruturado (~3% a.m.).
+  * Alertas estatísticos em tempo real de **"Dívida Infinita"** caso o pagamento mensal não supere os juros do rotativo, demonstrando que a dívida nunca será paga sem a troca de passivos.
+* **Interface Educativa de Alto Impacto (`components/calculators/RotativoCalculator.tsx`)**:
+  * Gráfico de área comparativo do Recharts mostrando o abismo visual da dívida do cartão explodindo exponencialmente contra a linha do empréstimo caindo a zero.
+  * Guias de ação pedagógicos baseados na lei do superendividamento e consolidação ética.
+  * Oportunidade perfeita de monetização por afiliados contextuais e limpos com portais de renegociação de dívidas.
+  * Rota registrada: `/investimentos/fuga-do-rotativo`
+
+### 3. Nova Calculadora de Milhas ou Dinheiro (Inteligência em Milhas)
 Desenvolvemos uma calculadora de conversão baseada em uma metodologia séria e unânime no mercado de fidelidade para orientar o usuário sobre viagens e promoções:
 * **Matemática Fiel baseada no CPP (`config/miles.ts`)**:
   * Implementação da lógica de **Custo por Mil Milhas (CPP)** como métrica definitiva de comparação.
