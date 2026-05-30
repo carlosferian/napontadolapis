@@ -19,7 +19,7 @@ export function ResultHero({ label, value, comment, colorClass = 'text-category-
         <div className="mt-6 flex flex-col items-center gap-2 relative">
           <div className="w-8 h-px" style={{ backgroundColor: 'var(--c-line)' }} />
           <div className="flex items-center justify-center gap-2 max-w-md mx-auto relative group">
-            <p className="text-xl sm:text-2xl font-hand" style={{ color: 'var(--c-muted)' }}>{comment}</p>
+            <p className="text-xl sm:text-2xl font-hand" style={{ color: 'var(--c-ink-2)' }}>{comment}</p>
             {infoTooltip && (
               <span className="relative inline-block align-middle flex-shrink-0">
                 <button

@@ -19,6 +19,12 @@
   --color-category-saving: #C83333;
   --color-category-dream: #0A8A7E;
 
+  /* Mapeamento de cores de emerald do Tailwind v4 para variáveis de tema semântico */
+  --color-emerald-400: var(--c-emerald-2);
+  --color-emerald-500: var(--c-emerald);
+  --color-emerald-600: var(--c-emerald);
+  --color-emerald-700: var(--c-emerald);
+
   --font-serif: 'Cormorant Garamond', serif;
   --font-sans: 'Manrope', sans-serif;
   --font-hand: 'Manrope', sans-serif;
@@ -97,10 +103,10 @@ body {
   --c-line-strong: rgba(15, 17, 16, 0.16);
   --c-ink: #0F1110;
   --c-ink-2: #2A2D2B;
-  --c-muted: #6B6E6A;
-  --c-muted-2: #A6A8A2;
-  --c-emerald: #0E7C5A;
-  --c-emerald-2: #15976F;
+  --c-muted: #4E524F;
+  --c-muted-2: #767974;
+  --c-emerald: #08543C;
+  --c-emerald-2: #0B6A4C;
   --c-emerald-soft: #E4F1EB;
   --c-copper: #B4421B;
   --c-copper-soft: #FBE6DC;

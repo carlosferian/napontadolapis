@@ -127,7 +127,7 @@ export function MilesCalculator() {
                   <label htmlFor="miles-required" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                     Milhas Exigidas
                   </label>
-                  <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                  <span className="text-sm font-bold text-[var(--c-emerald)] dark:text-emerald-400">
                     {(milesRequired).toLocaleString('pt-BR')} milhas
                   </span>
                 </div>
@@ -209,7 +209,7 @@ export function MilesCalculator() {
                     <label htmlFor="custom-emission-val" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                       Seu custo por 1.000 Milhas (CPP)
                     </label>
-                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="text-sm font-bold text-[var(--c-emerald)] dark:text-emerald-400">
                       {formatBRL(customEmissionValue)}
                     </span>
                   </div>
@@ -270,7 +270,7 @@ export function MilesCalculator() {
                   <label htmlFor="miles-received-val" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                     Total de Milhas/Pontos Recebidos
                   </label>
-                  <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                  <span className="text-sm font-bold text-[var(--c-emerald)] dark:text-emerald-400">
                     {(milesReceived).toLocaleString('pt-BR')} milhas
                   </span>
                 </div>
@@ -325,7 +325,7 @@ export function MilesCalculator() {
                     <label htmlFor="custom-purchase-val" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                       Valor de Mercado de 1.000 Milhas (CPP)
                     </label>
-                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="text-sm font-bold text-[var(--c-emerald)] dark:text-emerald-400">
                       {formatBRL(customPurchaseValue)}
                     </span>
                   </div>
@@ -374,7 +374,7 @@ export function MilesCalculator() {
                   ? `Emitir com milhas é a melhor escolha matemática! Você economizará cerca de ${emissionResults.percentSavings.toFixed(0)}% do valor cobrado em dinheiro.`
                   : `Emitir com milhas NESTE CENÁRIO é prejuízo! O custo das milhas utilizadas (${formatBRL(emissionResults.milesConvertedToCash)}) somado à taxa de embarque supera o preço em dinheiro. É melhor comprar em dinheiro.`
                 }
-                colorClass={emissionResults.shouldEmitWithMiles ? 'text-emerald-600 dark:text-emerald-400 font-extrabold' : 'text-stone-500 font-bold'}
+                colorClass={emissionResults.shouldEmitWithMiles ? 'text-[var(--c-emerald)] dark:text-emerald-400 font-extrabold' : 'text-stone-500 font-bold'}
                 infoTooltip="A economia líquida compara a emissão em milhas (valor de mercado estimado das milhas necessárias + taxa de embarque cobrada pelo programa) com o valor da passagem integral comprada em dinheiro."
               />
 
@@ -422,7 +422,7 @@ export function MilesCalculator() {
                   ? `Comprar é altamente recomendado! Você está pagando ${formatBRL(purchaseResults.cppOfPurchase)} por milhar, o que é cerca de ${purchaseResults.percentDiff.toFixed(0)}% mais barato do que o valor real de mercado (${formatBRL(purchaseResults.marketValuePerThousand)}).`
                   : `NÃO COMPRE! Você está pagando ${formatBRL(purchaseResults.cppOfPurchase)} por 1.000 milhas nesta promoção. Porém, o milhar do programa ${purchaseProgram === 'custom' ? 'Customizado' : selectedPurchaseProgram?.name} vale em média apenas ${formatBRL(purchaseResults.marketValuePerThousand)} no mercado. Você sairá no prejuízo.`
                 }
-                colorClass={purchaseResults.isWorthBuying ? 'text-emerald-600 dark:text-emerald-400 font-extrabold' : 'text-stone-500 font-bold'}
+                colorClass={purchaseResults.isWorthBuying ? 'text-[var(--c-emerald)] dark:text-emerald-400 font-extrabold' : 'text-stone-500 font-bold'}
                 infoTooltip="A avaliação calcula o CPP da promoção e compara diretamente com a média comercial praticada no mercado brasileiro para resgate em passagens aéreas."
               />
 
@@ -446,7 +446,7 @@ export function MilesCalculator() {
                     sublabel: purchaseResults.isWorthBuying
                       ? `economia de ${formatBRL(purchaseResults.netLossOrGain * (milesReceived / 1000))} no lote total`
                       : `perda de ${formatBRL(Math.abs(purchaseResults.netLossOrGain) * (milesReceived / 1000))} no lote total`,
-                    colorClass: purchaseResults.isWorthBuying ? 'text-emerald-600' : 'text-red-500',
+                    colorClass: purchaseResults.isWorthBuying ? 'text-[var(--c-emerald)] dark:text-emerald-400' : 'text-red-500',
                   },
                 ]}
               />
