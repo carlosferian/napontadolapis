@@ -15,7 +15,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: base, lastModified: now, changeFrequency: 'monthly', priority: 1 },
     { url: `${base}/apostas`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${base}/apostas/probabilidades`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/investimentos`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/investimentos/amortizacao`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
     { url: `${base}/investimentos/itbi-e-cartorio`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
