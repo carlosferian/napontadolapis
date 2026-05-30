@@ -330,7 +330,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
         `Taxa fintech (~1,5%)`.padEnd(38) + `+${formatBRL(tripCost.fintechFeeBRL)}`,
         '',
         `TOTAL — cartão tradicional`.padEnd(38) + ` ${formatBRL(tripCost.grandTotalCard)}`,
-        `TOTAL — fintech (Wise/Nomad)`.padEnd(38) + ` ${formatBRL(tripCost.grandTotalFintech)}`,
+        `TOTAL — conta global Wise`.padEnd(38) + ` ${formatBRL(tripCost.grandTotalFintech)}`,
         `Economia com fintech`.padEnd(38) + ` ${formatBRL(tripCost.savingsWithFintech)}`,
         '',
       ] : []),
@@ -435,10 +435,10 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
                   ))}
                 </div>
                 <p className="text-[10px] text-stone-400">
-                  {customDestIsDomestic
-                    ? 'Sem IOF nem câmbio. Pagamentos em reais.'
-                    : 'IOF e câmbio serão calculados. Use Wise ou Nomad para economizar.'}
-                </p>
+                {customDestIsDomestic
+                  ? 'Sem IOF nem câmbio. Pagamentos em reais.'
+                  : 'IOF e câmbio serão calculados. Use o cartão global Wise para economizar.'}
+              </p>
               </div>
               {!customDestIsDomestic && (
                 <div className="space-y-2">
@@ -894,7 +894,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
             <div className="mx-5 mb-5 rounded-xl overflow-hidden border border-stone-100">
               <div className="grid grid-cols-2">
                 <div className="p-3 sm:p-4 bg-emerald-50 border-r border-stone-100">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">Wise / Nomad</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">Conta Global Wise</p>
                   <p className="text-lg sm:text-xl font-bold tabular-nums text-emerald-700 leading-none">{formatBRL(tripCost.grandTotalFintech)}</p>
                   <p className="text-[10px] text-emerald-600 mt-0.5">sem IOF</p>
                 </div>
