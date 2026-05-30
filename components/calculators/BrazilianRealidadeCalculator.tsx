@@ -20,7 +20,7 @@ import {
   ResponsiveContainer,
   ReferenceDot,
 } from 'recharts'
-import { HelpCircle, ChevronRight, AlertCircle, Sparkles } from 'lucide-react'
+import { HelpCircle, ChevronRight, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react'
 
 // Algoritmo de Interpolação Linear de Percentil
 function calculatePercentile(salary: number, values: number[]): number {
@@ -336,6 +336,109 @@ export function BrazilianRealidadeCalculator() {
               <h4 className="text-sm font-extrabold" style={{ color: 'var(--c-ink)' }}>{socialClass.name}</h4>
               <p className="text-xs" style={{ color: 'var(--c-muted)' }}>{socialClass.desc}</p>
             </div>
+          </div>
+        )}
+
+        {/* Guia de Ação Financeira Dinâmico (Estatístico) */}
+        {salary > 0 && (
+          <div 
+            className="rounded-2xl border p-5 space-y-4 animate-fadeIn"
+            style={{
+              backgroundColor: 'var(--c-surface)',
+              borderColor: 'var(--c-line)'
+            }}
+          >
+            {/* Cabeçalho */}
+            <div className="flex justify-between items-center" style={{ borderBottom: '1px solid var(--c-line)', paddingBottom: 12 }}>
+              <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>
+                {salary / MINIMUM_WAGE <= 4 
+                  ? '📈 Caminhos de Aceleração Financeira' 
+                  : '💎 Blindagem e Multiplicação de Patrimônio'
+                }
+              </span>
+              <div className="flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/5 px-2 py-0.5 rounded-lg border border-emerald-500/10">
+                <Sparkles size={11} /> Visão Estatística
+              </div>
+            </div>
+
+            {/* Conteúdo Dinâmico */}
+            {salary / MINIMUM_WAGE <= 4 ? (
+              // INSIGHTS PARA CLASSES D E E
+              <div className="space-y-4 text-xs leading-relaxed text-stone-600 dark:text-stone-300">
+                <p className="text-left">
+                  Estatisticamente, as maiores alavancas para mudar seu patamar de renda no Brasil não dependem de sorte, mas de decisões estratégicas de qualificação e fuga de armadilhas de consumo:
+                </p>
+                <div className="space-y-3 text-left">
+                  <div className="flex items-start gap-2.5">
+                    <CheckCircle2 className="text-emerald-500 shrink-0 mt-0.5" size={14} />
+                    <div>
+                      <p className="font-bold text-stone-800 dark:text-stone-100">O Retorno Prático do Ensino Técnico 🎓</p>
+                      <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
+                        Pesquisas do IBGE e do SENAI revelam que profissionais com **curso técnico** têm taxa de empregabilidade acima de 80% e ganham, em média, **32% mais** do que profissionais com apenas o ensino médio regular. Focar em qualificações técnicas rápidas ou certificações de tecnologia é o caminho de educação com maior retorno financeiro imediato no país.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-2.5">
+                    <CheckCircle2 className="text-emerald-500 shrink-0 mt-0.5" size={14} />
+                    <div>
+                      <p className="font-bold text-stone-800 dark:text-stone-100">Estancar o Sangramento de Juros de Consumo 💳</p>
+                      <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
+                        Dados da CNC mostram que mais de 78% das famílias brasileiras estão endividadas. O rotativo do cartão de crédito (com taxas de juros que superam 400% ao ano) é a maior barreira de empobrecimento individual do país. Priorizar a liquidação de dívidas de consumo caras e evitar compras parceladas no carnê ou cartão é a decisão financeira individual de maior impacto imediato.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <CheckCircle2 className="text-emerald-500 shrink-0 mt-0.5" size={14} />
+                    <div>
+                      <p className="font-bold text-stone-800 dark:text-stone-100">A Reserva de Emergência 🛡️</p>
+                      <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
+                        Guardar mesmo que R$ 30 ou R$ 50 por mês em uma conta com rendimento diário constrói uma "reserva de paz". Ter um colchão de proteção mínimo para imprevistos domésticos ou de saúde impede que você precise recorrer a empréstimos pessoais abusivos em emergências, rompendo o ciclo da vulnerabilidade.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // INSIGHTS PARA CLASSES A, B E C
+              <div className="space-y-4 text-xs leading-relaxed text-stone-600 dark:text-stone-300">
+                <p className="text-left">
+                  Para quem conquistou patamares de classe média ou alta, o principal desafio estatístico deixa de ser o aumento imediato do salário e passa a ser a blindagem patrimonial contra o risco inflacionário e cambial:
+                </p>
+                <div className="space-y-3 text-left">
+                  <div className="flex items-start gap-2.5">
+                    <CheckCircle2 className="text-emerald-500 shrink-0 mt-0.5" size={14} />
+                    <div>
+                      <p className="font-bold text-stone-800 dark:text-stone-100">Sair do Ralo Invisível da Poupança 📉</p>
+                      <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
+                        Apesar de o Brasil ter uma das maiores taxas de juros reais do mundo, bilhões de reais ainda estão presos na caderneta de poupança, que historicamente perde para a inflação real (IPCA). Alocar seu colchão de liquidez em contas de rendimento 100% do CDI ou Tesouro Selic protege o poder de compra com o menor risco de crédito possível.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <CheckCircle2 className="text-emerald-500 shrink-0 mt-0.5" size={14} />
+                    <div>
+                      <p className="font-bold text-stone-800 dark:text-stone-100">Fidelidade aos Aportes Mensais ☃️</p>
+                      <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
+                        Estudos de finanças comportamentais indicam que a consistência e a disciplina de poupar de 10% a 20% da renda de forma automática superam estatisticamente qualquer tentativa de escolher "ações quentes" no mercado. Deixe os juros compostos trabalharem de forma passiva no tempo.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <CheckCircle2 className="text-emerald-500 shrink-0 mt-0.5" size={14} />
+                    <div>
+                      <p className="font-bold text-stone-800 dark:text-stone-100">Blindagem Cambial e Internacionalização (Risco Brasil) 🌍</p>
+                      <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
+                        Manter 100% dos seus investimentos em Reais expõe todo o seu patrimônio ao risco soberano e inflacionário local. Alocar de 10% a 30% da sua riqueza em moedas fortes e ativos globais (como Dólar ou Euro através de contas de câmbio inteligente, como a nossa parceira Wise) atua como um excelente seguro de volatilidade do patrimônio contra crises locais.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
