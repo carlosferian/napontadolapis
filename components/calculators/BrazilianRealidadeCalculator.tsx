@@ -193,6 +193,74 @@ export function BrazilianRealidadeCalculator() {
     return statePercentile.toFixed(1).replace('.', ',')
   }, [statePercentile])
 
+  // Definição reativa dos patamares da pirâmide social
+  const pyramidTiers = useMemo(() => {
+    const activeLetter = salary > 0 ? socialClass.letter : ''
+    
+    return [
+      {
+        letter: 'A',
+        name: 'Classe A',
+        label: 'Elite Econômica (> 20 SM)',
+        range: `Mais de R$ ${(20 * MINIMUM_WAGE).toLocaleString('pt-BR')}`,
+        width: '30%',
+        color: 'from-amber-400 to-amber-500 dark:from-amber-500 dark:to-amber-600',
+        textColor: 'text-amber-950 dark:text-amber-50',
+        borderColor: 'border-amber-400 dark:border-amber-500',
+        isActive: activeLetter === 'A',
+        description: 'Elite (Top ~1%)'
+      },
+      {
+        letter: 'B',
+        name: 'Classe B',
+        label: 'Classe Média Alta (10 a 20 SM)',
+        range: `R$ ${(10 * MINIMUM_WAGE).toLocaleString('pt-BR')} a R$ ${(20 * MINIMUM_WAGE).toLocaleString('pt-BR')}`,
+        width: '48%',
+        color: 'from-emerald-400 to-emerald-500 dark:from-emerald-500 dark:to-emerald-600',
+        textColor: 'text-emerald-950 dark:text-emerald-50',
+        borderColor: 'border-emerald-400 dark:border-emerald-500',
+        isActive: activeLetter === 'B',
+        description: 'Classe Média Alta'
+      },
+      {
+        letter: 'C',
+        name: 'Classe C',
+        label: 'Classe Média (4 a 10 SM)',
+        range: `R$ ${(4 * MINIMUM_WAGE).toLocaleString('pt-BR')} a R$ ${(10 * MINIMUM_WAGE).toLocaleString('pt-BR')}`,
+        width: '65%',
+        color: 'from-teal-400 to-teal-500 dark:from-teal-500 dark:to-teal-600',
+        textColor: 'text-teal-950 dark:text-teal-50',
+        borderColor: 'border-teal-400 dark:border-teal-500',
+        isActive: activeLetter === 'C',
+        description: 'Classe Média'
+      },
+      {
+        letter: 'D',
+        name: 'Classe D',
+        label: 'Classe Média Baixa (2 a 4 SM)',
+        range: `R$ ${(2 * MINIMUM_WAGE).toLocaleString('pt-BR')} a R$ ${(4 * MINIMUM_WAGE).toLocaleString('pt-BR')}`,
+        width: '82%',
+        color: 'from-slate-400 to-slate-500 dark:from-slate-500 dark:to-slate-600',
+        textColor: 'text-slate-950 dark:text-slate-50',
+        borderColor: 'border-slate-400 dark:border-slate-500',
+        isActive: activeLetter === 'D',
+        description: 'Classe Média Baixa'
+      },
+      {
+        letter: 'E',
+        name: 'Classe E',
+        label: 'Classe Baixa (Até 2 SM)',
+        range: `Até R$ ${(2 * MINIMUM_WAGE).toLocaleString('pt-BR')}`,
+        width: '100%',
+        color: 'from-stone-400 to-stone-500 dark:from-stone-500 dark:to-stone-600',
+        textColor: 'text-stone-950 dark:text-stone-50',
+        borderColor: 'border-stone-400 dark:border-stone-500',
+        isActive: activeLetter === 'E',
+        description: 'Classe Baixa / Vulnerável'
+      }
+    ]
+  }, [salary, socialClass.letter])
+
   // Estilo premium do card se for Top 1%
   const isTopTier = nationalPercentile >= 99
 
@@ -466,6 +534,111 @@ export function BrazilianRealidadeCalculator() {
             },
           ]}
         />
+
+        {/* Gráfico de Pirâmide Social */}
+        <div 
+          className="rounded-2xl border p-5 space-y-4"
+          style={{
+            backgroundColor: 'var(--c-card-calm)',
+            borderColor: 'var(--c-line)'
+          }}
+        >
+          <div className="flex justify-between items-baseline" style={{ borderBottom: '1px solid var(--c-line)', paddingBottom: 12 }}>
+            <div>
+              <h3 className="text-base font-bold" style={{ color: 'var(--c-ink)' }}>Pirâmide Social Brasileira</h3>
+              <p className="text-xs" style={{ color: 'var(--c-muted)' }}>Distribuição socioeconômica e a sua posição</p>
+            </div>
+            <span className="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/5 px-2 py-0.5 rounded-lg border border-emerald-500/10 flex items-center gap-1">
+              <Sparkles size={11} /> Distribuição
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center pt-2">
+            {/* Visual da Pirâmide (Esquerda no Desktop) */}
+            <div className="md:col-span-6 flex flex-col items-center justify-center py-4 relative">
+              <div className="w-full max-w-[280px] flex flex-col items-center gap-2">
+                {pyramidTiers.map((tier) => {
+                  return (
+                    <div
+                      key={tier.letter}
+                      style={{ width: tier.width }}
+                      className={`relative group rounded-xl p-2.5 flex flex-col items-center justify-center transition-all duration-300 cursor-pointer select-none bg-gradient-to-r ${tier.color} ${
+                        tier.isActive
+                          ? `scale-[1.05] ring-2 ring-white dark:ring-stone-900 shadow-xl border-2 ${tier.borderColor} z-10`
+                          : 'opacity-65 hover:opacity-90 border border-transparent scale-100 hover:scale-[1.02] shadow-sm'
+                      }`}
+                    >
+                      {/* Badge "Você está aqui" */}
+                      {tier.isActive && (
+                        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-rose-500 text-white text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full shadow-md animate-bounce flex items-center gap-0.5 whitespace-nowrap z-20 border border-white dark:border-stone-900">
+                          <span className="relative flex h-1.5 w-1.5 mr-0.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-200 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-100"></span>
+                          </span>
+                          Você está aqui
+                        </div>
+                      )}
+
+                      {/* Letra da Classe */}
+                      <span className={`text-base font-extrabold tracking-wider ${tier.textColor}`}>
+                        Classe {tier.letter}
+                      </span>
+                      
+                      {/* Descrição Compacta */}
+                      <span className={`text-[9px] font-medium opacity-80 ${tier.textColor}`}>
+                        {tier.description}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Informações de Cada Classe (Direita no Desktop) */}
+            <div className="md:col-span-6 space-y-2">
+              {pyramidTiers.map((tier) => {
+                return (
+                  <div
+                    key={tier.letter}
+                    className={`p-2.5 rounded-xl border transition-all duration-200 text-left flex items-center justify-between gap-3 ${
+                      tier.isActive
+                        ? 'bg-emerald-500/5 dark:bg-emerald-500/10 border-emerald-500/30 shadow-sm'
+                        : 'bg-white/40 dark:bg-stone-900/40 border-stone-200 dark:border-stone-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-extrabold text-sm border-2 ${
+                        tier.isActive
+                          ? 'bg-emerald-500 text-white border-transparent'
+                          : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700'
+                      }`}>
+                        {tier.letter}
+                      </span>
+                      <div>
+                        <h4 className={`text-xs font-bold ${tier.isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-stone-800 dark:text-stone-200'}`}>
+                          {tier.name}
+                        </h4>
+                        <p className="text-[10px] text-stone-500 dark:text-stone-400 leading-tight">
+                          {tier.label}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-[10px] font-bold text-stone-700 dark:text-stone-300 block">
+                        {tier.range}
+                      </span>
+                      {tier.isActive && (
+                        <span className="text-[8px] font-extrabold uppercase text-rose-500 dark:text-rose-400 tracking-wider">
+                          Sua Faixa
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
 
         {/* Curva de Concentração Recharts */}
         <div 

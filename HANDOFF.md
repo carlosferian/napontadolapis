@@ -38,7 +38,10 @@ Desenvolvemos uma calculadora imobiliária de altíssimo apelo para corretores d
   * **Isenção de Escritura Pública**: Se for financiado, o contrato bancário tem força de escritura (Lei nº 4.380/64). O sistema zera automaticamente esse custo, informando a economia gerada.
   * **Art. 290 da Lei Federal 6.015/73**: Se for o primeiro imóvel residencial financiado, o sistema calcula e aplica **50% de desconto** nas taxas de cartório de Registro.
 
-### 3. Refatoração de Experiência do Usuário (Realidade Brasileira)
+### 3. Refatoração de Experiência do Usuário e Gráfico de Pirâmide (Realidade Brasileira)
+* **Gráfico de Pirâmide Social Dinâmico**: Inclusão de uma belíssima representação triangular interativa de pirâmide social mostrando onde o usuário se enquadra (Classes A, B, C, D e E) baseada em seu salário real, harmonizada com o design system do site e responsiva tanto para celular quanto computador.
+  * **Efeito Premium de Destaque**: O bloco e card correspondentes à classe do usuário são realçados com borda colorida de alto relevo, escala (`scale-105`), anel de brilho, sombra projetada e um badge/indicador `"Você está aqui"` flutuante e animado com pulsação suave.
+  * **Faixas de Cores Curadas**: Cores elegantes alinhadas com o design (Classe A: Dourado/Amber; Classe B: Esmeralda; Classe C: Teal; Classe D: Slate; Classe E: Stone) com suporte perfeito a light e dark mode.
 * **Dropdown Simplificado e Natural**: Seletor de estados mais limpo em `BrazilianRealidadeCalculator.tsx` (ex: `Acre (AC)` em vez da estrutura poluída anterior).
 * **Consistência de Linguagem**: Em `config/realidade.ts`, remoção do sufixo ` (Estado)` nos nomes de `São Paulo` e `Rio de Janeiro`.
 * **Indicador de Classe Social (IBGE/FGV)**: Adicionamos um painel dinâmico que calcula e exibe de forma premium a classe social estimada (Classes A, B, C, D e E) com base em múltiplos de salário mínimo.
