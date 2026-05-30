@@ -49,7 +49,7 @@ const COMPARISONS = [
 
 const N_BETS = [10, 100, 500, 1000] as const
 
-export function BetsNarrative() {
+export function BetsNarrative({ onRestart }: { onRestart: () => void }) {
   const [chapter, setChapter] = useState<Chapter>(0)
 
   // Cap. 2 — Calculadora de odds
@@ -120,15 +120,25 @@ export function BetsNarrative() {
             <div className="text-[9px] text-stone-600">5 capítulos · Educativo · Compartilhável</div>
           </div>
         </div>
-        {/* Barra de progresso */}
-        <div className="flex gap-1.5">
-          {CHAPTER_META.map((m, i) => (
-            <div
-              key={i}
-              className="h-1 w-7 rounded-full transition-all duration-500"
-              style={{ background: i <= chapter ? m.color : 'rgba(255,255,255,0.1)' }}
-            />
-          ))}
+        <div className="flex items-center gap-3">
+          {/* Barra de progresso */}
+          <div className="flex gap-1.5">
+            {CHAPTER_META.map((m, i) => (
+              <div
+                key={i}
+                className="h-1 w-7 rounded-full transition-all duration-500"
+                style={{ background: i <= chapter ? m.color : 'rgba(255,255,255,0.1)' }}
+              />
+            ))}
+          </div>
+          <button
+            onClick={onRestart}
+            title="Jogar novamente"
+            className="text-[10px] font-bold cursor-pointer transition-opacity opacity-50 hover:opacity-100 whitespace-nowrap"
+            style={{ color: '#9ca3af', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6, padding: '3px 8px' }}
+          >
+            ↺ Reiniciar
+          </button>
         </div>
       </div>
 
@@ -530,6 +540,16 @@ export function BetsNarrative() {
                 { label: 'Instituto de Psiquiatria da USP — Ludomania no Brasil',                            url: 'https://www.ipq.hc.fm.usp.br' },
                 { label: 'BCB — Taxa Selic vigente',                                                         url: 'https://www.bcb.gov.br/controleinflacao/taxaselic' },
               ]} />
+
+              <div className="pt-2 flex justify-center">
+                <button
+                  onClick={onRestart}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm cursor-pointer transition-all hover:opacity-90 active:scale-95"
+                  style={{ background: '#111827', color: 'white' }}
+                >
+                  ↺ Jogar novamente
+                </button>
+              </div>
 
               <ChapterNav chapter={chapter} total={5} onPrev={() => setChapter(3)} />
             </div>

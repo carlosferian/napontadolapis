@@ -13,9 +13,10 @@ type RuptureStep = 0 | 1 | 2 | 3 | 4
 interface BetsRuptureProps {
   rounds: number
   onReveal: () => void
+  onRestart: () => void
 }
 
-export function BetsRupture({ rounds, onReveal }: BetsRuptureProps) {
+export function BetsRupture({ rounds, onReveal, onRestart }: BetsRuptureProps) {
   const [step, setStep] = useState<RuptureStep>(1)
 
   useEffect(() => {
@@ -181,7 +182,7 @@ export function BetsRupture({ rounds, onReveal }: BetsRuptureProps) {
           </p>
         </div>
 
-        <div style={{ animation: 'fade-up 0.4s 0.45s both', marginTop: 4 }}>
+        <div style={{ animation: 'fade-up 0.4s 0.45s both', marginTop: 4, display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
           <button
             onClick={onReveal}
             style={{
@@ -200,6 +201,21 @@ export function BetsRupture({ rounds, onReveal }: BetsRuptureProps) {
             }}
           >
             Ver a verdade completa →
+          </button>
+          <button
+            onClick={onRestart}
+            style={{
+              background: 'transparent',
+              color: '#9ca3af',
+              border: '1px solid #e5e7eb',
+              borderRadius: 8,
+              padding: '8px 16px',
+              fontSize: 11,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            ↺ Jogar novamente
           </button>
         </div>
       </div>
