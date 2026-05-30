@@ -333,6 +333,14 @@ export const REALIDADE_STATES: StateData[] = [
     group: 'polo',
   },
   {
+    code: 'PR_CURITIBA',
+    name: 'Curitiba (PR)',
+    cestaBasica: 754,
+    percentileValues: [500, 950, 1300, 1600, 2100, 2700, 3500, 4800, 7500, 11000, 24000, 72000],
+    capital: 'Curitiba',
+    group: 'polo',
+  },
+  {
     code: 'MG_UBERLANDIA',
     name: 'Uberlândia (MG)',
     cestaBasica: 636,
