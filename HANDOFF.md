@@ -111,35 +111,41 @@ napontadolapis/
 ├── .env.local                            ← Variáveis locais do AdSense
 ├── app/
 │   ├── layout.tsx                        ← GA4 + AdSense meta tag + EmbedHandler
-│   ├── page.tsx                          ← Registrada calculadora de Milhas e ITBI!
-│   ├── sitemap.ts                        ← Sitemap dinâmico 100% completo! (44 rotas)
+│   ├── page.tsx                          ← Registradas novas calculadoras na home!
+│   ├── sitemap.ts                        ← Sitemap dinâmico 100% completo! (46 rotas)
 │   ├── investimentos/
 │   │   ├── amortizacao/page.tsx
-│   │   ├── viver-de-renda/page.tsx
-│   │   └── itbi-e-cartorio/page.tsx
+│   │   ├── viver-de-renda/page.tsx       ← Refatorados inputs formatados BRL e contraste
+│   │   ├── itbi-e-cartorio/page.tsx
+│   │   ├── parcelado-ou-a-vista/page.tsx ← Nova! Juros ocultos do "sem juros"
+│   │   └── fuga-do-rotativo/page.tsx     ← Nova! Rota de escape das dívidas
 │   ├── trabalho/
-│   │   ├── realidade-brasileira/page.tsx
+│   │   ├── realidade-brasileira/page.tsx ← Inclusão do gráfico de pirâmide social
 │   │   ├── rescisao/page.tsx
 │   │   └── seguro-desemprego/page.tsx
 │   └── viagens/
 │       ├── custo-de-vida/page.tsx
 │       ├── planejar/page.tsx
-│       └── milhas-ou-dinheiro/page.tsx   ← Nova! Rota da calculadora de Milhas
+│       └── milhas-ou-dinheiro/page.tsx
 ├── components/
 │   ├── EmbedHandler.tsx                  ← Detector de iframe (?embed=true)
 │   ├── AdBanner.tsx                      ← Componente modular do AdSense
 │   ├── Nav.tsx                           ← Registrados novos links no menu
 │   ├── ui/
-│   │   └── ShareButtons.tsx              ← Botão "</> Incorporar" de Widget em todas
+│   │   ├── ShareButtons.tsx              ← Botão "</> Incorporar" de Widget em todas
+│   │   └── ResultHero.tsx                ← Ajustado contraste das fontes manuscritas
 │   └── calculators/
-│       ├── MilesCalculator.tsx           ← Nova! Componente da calculadora de Milhas
+│       ├── MilesCalculator.tsx           ← Componente da calculadora de Milhas
 │       ├── ItbiCalculator.tsx            ← Componente da calculadora de ITBI
-│       ├── BrazilianRealidadeCalculator.tsx ← Suporte a classes e guias estatísticos
-│       └── TravelCalculator.tsx          ← Botão de Afiliado Wise integrado
+│       ├── BrazilianRealidadeCalculator.tsx ← Suporte a classes, pirâmide e guias
+│       ├── ParceladoCalculator.tsx       ← Nova! Componente da calculadora de parcelado
+│       └── RotativoCalculator.tsx        ← Nova! Componente do escape de rotativo
 ├── config/
-│   ├── miles.ts                          ← Nova! Configurações de milhas e CPP
+│   ├── miles.ts                          ← Configurações de milhas e CPP
 │   ├── itbi.ts                           ← Configurações de alíquotas e cartórios
 │   ├── realidade.ts                      ← Dados da pirâmide de renda
+│   ├── parcelado.ts                      ← Nova! Fórmulas e solver de parcelamento
+│   ├── rotativo.ts                       ← Nova! Projeções de fuga de rotativo
 │   ├── travel.ts
 │   └── flight-prices.json
 ├── public/

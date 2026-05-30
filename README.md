@@ -15,10 +15,15 @@ Plataforma de calculadoras financeiras minimalistas de alta utilidade e educaç�
 * **Estilização**: Tailwind CSS v4 (Vanilla CSS para design tokens e flexibilidade máxima)
 * **Build & Hosting**: Netlify (Continuous Deployment via Git)
 
-## 📁 Principais Calculadoras
-1. **Realidade Brasileira (`/trabalho/realidade-brasileira`)**: Simulação de renda individual comparada com o percentil de rendimento nacional, estadual e polos econômicos regionais específicos (como Londrina, Joinville, Campinas, etc.) com base no IBGE/PNAD e DIEESE.
-2. **Planejador de Viagens (`/viagens`)**: Planejador completo com custos diários estimados para 22 destinos nacionais e internacionais (incluindo Curitiba) com plano de poupança automatizado usando fórmula de anuidade (PMT) indexada à taxa Selic.
-3. **Outras Calculadoras**: Amortização de financiamento, Juros Compostos, Viver de Renda (renda passiva), Cigarro/Vape (estimativa de custo de vícios), Divisão de Contas, Seguro Desemprego e Rescisão.
+## 📁 Principais Calculadoras e Ferramentas
+
+1. **Realidade Brasileira e Pirâmide Social (`/trabalho/realidade-brasileira`)**: Simulação de renda individual comparada com o percentil de rendimento nacional, estadual e polos econômicos regionais específicos com base no IBGE/PNAD e cesta básica do DIEESE. Inclui um **Gráfico de Pirâmide Social interativo** destacado com efeito de marcação e dicas didáticas personalizadas de aceleração patrimonial baseada no estrato socioeconômico.
+2. **Planejador de Viagens Integrado (`/viagens`)**: Planejador completo com custos diários estimados para 22 destinos nacionais e internacionais com plano de poupança automatizado usando fórmula de anuidade (PMT) indexada à taxa Selic e ganho real de mercado.
+3. **Milhas ou Dinheiro? (`/viagens/milhas-ou-dinheiro`)**: Inteligência baseada na metodologia do **Custo por Mil Milhas (CPP)**. Compara tarifas de passagem em milhas vs. dinheiro e audita promoções de compra de pontos alertando contra o "Desconto Fantasma" (preços de tabela inflados).
+4. **ITBI e Custos de Cartório (`/investimentos/itbi-e-cartorio`)**: Estimador de taxas de transferência de imóveis, aplicando automaticamente a isenção de Escritura Pública para contratos financiados (Lei nº 4.380/64) e os **50% de desconto nas taxas de Cartório de Registro** para o primeiro imóvel financiado (Art. 290 da Lei de Registros Públicos nº 6.015/73).
+5. **Parcelado ou À Vista? (`/investimentos/parcelado-ou-a-vista`)**: Solver financeiro de juros embutidos que utiliza o **método numérico da Bissecção** para encontrar a Taxa Interna de Retorno (TIR) real cobrada no parcelamento "sem juros" do varejo em relação ao Pix.
+6. **Fuga do Rotativo (`/investimentos/fuga-do-rotativo`)**: Simulador pedagógico que projeta a espiral infinita de juros do rotativo do cartão de crédito (~15% a.m.) contra a amortização de empréstimos saudáveis de substituição (~3% a.m.), com **gráficos comparativos do Recharts** e alertas didáticos de dívida impagável.
+7. **Outras Calculadoras**: Amortização de financiamento (SAC vs Price), Juros Compostos, Viver de Renda (renda passiva perpetuidade vs desgaste), Cigarro/Vape (vícios), Divisão de Contas, Seguro-Desemprego e Rescisão Trabalhista CLT.
 
 ## 💻 Desenvolvimento Local
 
