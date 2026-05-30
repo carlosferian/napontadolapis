@@ -9,91 +9,126 @@
 
 ## Estado atual
 
-O projeto está completo, compilando com **sucesso absoluto** (todas as 44 páginas estáticas geradas sem avisos ou erros) e **100% monetizado e integrado** com as campanhas oficiais do proprietário (Google AdSense e Programa de Afiliados da Wise).
+O projeto está completo, compilando com **sucesso absoluto** (45 páginas estáticas geradas sem avisos ou erros) e **100% monetizado e integrado** com as campanhas oficiais do proprietário (Google AdSense e Programa de Afiliados da Wise).
 
-Toda a infraestrutura do site roda de forma **100% independente, autônoma e com custo zero vitalício**, eliminando qualquer dependência de chaves de API externas de terceiros instáveis de aviação (Amadeus/Kiwi.com), o que garante imunidade contra o encerramento do portal Amadeus em julho de 2026.
+Toda a infraestrutura do site roda de forma **100% independente, autônoma e com custo zero vitalício**, eliminando qualquer dependência de chaves de API externas instáveis.
 
 ---
 
 ## O que foi feito — Sessão Atual (2026-05-30)
 
-### 1. Hotfix Global de Sincronização do Tailwind v4 (Tema Escuro/Claro)
-* **Solução Causa Raiz:** Configuramos uma nova regra global para a variante dark do Tailwind v4 (`app/globals.css`):
-  ```css
-  @variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-  ```
-* **O Impacto:** Isso realinhou 100% o comportamento das classes `dark:` (como `dark:text-white`) com o `ThemeProvider` do site (`data-theme`), ignorando as preferências do sistema operacional do usuário. Isso resolveu de vez a invisibilidade de valores de cards e sliders no modo claro para quem usava o sistema operacional configurado em modo escuro.
+### 1. Redesign Completo da Seção de Apostas — Jornada Imersiva em 3 Fases
 
-### 2. Nova Calculadora de Milhas ou Dinheiro (Inteligência em Milhas)
-* **Matemática Fiel baseada no CPP (`config/miles.ts`)**:
-  * Mapeamento de taxas médias estáveis de resgate e aquisição de programas nacionais (Smiles, Latam, TudoAzul, Livelo, Esfera).
-* **Upgrade Total de Inputs (`components/calculators/MilesCalculator.tsx`)**:
-  * Substituição de labels de range estáticas por **campos de entrada numéricos interativos e bidirecionais** com formatação de milhares (`pt-BR`). 
-  * O usuário agora vê os valores selecionados em fontes robustas de alto contraste e pode optar por digitar o valor exato no teclado ou arrastar o slider, com sincronização visual e matemática imediata.
-  * Inputs customizados decimais para CPP de origem de milhas e mercado com suporte à vírgula brasileira.
-* **Foco na Automatização (Reescrita da Prosa)**:
-  * O texto descritivo ao final da página foi reformulado. Em vez de ensinar o usuário a calcular na mão com fórmulas complexas, agora orienta sobre como a nossa calculadora executa todo o processamento de forma 100% autônoma.
-  * Fornecemos um guia prático de UX orientando quais 3 a 4 dados o usuário precisa coletar no portal da cia aérea para simplesmente colar na nossa ferramenta e obter o veredito dinâmico em milissegundos.
+A calculadora de apostas foi completamente reimaginada como uma **jornada educativa linear** com três fases sequenciais e sem abas. O spec completo vive em `docs/superpowers/specs/2026-05-30-apostas-redesign-design.md`.
 
-### 3. Nova Calculadora de Parcelado ou À Vista? (Juros Ocultos)
-* **Matemática do Solver Financeiro (`config/parcelado.ts`)**:
-  * Utilização do método de Bissecção em Javascript para deduzir a Taxa Interna de Retorno (TIR) implícita de anuidade/parcelas iguais, comparando com o desconto à vista.
-  * Cálculo dinâmico do equivalente ao CDI (percentual da taxa Selic líquida) e rentabilidade equivalente anualizada.
-* **Componente de UI Premium (`components/calculators/ParceladoCalculator.tsx`)**:
-  * Inputs com formatação BRL inteligente em tempo real e sliders interativos.
-  * Painel de veredito visual com coloração reativa (Verde para parcelar se os juros forem irrelevantes; Vermelho/Amarelo para pagar à vista no Pix).
-  * Análise de custo de oportunidade detalhada e wrapped de compartilhamento modular.
-  * Rota registrada: `/investimentos/parcelado-ou-a-vista`
+#### Fase 1 — O Cassino (`components/calculators/BetsCasino.tsx`)
 
-### 4. Novo Simulador de Fuga do Rotativo (Substituição de Dívidas)
-* **Matemática de Amortização Comparativa (`config/rotativo.ts`)**:
-  * Projeção de cenários paralelos: manter a dívida de cartão de crédito no rotativo (~15% a.m.) contra a troca por um empréstimo pessoal ou consignado estruturado (~3% a.m.).
-  * Alertas estatísticos de **"Dívida Infinita"** caso o pagamento mensal não supere os juros do rotativo.
-* **Interface Educativa de Alto Impacto (`components/calculators/RotativoCalculator.tsx`)**:
-  * Gráfico de área comparativo do Recharts mostrando o abismo visual da dívida do cartão explodindo exponencialmente contra a linha do empréstimo caindo a zero.
-  * Guias de ação pedagógicos baseados na lei do superendividamento e consolidação ética.
-  * Oportunidade perfeita de monetização por afiliados contextuais e limpos com portais de renegociação de dívidas.
-  * Rota registrada: `/investimentos/fuga-do-rotativo`
+Lobby de cassino hiper-realista com sistema de **decadência progressiva de 5 estágios** que deteriora a interface conforme o saldo cai:
 
-### 5. Nova Calculadora de ITBI e Custos de Cartório
-* **Matemática Fiel de Tributos e Cartórios (`config/itbi.ts`)**:
-  * Regra de alíquota reduzida de ITBI para parte financiada (SFH/Minha Casa Minha Vida) a **0,5%**.
-  * Fórmulas de emolumentos para Registro de Imóvel e Escritura Pública.
-* **Isenções e Descontos por Lei Integrados (`components/calculators/ItbiCalculator.tsx`)**:
-  * **Isenção de Escritura Pública**: Se for financiado, o contrato bancário tem força de escritura (Lei nº 4.380/64). O sistema zera automaticamente esse custo, informando a economia gerada.
-  * **Art. 290 da Lei Federal 6.015/73**: Se for o primeiro imóvel residencial financiado, o sistema calcula e aplica **50% de desconto** nas taxas de cartório de Registro.
+| Estágio | Decay | Visual |
+|---------|-------|--------|
+| 0 — Pristine | 0–20% | Fundo `#14102a`, neon dourado, slots com glow colorido |
+| 1 — Primeiros Sinais | 20–40% | Âmbar, 💸 voando, uma slot pisca |
+| 2 — Alerta | 40–60% | Vermelho, 🕷️ no canto, emoji 😵 em slot |
+| 3 — Crítico | 60–80% | Rachadura SVG, 🚨💔, quase grayscale |
+| 4 — Colapso | 80–100% | 💀 domina tudo, chuva de 💸, tela praticamente morta |
 
-### 6. Refatoração de Experiência do Usuário e Gráfico de Pirâmide (Realidade Brasileira)
-* **Gráfico de Pirâmide Social Dinâmico**: Inclusão de uma belíssima representação triangular interativa de pirâmide social mostrando onde o usuário se enquadra (Classes A, B, C, D e E) baseada em seu salário real, harmonizada com o design system do site e responsiva tanto para celular quanto computador.
-  * **Efeito Premium de Destaque**: O bloco e card correspondentes à classe do usuário são realçados com borda colorida de alto relevo, escala (`scale-105`), anel de brilho, sombra projetada e um badge/indicador `"Você está aqui"` flutuante e animado com pulsação suave.
-  * **Faixas de Cores Curadas**: Cores elegantes alinhadas com o design (Classe A: Dourado/Amber; Classe B: Esmeralda; Classe C: Teal; Classe D: Slate; Classe E: Stone) com suporte perfeito a light e dark mode.
-* **Dropdown Simplificado e Natural**: Seletor de estados mais limpo em `BrazilianRealidadeCalculator.tsx` (ex: `Acre (AC)` em vez da estrutura poluída anterior).
-* **Consistência de Linguagem**: Em `config/realidade.ts`, remoção do sufixo ` (Estado)` nos nomes de `São Paulo` e `Rio de Janeiro`.
-* **Polos Regionais Expandidos**: Inclusão de **Curitiba (PR)** sob o grupo de *Polos Econômicos Regionais* com percentis salariais metropolitanos e cesta básica ajustada a R$ 754,00.
-* **Indicador de Classe Social (IBGE/FGV)**: Adicionamos um painel dinâmico que calcula e exibe de forma premium a classe social estimada (Classes A, B, C, D e E) com base em múltiplos de salário mínimo.
-* **Guias de Ação Personalizados**: Exibição de cards explicativos baseados em estatísticas reais (ensino técnico e estanque de dívidas de consumo para D/E; alocação em investimentos e proteção cambial global com Wise para A/B/C), com ganchos nativos para o afiliado Wise do portal.
+**Sistema de créditos reais (single-use):** o jogador pode depositar bens reais no cassino — cada um apenas UMA vez:
+- 🎬 Ingressos de cinema — R$ 70
+- 👟 Tênis novo — R$ 280
+- 📱 Entrada do celular — R$ 500
+- 💰 Poupança dos filhos — R$ 200
+- 📚 Livros novos — R$ 90
+- 🍕 Jantar da família — R$ 150
 
-### 7. Correção Crítica de SEO Técnico (Sitemap XML)
-* **Sitemap XML (`app/sitemap.ts`)**: Mapeamento de 100% das 46 páginas estáticas e parametrizadas do projeto com a priorização estratégica correta para acelerar o ranqueamento orgânico no Google.
+Quando um bem é usado, vira ✓ acinzentado e fica indisponível. Contador "X restantes" visível.
 
-### 8. Mecanismo de Widgetização Dinâmica (Embed Limpo & Transparente)
-* **EmbedHandler (`components/EmbedHandler.tsx`)**: Detector client-side que monitora se a URL contém `?embed=true`.
-* **CSS de Modo Embed (`app/globals.css`)**: Ocultação automática de Nav, Footer, publicidades e CTAs, e background 100% transparente para fundir o widget ao layout do blog parceiro.
-* **Botão Modular de Embed (`components/ui/ShareButtons.tsx`)**: Botão de `</> Incorporar no seu site` na base de compartilhamento de **todas as 11 calculadoras** do portal.
+**Regras do jogo (finito):**
+- 15 rodadas pré-roteirizadas com arco dramático de dopamina (vitórias nos giros 1, 2 e 5 para viciar, drenagem inevitável depois)
+- Aposta padrão: R$ 40 (slider 5-50 + chips rápidos R$5/10/20/50 + All-in)
+- Após as 15 rodadas: **perda garantida** (sem RNG) — cada clique drena o saldo deterministicamente
+- Máximo possível: R$ 200 inicial + R$ 1.290 em bens = R$ 1.490, que com R$ 40/rodada esgota em ~47 cliques
+- Botão 🔊/🔇 de mute no header
 
-### 9. Super-Gamificação Pedagógica contra o Vício em Apostas
-Overhaul completo da Calculadora de Apostas (`components/calculators/BetsCalculator.tsx`), direcionada especialmente para o público jovem e pessoas com dificuldade de leitura/matemática básica, transmitindo o impacto das Bets de forma puramente emocional, visual e experimental:
-* **Simulador da Ilusão (Lobby Gamificado de Bets)**:
-  * Lobby de apostas com visual de cassino digital com picos neon e cores vibrantes.
-  * Escolha entre 4 modalidades populares brasileiras: **Tigrinho (Slots), Foguetinho (Crash), Múltiplas (Esportes) e Roleta**.
-  * **Ciclo de Dopamina Programado (15 rodadas manuais)**: O simulador entrega propositalmente pequenas vitórias no início (giros 1, 2 e 5 - "Big Win") para simular o efeito dopaminérgico que vicia o apostador, seguido de um dreno rápido e inevitável de saldo até a falência (`R$ 0,00`).
-* **Piloto Automático de Edge Matemático (1.000 Rodadas Velozes)**:
-  * Executa um loop instantâneo com as margens reais das plataformas (RTP de 75% a 97.3%). Demonstra visualmente a teoria da ruína do jogador: a longo prazo, a perda de 100% do saldo é uma certeza estatística absoluta.
-* **Calculadora de Perda Real Paralela**:
-  * Uma segunda aba mantém a ferramenta original de perda acumulada mensal no papel, agora equipada com os novos inputs numéricos interativos e bidirecionais com pontos de milhares.
-* **Painel Rodapé de Prevenção e Impacto Real**:
-  * Inclusão de dados oficiais do Banco Central/DIEESE sobre o impacto das Bets no consumo das famílias de baixa renda brasileiras.
-  * Ganchos práticos de acolhimento gratuito e contato direto com **Jogadores Anônimos do Brasil**, tratamento clínico de ludopatia no **SUS (CAPS)** e orientações de **Autoexclusão de CPF** nas plataformas de apostas.
+**Sons (Web Audio API — zero arquivos, 100% sintetizados):**
+- `playSpin()` — blips aleatórios durante o giro
+- `playWin()` — dois tons ascendentes
+- `playBigWin()` — fanfarra de 4 notas (apenas para mult 4×)
+- `playLose()` — sawtooth descendente
+- `playRupture()` — bass thud + burst de ruído branco na falência
+
+#### Fase 2 — A Ruptura (`components/calculators/BetsRupture.tsx`)
+
+Sequência de animação com 4 steps ao atingir saldo zero:
+1. Cassino morto (slots → 💀, rachaduras SVG, saldo piscando)
+2. Tremor (`casino-shake 80ms × 3`)
+3. Flash vermelho (`rupture-flash 250ms`)
+4. **Split screen com raio:** lado esquerdo = cassino cinza morto, raio vermelho central, lado direito = fundo branco + *"A ilusão acabou. R$ 200 perdidos em X cliques."* + CTA "Ver a verdade completa →" + "↺ Jogar novamente"
+
+#### Fase 3 — A Narrativa (`components/calculators/BetsNarrative.tsx`)
+
+5 capítulos educativos com sidebar de navegação e barra de progresso:
+
+- **Cap. 1 — Psicologia:** Gráfico de barras de dopamina dos 15 giros + explicação do Reforço Intermitente de Skinner
+- **Cap. 2 — Matemática:** Calculadora de odds interativa + barras de probabilidade de lucro para 10/100/500/1.000 apostas + simulador de 100 rodadas com gráfico sparkline
+- **Cap. 3 — Custo Real:** Calculadora de perda mensal vs. Selic + MetricGrid + ComparisonList + ShareCard
+- **Cap. 4 — Brasil Sangra:** Grid de 4 stats oficiais (BCB, SBVC, USP) + cards com fontes
+- **Cap. 5 — Saída:** Links JA Brasil, CVV 188, CAPS AD/SUS, Autoexclusão de CPF + botão "↺ Jogar novamente" proeminente
+
+**Botão de restart:** aparece em 3 pontos da jornada (split screen da ruptura, header da narrativa, capítulo 5) — reseta para a Fase 1 instantaneamente sem reload.
+
+#### Limpezas relacionadas
+- Rota `/apostas/probabilidades` removida (conteúdo absorvido pelo Cap. 2 da narrativa)
+- 9 `@keyframes` CSS adicionados ao `globals.css`
+- `OddsCalculator.tsx` mantido em disco (sem rota própria)
+- Arquivo `lib/casino-sounds.ts` criado (~80 linhas)
+
+---
+
+### 2. Correção do Menu de Navegação (`components/Nav.tsx`)
+
+- **"Viagens"** convertido de link simples para **dropdown** com 4 itens:
+  - Hub de Viagens (`/viagens`)
+  - **Milhas ou Dinheiro?** (`/viagens/milhas-ou-dinheiro`) ← movido para o lugar correto
+  - Planejar Viagem (`/viagens/planejar`)
+  - Custo de Vida entre Cidades (`/viagens/custo-de-vida`)
+- "Milhas ou Dinheiro?" removida do dropdown Trabalho onde estava incorretamente
+- Link morto `/apostas/probabilidades` removido de Hábitos
+
+---
+
+### 3. Restauração da Calculadora de Milhas (`app/viagens/milhas-ou-dinheiro/page.tsx`)
+
+O componente `MilesCalculator` estava importado na página mas **nunca renderizado** (bug silencioso). Reinserido `<MilesCalculator />` imediatamente após o header, antes da prosa explicativa. A calculadora completa (abas "Milhas vs. Dinheiro" e "Comprar Milhas na Promoção") voltou a aparecer.
+
+---
+
+## Estrutura de arquivos atualizada
+
+```
+napontadolapis/
+├── app/
+│   ├── apostas/
+│   │   └── page.tsx               ← Metadata + header atualizados
+│   ├── viagens/
+│   │   └── milhas-ou-dinheiro/
+│   │       └── page.tsx           ← MilesCalculator reinserido
+│   └── globals.css                ← 9 @keyframes de cassino adicionados
+├── components/
+│   ├── Nav.tsx                    ← Viagens dropdown + limpeza de links mortos
+│   └── calculators/
+│       ├── BetsCalculator.tsx     ← Orquestrador de fase (~40 linhas)
+│       ├── BetsCasino.tsx         ← Fase 1: cassino + decay + créditos + sons
+│       ├── BetsRupture.tsx        ← Fase 2: split screen animado
+│       └── BetsNarrative.tsx      ← Fase 3: 5 capítulos educativos
+├── lib/
+│   └── casino-sounds.ts           ← Sons sintetizados Web Audio API (novo)
+└── docs/superpowers/
+    ├── specs/
+    │   └── 2026-05-30-apostas-redesign-design.md
+    └── plans/
+        └── 2026-05-30-apostas-redesign.md
+```
 
 ---
 
@@ -113,68 +148,55 @@ Para futuras parcerias de conversão na Calculadora de Milhas ou outras áreas (
      ```
    * A tag **`rel="sponsored"`** sinaliza honestidade técnica para os robôs de busca. O Google reconhece a intenção comercial legítima e protege a autoridade de busca do seu domínio.
 3. **Privacidade e Imparcialidade Radical (Cálculos 100% Locais) 🛡️**:
-   * O portal se posiciona como um simulador de utilidade pública independente e sem captação de dados/e-mails. 
+   * O portal se posiciona como um simulador de utilidade pública independente e sem captação de dados/e-mails.
    * **Arquitetura**: O processamento matemático e as simulações devem continuar rodando 100% client-side (no navegador do usuário), de forma anônima.
    * **Monetização**: Os ganchos de comissão devem ser oferecidos exclusivamente de forma **passiva e contextual no final do funil de resultados** (como uma sugestão prática de ação para o cliente baseado no veredito matemático do cálculo), mantendo o julgamento analítico do sistema inabalável e imparcial.
-4. **Compliance com o Leitor**:
-   * Recomenda-se manter uma linha explicativa discreta na base ou rodapé do site informando aos leitores que pequenas comissões geradas por links recomendados de resultado ajudam a manter o portal 100% independente, gratuito e sem anúncios invasivos.
 
 ---
 
-## Estrutura de pastas atualizada
+## Próximas funcionalidades planejadas
 
-```
-napontadolapis/
-├── .env.local                            ← Variáveis locais do AdSense
-├── app/
-│   ├── layout.tsx                        ← GA4 + AdSense meta tag + EmbedHandler
-│   ├── page.tsx                          ← Registradas novas calculadoras na home!
-│   ├── sitemap.ts                        ← Sitemap dinâmico 100% completo! (46 rotas)
-│   ├── investimentos/
-│   │   ├── amortizacao/page.tsx
-│   │   ├── viver-de-renda/page.tsx       ← Refatorados inputs formatados BRL e contraste
-│   │   ├── itbi-e-cartorio/page.tsx
-│   │   ├── parcelado-ou-a-vista/page.tsx ← Nova! Juros ocultos do "sem juros"
-│   │   └── fuga-do-rotativo/page.tsx     ← Nova! Rota de escape das dívidas
-│   ├── trabalho/
-│   │   ├── realidade-brasileira/page.tsx ← Inclusão do gráfico de pirâmide social
-│   │   ├── rescisao/page.tsx
-│   │   └── seguro-desemprego/page.tsx
-│   └── viagens/
-│       ├── custo-de-vida/page.tsx
-│       ├── planejar/page.tsx
-│       └── milhas-ou-dinheiro/page.tsx
-├── components/
-│   ├── EmbedHandler.tsx                  ← Detector de iframe (?embed=true)
-│   ├── AdBanner.tsx                      ← Componente modular do AdSense
-│   ├── Nav.tsx                           ← Registrados novos links no menu
-│   ├── ui/
-│   │   ├── ShareButtons.tsx              ← Botão "</> Incorporar" de Widget em todas
-│   │   └── ResultHero.tsx                ← Ajustado contraste das fontes manuscritas
-│   └── calculators/
-│       ├── MilesCalculator.tsx           ← Componente da calculadora de Milhas
-│       ├── ItbiCalculator.tsx            ← Componente da calculadora de ITBI
-│       ├── BrazilianRealidadeCalculator.tsx ← Suporte a classes, pirâmide e guias
-│       ├── ParceladoCalculator.tsx       ← Nova! Componente da calculadora de parcelado
-│       └── RotativoCalculator.tsx        ← Nova! Componente do escape de rotativo
-├── config/
-│   ├── miles.ts                          ← Configurações de milhas e CPP
-│   ├── itbi.ts                           ← Configurações de alíquotas e cartórios
-│   ├── realidade.ts                      ← Dados da pirâmide de renda
-│   ├── parcelado.ts                      ← Nova! Fórmulas e solver de parcelamento
-│   ├── rotativo.ts                       ← Nova! Projeções de fuga de rotativo
-│   ├── travel.ts
-│   └── flight-prices.json
-├── public/
-│   ├── ads.txt                           ← Arquivo de autorização do AdSense
-│   └── logo.png
-└── README.md                             ← Documentação técnica premium
-```
+### Calculadora de Financiamento vs. Consórcio
+
+**Objetivo:** Comparar matematicamente se vale mais a pena financiar um bem (imóvel, veículo) ou entrar num consórcio.
+
+**Contexto e cautelas importantes:**
+- **Consórcio é proibido em vários países** (EUA, Reino Unido, a maioria da Europa e Ásia) — é uma modalidade exclusivamente brasileira e de alguns países da América Latina. A calculadora deve deixar isso explícito com um aviso educativo.
+- **O consórcio raramente vence o financiamento** em termos de custo total se considerado o custo de oportunidade do dinheiro, especialmente se o bem cai de preço no tempo (veículos). Os casos em que pode vantajar: imóvel em valorização acelerada + taxa de administração baixa + contemplação rápida + o comprador NÃO precisa do bem imediatamente.
+- A calculadora deve ser honesta e pode concluir "nunca vale a pena" dependendo dos parâmetros — não deve forçar um veredito positivo para o consórcio.
+
+**Variáveis a modelar:**
+
+*Financiamento:*
+- Valor do bem
+- Entrada (%)
+- Taxa de juros mensal (ou CET)
+- Prazo em meses
+- Sistema de amortização (SAC ou Price)
+- Custo total pago (principal + juros)
+
+*Consórcio:*
+- Valor da carta de crédito
+- Taxa de administração total (%)
+- Prazo em meses
+- Fundo de reserva (%)
+- Estimativa de meses para contemplação (média ou simulação pessimista/otimista)
+- Custo de oportunidade do dinheiro preso no consórcio (CDI/Selic sobre parcelas)
+
+**Vereditos que a calculadora deve emitir:**
+- Custo total comparado (R$ X vs. R$ Y)
+- Custo de oportunidade do tempo sem o bem (consórcio)
+- Ponto de equilíbrio (quando o consórcio vence, se vencer)
+- Aviso obrigatório: "Consórcio é proibido em muitos países — verifique a legalidade na sua jurisdição"
+- Aviso: "Em bens depreciáveis (veículos, eletrônicos), o consórcio raramente vantaja"
+
+**Rota sugerida:** `/investimentos/financiamento-ou-consorcio`
 
 ---
 
-## Próximos passos
+## Próximos passos gerais
 
 1. **Promover links de Embeds (Widgetização)**: Fazer contato com portais imobiliários/corretores (para os widgets de *Amortização* e *ITBI*) e blogs de viagem/milhas (para o widget de *Milhas ou Dinheiro*) oferecendo as ferramentas de graça para indexação de backlinks de alta autoridade.
 2. **Divulgação Orgânica em Fóruns**: Realizar publicações sobre "Privacidade Radical" no `r/investimentos` (Reddit) apresentando o projeto.
 3. **Monitorar a revisão do Google AdSense**: Aguardar o prazo padrão de aprovação do site.
+4. **Implementar Financiamento vs. Consórcio**: Ver seção acima com spec completo da intenção.
