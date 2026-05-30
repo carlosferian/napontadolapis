@@ -398,6 +398,16 @@ html.is-embedded main {
   max-width: 100% !important;
 }
 
+/* ─── Imersão mobile: oculta nav e header durante o jogo ────────── */
+@media (max-width: 767px) {
+  body[data-casino-playing] nav.calm-nav {
+    display: none !important;
+  }
+  body[data-casino-playing] #apostas-header {
+    display: none !important;
+  }
+}
+
 /* ─── Casino animations ──────────────────────────────────────────── */
 
 @keyframes casino-glow {

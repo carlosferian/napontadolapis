@@ -25,24 +25,31 @@ const CREDIT_ITEMS = [
 ] as const
 type CreditItem = typeof CREDIT_ITEMS[number]
 
-// ── 15 Rodadas Pré-definidas (arco dopamina → ruína) ─────────────────────
-// {win} no msg é substituído pelo valor real em tempo de render
+// ── 15 Rodadas Pré-definidas — arco realista de um apostador real ─────────
+// Fase 1 (0-2): 3 vitórias seguidas → hook dopaminérgico forte
+// Fase 2 (3-6): altos e baixos → sensação de controle ilusória
+// Fase 3 (7-10): perdas crescentes → ansiedade de recuperação
+// Fase 4 (11-14): colapso → desespero e all-in inevitável
 const PREDEFINED_ROUNDS = [
-  { win: true,  mult: 2.0, msg: '🐯 O Tigre soltou a carta de ouro! Você ganhou {win} de volta. É fácil, né?' },
-  { win: true,  mult: 1.8, msg: '🚀 MULTIPLICOU! O Foguetinho subiu até 1.8x. {win} líquidos. Você sente que tem o controle!' },
-  { win: false, mult: 0,   msg: '❌ Derrota... A bola bateu na trave no último segundo. Tente mais uma para recuperar!' },
-  { win: false, mult: 0,   msg: '🎡 A roleta caiu na cor errada por um fio. A sorte está logo ali...' },
-  { win: true,  mult: 4.0, msg: '🎉 BIG WIN!!! 💰 O Tigre multiplicou por 4x! {win} líquidos! Seu cérebro é inundado por dopamina!' },
-  { win: false, mult: 0,   msg: '❌ Derrota... Faz parte do gerenciamento de risco. Você ainda está no lucro!' },
-  { win: false, mult: 0,   msg: '🚀 O foguete explodiu instantaneamente. Quase deu tempo de sair. Tente de novo!' },
-  { win: false, mult: 0,   msg: '❌ Roleta caiu no zero verde. A casa sempre tem essa vantagem oculta.' },
-  { win: true,  mult: 1.2, msg: '🐯 Vitória discreta! {win}. Pelo menos recuperou parte. A maré vai virar!' },
-  { win: false, mult: 0,   msg: '❌ Derrota... Virada nos acréscimos. A banca agradece.' },
-  { win: false, mult: 0,   msg: '🐯 Nada na tela. Você começa a se sentir ansioso para recuperar.' },
-  { win: false, mult: 0,   msg: '🚀 Foguete explodiu rápido de novo. A sensação de controle sumiu.' },
-  { win: false, mult: 0,   msg: '❌ O saldo está encolhendo em ritmo assustador. Só mais um clique!' },
-  { win: false, mult: 0,   msg: '❌ A roleta ignorou sua cor. O pânico de perder tudo bate forte.' },
-  { win: false, mult: 0,   msg: '🚨 ALL-IN FORÇADO! Você colocou tudo que restava e... perdeu. O saldo chegou a zero.' },
+  // ── Fase 1: O Hook ──
+  { win: true,  mult: 3.0, msg: '🎉 PRIMEIRO GIRO E JÁ GANHOU! +{win} líquidos. É assim tão fácil?' },
+  { win: true,  mult: 2.5, msg: '🚀 DE NOVO! Foguetinho subiu 2.5x. Mais {win} no bolso. Você é bom nisso!' },
+  { win: true,  mult: 1.8, msg: '🐯 Terceira seguida! +{win}. Quem disse que bets são difíceis?' },
+  // ── Fase 2: Altos e Baixos ──
+  { win: false, mult: 0,   msg: '❌ Primeira derrota. Normal — você ainda está bem no positivo!' },
+  { win: true,  mult: 2.0, msg: '⚽ Recuperou na hora! +{win}. Você claramente tem o tato pra isso.' },
+  { win: false, mult: 0,   msg: '🎡 Roleta caiu no zero. Faz parte. O saldo ainda é forte.' },
+  { win: true,  mult: 1.4, msg: '🐯 Pequena vitória. +{win}. Uma hora ganha, outra perde — é gerenciamento.' },
+  { win: false, mult: 0,   msg: '❌ Derrota... mas você está no controle. Só mais uma.' },
+  // ── Fase 3: A Virada ──
+  { win: false, mult: 0,   msg: '❌ Perdeu de novo. O saldo começa a encolher de verdade.' },
+  { win: false, mult: 0,   msg: '❌ Mais uma perda. A sensação de querer recuperar tudo aumenta.' },
+  { win: false, mult: 0,   msg: '❌ Perdendo... O pensamento "só mais uma" fica cada vez mais forte.' },
+  // ── Fase 4: O Colapso ──
+  { win: false, mult: 0,   msg: '❌ O saldo caindo rápido. A lógica sumiu — só o desespero de recuperar.' },
+  { win: false, mult: 0,   msg: '❌ Derrota. Cada clique agora é uma tentativa de desfazer o estrago.' },
+  { win: false, mult: 0,   msg: '❌ Quase no limite. Uma última tentativa. Tudo ou nada.' },
+  { win: false, mult: 0,   msg: '🚨 Você apostou tudo que restava. E perdeu. É assim que termina sempre.' },
 ] as const
 
 // ── Sistema de Decadência: configurações por estágio ─────────────────────
@@ -209,7 +216,7 @@ interface LogEntry {
 }
 
 export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
-  const [balance, setBalance]               = useState(200)
+  const [balance, setBalance]               = useState(0)
   const [betAmount, setBetAmount]           = useState(40)
   const [modality, setModality]             = useState<string>('slots')
   const [roundCount, setRoundCount]         = useState(0)
@@ -218,13 +225,19 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
   const [rollingEmoji, setRollingEmoji]     = useState('🐯')
   const [bankrupt, setBankrupt]             = useState(false)
   const [muted, setMuted]                   = useState(false)
-  const [decayBase, setDecayBase]           = useState(200)  // resets quando créditos são adicionados
-  const [totalIn, setTotalIn]               = useState(200)  // total colocado no cassino (cresce a cada depósito)
-  const [usedCreditIds, setUsedCreditIds]   = useState<string[]>([]) // cada item só pode ser usado 1x
+  const [decayBase, setDecayBase]           = useState(0)
+  const [totalIn, setTotalIn]               = useState(0)
+  const [usedCreditIds, setUsedCreditIds]   = useState<string[]>([])
 
-  // Decay: 0 (pristine) → 100 (colapso), relativo ao último depósito
+  // Oculta nav e cabeçalho da página no mobile durante o jogo
+  useEffect(() => {
+    document.body.setAttribute('data-casino-playing', 'true')
+    return () => document.body.removeAttribute('data-casino-playing')
+  }, [])
+
+  // Decay: 0 (pristine) → 100 (colapso). Guarda contra decayBase=0 (antes do 1º depósito)
   const decay = useMemo(
-    () => Math.max(0, Math.round((decayBase - balance) / (decayBase / 100))),
+    () => decayBase > 0 ? Math.max(0, Math.round((decayBase - balance) / (decayBase / 100))) : 0,
     [balance, decayBase]
   )
   const stage = useMemo(() => getDecayStage(decay), [decay])
@@ -313,26 +326,29 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
     setTotalIn(prev => prev + item.value)
     setUsedCreditIds(prev => [...prev, item.id])
     if (!muted) playWin()
+    const isFirst = totalIn === 0
     setLog(prev => [{
       id: Date.now(),
       mod: item.emoji,
       result: 'win' as const,
       val: item.value,
-      msg: `Você jogou ${item.desc} no cassino. +${formatBRL(item.value)} no saldo.`,
+      msg: isFirst
+        ? `Você colocou ${item.desc} em jogo. Bem-vindo ao cassino.`
+        : `Você jogou ${item.desc} no cassino. +${formatBRL(item.value)} adicionados.`,
       isDeposit: true,
     }, ...prev.slice(0, 14)])
   }, [balance, muted, usedCreditIds])
 
   const handleReset = useCallback(() => {
-    setBalance(200)
+    setBalance(0)
     setBetAmount(40)
     setModality('slots')
     setRoundCount(0)
     setLog([])
     setBankrupt(false)
     setIsRolling(false)
-    setDecayBase(200)
-    setTotalIn(200)
+    setDecayBase(0)
+    setTotalIn(0)
     setUsedCreditIds([])
   }, [])
 
@@ -478,7 +494,24 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
           })}
         </div>
 
-        {/* Saldo */}
+        {/* Estado dormant: convite para depositar o primeiro bem */}
+        {balance === 0 && !bankrupt && (
+          <div
+            className="rounded-xl p-4 border text-center space-y-1"
+            style={{ background: 'rgba(224,179,90,0.04)', borderColor: 'rgba(224,179,90,0.15)', borderStyle: 'dashed' }}
+          >
+            <div className="text-2xl">🎰</div>
+            <div className="text-sm font-extrabold uppercase tracking-wider" style={{ color: 'rgba(224,179,90,0.8)' }}>
+              Escolha um bem para entrar no jogo
+            </div>
+            <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              Cada bem só pode ser usado uma vez
+            </div>
+          </div>
+        )}
+
+        {/* Saldo — só aparece quando há dinheiro em jogo */}
+        {balance > 0 && (
         <div
           className="rounded-xl p-3 sm:p-4 flex justify-between items-center border"
           style={{
@@ -504,12 +537,13 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
           {/* Badge de estado psicológico */}
           <div className="text-right">
             {roundCount === 0 && <span className="text-[9px] text-stone-600 uppercase tracking-wider">Aguardando</span>}
-            {roundCount > 0 && balance > 200 && <span className="text-[9px] font-bold text-emerald-500 animate-pulse">🎯 DOPAMINA!</span>}
-            {roundCount > 0 && balance <= 200 && balance > 120 && <span className="text-[9px] font-bold text-amber-500">⚠️ Drenando</span>}
-            {roundCount > 0 && balance <= 120 && balance > 0 && <span className="text-[9px] font-bold text-red-500 animate-bounce">🚨 Queda livre</span>}
+            {roundCount > 0 && balance > decayBase && <span className="text-[9px] font-bold text-emerald-500 animate-pulse">🎯 DOPAMINA!</span>}
+            {roundCount > 0 && balance <= decayBase && balance > decayBase * 0.5 && <span className="text-[9px] font-bold text-amber-500">⚠️ Drenando</span>}
+            {roundCount > 0 && balance <= decayBase * 0.5 && balance > 0 && <span className="text-[9px] font-bold text-red-500 animate-bounce">🚨 Queda livre</span>}
             {balance <= 0 && <span className="text-[9px] font-extrabold text-red-700">💀 Falência</span>}
           </div>
         </div>
+        )} {/* fim do bloco balance > 0 */}
 
         {/* Feedback da última rodada */}
         {log.length > 0 && (() => {
@@ -535,8 +569,8 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
           )
         })()}
 
-        {/* Valor por rodada */}
-        <div className="space-y-2 border-t pt-3" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        {/* Valor por rodada — só aparece quando há saldo */}
+        {balance > 0 && <div className="space-y-2 border-t pt-3" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <div className="flex justify-between items-center text-[10px]">
             <span className="font-bold text-stone-500 uppercase tracking-wider">Aposta por rodada</span>
             <span className="font-extrabold text-base" style={{ color: cfg.border }}>{formatBRL(betAmount)}</span>
@@ -575,18 +609,21 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
             className="w-full h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-40"
             style={{ backgroundColor: 'rgba(255,255,255,0.08)', accentColor: cfg.border } as React.CSSProperties}
           />
-        </div>
+        </div>} {/* fim dos controles de aposta */}
 
-        {/* Depositar créditos reais */}
+        {/* Depositar / Entrar com créditos */}
         {!bankrupt && (
-          <div className="space-y-2 border-t pt-3" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="space-y-2 border-t pt-3" style={{ borderColor: balance === 0 ? 'rgba(224,179,90,0.15)' : 'rgba(255,255,255,0.06)' }}>
             <div className="flex justify-between items-center">
-              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-600">
-                Jogar seus bens ({CREDIT_ITEMS.length - usedCreditIds.length} restantes):
+              <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: balance === 0 ? 'rgba(224,179,90,0.6)' : '#57534e' }}>
+                {balance === 0
+                  ? `Seus bens (escolha um para entrar):`
+                  : `Jogar mais bens (${CREDIT_ITEMS.length - usedCreditIds.length} restantes):`
+                }
               </span>
-              {totalIn > 200 && (
+              {totalIn > 0 && (
                 <span className="text-[9px] font-extrabold" style={{ color: 'rgba(245,158,11,0.7)' }}>
-                  {formatBRL(totalIn)} no total
+                  {formatBRL(totalIn)} em jogo
                 </span>
               )}
             </div>
@@ -625,7 +662,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
           >
             <RefreshCw size={16} /> Recomeçar
           </button>
-        ) : (
+        ) : balance > 0 ? (
           <button
             onClick={handleBet}
             disabled={isRolling}
@@ -637,7 +674,8 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
               : <><Play size={16} fill="currentColor" /> Apostar {formatBRL(betAmount)}</>
             }
           </button>
-        )}
+        ) : null
+        }
 
       </div>
     </div>

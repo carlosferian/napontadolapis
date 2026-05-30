@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function ApostasPage() {
   return (
     <div className="space-y-6">
-      <div className="calm-header" style={{ paddingBottom: 32, borderBottom: '1px solid var(--c-line)', marginBottom: 8 }}>
+      <div id="apostas-header" className="calm-header" style={{ paddingBottom: 32, borderBottom: '1px solid var(--c-line)', marginBottom: 8 }}>
         <span className="c-pill c-pill-copper" style={{ marginBottom: 16, display: 'inline-flex' }}>
           APOSTAS · SIMULAÇÃO
         </span>
