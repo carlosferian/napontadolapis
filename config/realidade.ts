@@ -44,7 +44,7 @@ export const REALIDADE_STATES: StateData[] = [
   // --- ESTADOS ---
   {
     code: 'SP',
-    name: 'São Paulo (Estado)',
+    name: 'São Paulo',
     cestaBasica: 820,
     percentileValues: [500, 950, 1300, 1600, 2100, 2700, 3500, 5000, 8000, 12000, 28000, 80000],
     capital: 'São Paulo',
@@ -52,7 +52,7 @@ export const REALIDADE_STATES: StateData[] = [
   },
   {
     code: 'RJ',
-    name: 'Rio de Janeiro (Estado)',
+    name: 'Rio de Janeiro',
     cestaBasica: 790,
     percentileValues: [450, 850, 1200, 1500, 1900, 2400, 3200, 4500, 7000, 11000, 25000, 75000],
     capital: 'Rio de Janeiro',

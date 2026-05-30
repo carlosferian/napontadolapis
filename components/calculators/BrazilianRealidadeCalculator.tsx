@@ -186,7 +186,7 @@ export function BrazilianRealidadeCalculator() {
               <optgroup label="Estados (Médias Gerais)" style={{ fontWeight: 'bold' }}>
                 {REALIDADE_STATES.filter(s => s.group === 'estado').map((s) => (
                   <option key={s.code} value={s.code}>
-                    {s.name} {s.capital ? `— Medição: ${s.capital}` : ''} ({s.code})
+                    {s.name} ({s.code})
                   </option>
                 ))}
               </optgroup>
