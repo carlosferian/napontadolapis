@@ -210,7 +210,7 @@ interface LogEntry {
 
 export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
   const [balance, setBalance]               = useState(200)
-  const [betAmount, setBetAmount]           = useState(20)
+  const [betAmount, setBetAmount]           = useState(40)
   const [modality, setModality]             = useState<string>('slots')
   const [roundCount, setRoundCount]         = useState(0)
   const [log, setLog]                       = useState<LogEntry[]>([])
@@ -270,19 +270,16 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
         }
         msg = round.msg.replace('{win}', formatBRL(Math.abs(winAmt - bet)))
       } else {
-        // Pós-roteiro: odds reais da modalidade — a casa sempre vence no longo prazo
-        const rtp  = mod.rtp
-        const wins = Math.random() < (rtp * 0.28) // house edge elevado — drena o saldo
-        if (wins) {
-          const mult  = 1.6 + Math.random() * 1.4
-          winAmt      = Math.round(bet * mult)
-          nextBalance = balance - bet + winAmt
-          result      = 'win'
-          msg         = `${mod.emoji} Ganhou dessa vez. Mas a cada rodada a casa retém ${Math.round((1 - rtp) * 100)}% do seu dinheiro...`
-        } else {
-          nextBalance = balance - bet
-          msg         = `${mod.emoji} Derrota. O saldo caindo inexoravelmente. A matemática não perdoa.`
-        }
+        // Pós-roteiro: perda garantida a cada rodada — a ilusão acabou
+        const postMsgs = [
+          `${mod.emoji} Mais uma perda. A casa nunca perde.`,
+          `${mod.emoji} Derrota. A banca agradece silenciosamente.`,
+          `💸 Cada clique drena o que você colocou em jogo.`,
+          `${mod.emoji} Sem sorte. Não era sorte — era matemática.`,
+          `📉 O saldo cai. Sempre cai. É design, não azar.`,
+        ]
+        nextBalance = balance - bet
+        msg         = postMsgs[roundCount % postMsgs.length]
       }
 
       nextBalance = Math.max(0, nextBalance)
@@ -328,7 +325,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
 
   const handleReset = useCallback(() => {
     setBalance(200)
-    setBetAmount(20)
+    setBetAmount(40)
     setModality('slots')
     setRoundCount(0)
     setLog([])
