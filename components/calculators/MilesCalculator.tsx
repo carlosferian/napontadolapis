@@ -96,13 +96,29 @@ export function MilesCalculator() {
             >
               {/* Preço em Dinheiro */}
               <div className="space-y-2">
-                <div className="flex justify-between items-baseline">
-                  <label htmlFor="price-cash" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
+                <div className="flex justify-between items-center gap-4 mb-1">
+                  <label htmlFor="price-cash-input" className="text-xs font-bold" style={{ color: 'var(--c-muted)' }}>
                     Passagem em Dinheiro (Final c/ taxas)
                   </label>
-                  <span className="text-sm font-bold text-stone-950 dark:text-white">
-                    {formatBRL(priceInCash)}
-                  </span>
+                  <div className="relative max-w-[140px]">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold" style={{ color: 'var(--c-muted-2)' }}>R$</span>
+                    <input
+                      id="price-cash-input"
+                      type="text"
+                      inputMode="numeric"
+                      value={priceInCash === 0 ? '' : priceInCash.toLocaleString('pt-BR')}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/\D/g, '');
+                        const val = raw ? parseInt(raw, 10) : 0;
+                        setPriceInCash(Math.min(150000, val));
+                      }}
+                      className="w-full text-right border rounded-xl pr-3 pl-8 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
+                      style={{
+                        color: 'var(--c-ink)',
+                        borderColor: 'var(--c-line)'
+                      }}
+                    />
+                  </div>
                 </div>
                 <input
                   id="price-cash"
@@ -110,7 +126,7 @@ export function MilesCalculator() {
                   min={100}
                   max={15000}
                   step={50}
-                  value={priceInCash}
+                  value={Math.min(15000, priceInCash)}
                   onChange={(e) => setPriceInCash(Number(e.target.value))}
                   className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                   style={{ backgroundColor: 'var(--c-line)' }}
@@ -123,13 +139,28 @@ export function MilesCalculator() {
 
               {/* Milhas Necessárias */}
               <div className="space-y-2 pt-3 border-t" style={{ borderColor: 'var(--c-line)' }}>
-                <div className="flex justify-between items-baseline">
-                  <label htmlFor="miles-required" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
+                <div className="flex justify-between items-center gap-4 mb-1">
+                  <label htmlFor="miles-required-input" className="text-xs font-bold" style={{ color: 'var(--c-muted)' }}>
                     Milhas Exigidas
                   </label>
-                  <span className="text-sm font-bold text-[var(--c-emerald)] dark:text-emerald-400">
-                    {(milesRequired).toLocaleString('pt-BR')} milhas
-                  </span>
+                  <div className="relative max-w-[140px]">
+                    <input
+                      id="miles-required-input"
+                      type="text"
+                      inputMode="numeric"
+                      value={milesRequired === 0 ? '' : milesRequired.toLocaleString('pt-BR')}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/\D/g, '');
+                        const val = raw ? parseInt(raw, 10) : 0;
+                        setMilesRequired(Math.min(5000000, val));
+                      }}
+                      className="w-full text-right border rounded-xl px-3 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
+                      style={{
+                        color: 'var(--c-emerald)',
+                        borderColor: 'var(--c-line)'
+                      }}
+                    />
+                  </div>
                 </div>
                 <input
                   id="miles-required"
@@ -137,7 +168,7 @@ export function MilesCalculator() {
                   min={1000}
                   max={500000}
                   step={1000}
-                  value={milesRequired}
+                  value={Math.min(500000, milesRequired)}
                   onChange={(e) => setMilesRequired(Number(e.target.value))}
                   className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                   style={{ backgroundColor: 'var(--c-line)' }}
@@ -150,13 +181,29 @@ export function MilesCalculator() {
 
               {/* Taxa de Embarque Milhas */}
               <div className="space-y-2 pt-3 border-t" style={{ borderColor: 'var(--c-line)' }}>
-                <div className="flex justify-between items-baseline">
-                  <label htmlFor="boarding-tax" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
-                    Taxa de Embarque em Milhas
+                <div className="flex justify-between items-center gap-4 mb-1">
+                  <label htmlFor="boarding-tax-input" className="text-xs font-bold" style={{ color: 'var(--c-muted)' }}>
+                    Taxa de Embarque
                   </label>
-                  <span className="text-sm font-bold text-stone-950 dark:text-white">
-                    {formatBRL(boardingTax)}
-                  </span>
+                  <div className="relative max-w-[140px]">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold" style={{ color: 'var(--c-muted-2)' }}>R$</span>
+                    <input
+                      id="boarding-tax-input"
+                      type="text"
+                      inputMode="numeric"
+                      value={boardingTax === 0 ? '' : boardingTax.toLocaleString('pt-BR')}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/\D/g, '');
+                        const val = raw ? parseInt(raw, 10) : 0;
+                        setBoardingTax(Math.min(10000, val));
+                      }}
+                      className="w-full text-right border rounded-xl pr-3 pl-8 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
+                      style={{
+                        color: 'var(--c-ink)',
+                        borderColor: 'var(--c-line)'
+                      }}
+                    />
+                  </div>
                 </div>
                 <input
                   id="boarding-tax"
@@ -164,7 +211,7 @@ export function MilesCalculator() {
                   min={30}
                   max={1500}
                   step={10}
-                  value={boardingTax}
+                  value={Math.min(1500, boardingTax)}
                   onChange={(e) => setBoardingTax(Number(e.target.value))}
                   className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                   style={{ backgroundColor: 'var(--c-line)' }}
@@ -205,13 +252,29 @@ export function MilesCalculator() {
               {/* Custo Customizado */}
               {emissionProgram === 'custom' && (
                 <div className="space-y-2 pt-3 border-t animate-fadeIn" style={{ borderColor: 'var(--c-line)' }}>
-                  <div className="flex justify-between items-baseline">
-                    <label htmlFor="custom-emission-val" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
+                  <div className="flex justify-between items-center gap-4 mb-1">
+                    <label htmlFor="custom-emission-val-input" className="text-xs font-bold" style={{ color: 'var(--c-muted)' }}>
                       Seu custo por 1.000 Milhas (CPP)
                     </label>
-                    <span className="text-sm font-bold text-[var(--c-emerald)] dark:text-emerald-400">
-                      {formatBRL(customEmissionValue)}
-                    </span>
+                    <div className="relative max-w-[140px]">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold" style={{ color: 'var(--c-muted-2)' }}>R$</span>
+                      <input
+                        id="custom-emission-val-input"
+                        type="text"
+                        inputMode="decimal"
+                        value={customEmissionValue === 0 ? '' : customEmissionValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
+                          const val = raw ? parseFloat(raw) : 0;
+                          setCustomEmissionValue(Math.min(200, val));
+                        }}
+                        className="w-full text-right border rounded-xl pr-3 pl-8 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
+                        style={{
+                          color: 'var(--c-emerald)',
+                          borderColor: 'var(--c-line)'
+                        }}
+                      />
+                    </div>
                   </div>
                   <input
                     id="custom-emission-val"
@@ -219,7 +282,7 @@ export function MilesCalculator() {
                     min={5}
                     max={80}
                     step={0.5}
-                    value={customEmissionValue}
+                    value={Math.min(80, customEmissionValue)}
                     onChange={(e) => setCustomEmissionValue(Number(e.target.value))}
                     className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                     style={{ backgroundColor: 'var(--c-line)' }}
@@ -239,13 +302,29 @@ export function MilesCalculator() {
             >
               {/* Custo Promocional */}
               <div className="space-y-2">
-                <div className="flex justify-between items-baseline">
-                  <label htmlFor="cost-promo" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
+                <div className="flex justify-between items-center gap-4 mb-1">
+                  <label htmlFor="cost-promo-input" className="text-xs font-bold" style={{ color: 'var(--c-muted)' }}>
                     Valor Total da Compra (R$)
                   </label>
-                  <span className="text-sm font-bold text-stone-950 dark:text-white">
-                    {formatBRL(costOfPromotion)}
-                  </span>
+                  <div className="relative max-w-[140px]">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold" style={{ color: 'var(--c-muted-2)' }}>R$</span>
+                    <input
+                      id="cost-promo-input"
+                      type="text"
+                      inputMode="numeric"
+                      value={costOfPromotion === 0 ? '' : costOfPromotion.toLocaleString('pt-BR')}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/\D/g, '');
+                        const val = raw ? parseInt(raw, 10) : 0;
+                        setCostOfPromotion(Math.min(150000, val));
+                      }}
+                      className="w-full text-right border rounded-xl pr-3 pl-8 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
+                      style={{
+                        color: 'var(--c-ink)',
+                        borderColor: 'var(--c-line)'
+                      }}
+                    />
+                  </div>
                 </div>
                 <input
                   id="cost-promo"
@@ -253,7 +332,7 @@ export function MilesCalculator() {
                   min={10}
                   max={15000}
                   step={50}
-                  value={costOfPromotion}
+                  value={Math.min(15000, costOfPromotion)}
                   onChange={(e) => setCostOfPromotion(Number(e.target.value))}
                   className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                   style={{ backgroundColor: 'var(--c-line)' }}
@@ -266,13 +345,28 @@ export function MilesCalculator() {
 
               {/* Quantidade Recebida */}
               <div className="space-y-2 pt-3 border-t" style={{ borderColor: 'var(--c-line)' }}>
-                <div className="flex justify-between items-baseline">
-                  <label htmlFor="miles-received-val" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
+                <div className="flex justify-between items-center gap-4 mb-1">
+                  <label htmlFor="miles-received-val-input" className="text-xs font-bold" style={{ color: 'var(--c-muted)' }}>
                     Total de Milhas/Pontos Recebidos
                   </label>
-                  <span className="text-sm font-bold text-[var(--c-emerald)] dark:text-emerald-400">
-                    {(milesReceived).toLocaleString('pt-BR')} milhas
-                  </span>
+                  <div className="relative max-w-[140px]">
+                    <input
+                      id="miles-received-val-input"
+                      type="text"
+                      inputMode="numeric"
+                      value={milesReceived === 0 ? '' : milesReceived.toLocaleString('pt-BR')}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/\D/g, '');
+                        const val = raw ? parseInt(raw, 10) : 0;
+                        setMilesReceived(Math.min(5000000, val));
+                      }}
+                      className="w-full text-right border rounded-xl px-3 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
+                      style={{
+                        color: 'var(--c-emerald)',
+                        borderColor: 'var(--c-line)'
+                      }}
+                    />
+                  </div>
                 </div>
                 <input
                   id="miles-received-val"
@@ -280,7 +374,7 @@ export function MilesCalculator() {
                   min={1000}
                   max={500000}
                   step={1000}
-                  value={milesReceived}
+                  value={Math.min(500000, milesReceived)}
                   onChange={(e) => setMilesReceived(Number(e.target.value))}
                   className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                   style={{ backgroundColor: 'var(--c-line)' }}
@@ -321,13 +415,29 @@ export function MilesCalculator() {
               {/* Custo Customizado Compra */}
               {purchaseProgram === 'custom' && (
                 <div className="space-y-2 pt-3 border-t animate-fadeIn" style={{ borderColor: 'var(--c-line)' }}>
-                  <div className="flex justify-between items-baseline">
-                    <label htmlFor="custom-purchase-val" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
+                  <div className="flex justify-between items-center gap-4 mb-1">
+                    <label htmlFor="custom-purchase-val-input" className="text-xs font-bold" style={{ color: 'var(--c-muted)' }}>
                       Valor de Mercado de 1.000 Milhas (CPP)
                     </label>
-                    <span className="text-sm font-bold text-[var(--c-emerald)] dark:text-emerald-400">
-                      {formatBRL(customPurchaseValue)}
-                    </span>
+                    <div className="relative max-w-[140px]">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold" style={{ color: 'var(--c-muted-2)' }}>R$</span>
+                      <input
+                        id="custom-purchase-val-input"
+                        type="text"
+                        inputMode="decimal"
+                        value={customPurchaseValue === 0 ? '' : customPurchaseValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
+                          const val = raw ? parseFloat(raw) : 0;
+                          setCustomPurchaseValue(Math.min(200, val));
+                        }}
+                        className="w-full text-right border rounded-xl pr-3 pl-8 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
+                        style={{
+                          color: 'var(--c-emerald)',
+                          borderColor: 'var(--c-line)'
+                        }}
+                      />
+                    </div>
                   </div>
                   <input
                     id="custom-purchase-val"
@@ -335,7 +445,7 @@ export function MilesCalculator() {
                     min={5}
                     max={80}
                     step={0.5}
-                    value={customPurchaseValue}
+                    value={Math.min(80, customPurchaseValue)}
                     onChange={(e) => setCustomPurchaseValue(Number(e.target.value))}
                     className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                     style={{ backgroundColor: 'var(--c-line)' }}

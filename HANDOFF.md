@@ -17,8 +17,25 @@ Toda a infraestrutura do site roda de forma **100% independente, autônoma e com
 
 ## O que foi feito — Sessão Atual (2026-05-30)
 
-### 1. Nova Calculadora de Parcelado ou À Vista? (Juros Ocultos)
-Desenvolvemos uma calculadora de alto apelo para consumo inteligente, revelando a taxa invisível do "sem juros":
+### 1. Hotfix Global de Sincronização do Tailwind v4 (Tema Escuro/Claro)
+* **Solução Causa Raiz:** Configuramos uma nova regra global para a variante dark do Tailwind v4 (`app/globals.css`):
+  ```css
+  @variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+  ```
+* **O Impacto:** Isso realinhou 100% o comportamento das classes `dark:` (como `dark:text-white`) com o `ThemeProvider` do site (`data-theme`), ignorando as preferências do sistema operacional do usuário. Isso resolveu de vez a invisibilidade de valores de cards e sliders no modo claro para quem usava o sistema operacional configurado em modo escuro.
+
+### 2. Nova Calculadora de Milhas ou Dinheiro (Inteligência em Milhas)
+* **Matemática Fiel baseada no CPP (`config/miles.ts`)**:
+  * Mapeamento de taxas médias estáveis de resgate e aquisição de programas nacionais (Smiles, Latam, TudoAzul, Livelo, Esfera).
+* **Upgrade Total de Inputs (`components/calculators/MilesCalculator.tsx`)**:
+  * Substituição de labels de range estáticas por **campos de entrada numéricos interativos e bidirecionais** com formatação de milhares (`pt-BR`). 
+  * O usuário agora vê os valores selecionados em fontes robustas de alto contraste e pode optar por digitar o valor exato no teclado ou arrastar o slider, com sincronização visual e matemática imediata.
+  * Inputs customizados decimais para CPP de origem de milhas e mercado com suporte à vírgula brasileira.
+* **Foco na Automatização (Reescrita da Prosa)**:
+  * O texto descritivo ao final da página foi reformulado. Em vez de ensinar o usuário a calcular na mão com fórmulas complexas, agora orienta sobre como a nossa calculadora executa todo o processamento de forma 100% autônoma.
+  * Fornecemos um guia prático de UX orientando quais 3 a 4 dados o usuário precisa coletar no portal da cia aérea para simplesmente colar na nossa ferramenta e obter o veredito dinâmico em milissegundos.
+
+### 3. Nova Calculadora de Parcelado ou À Vista? (Juros Ocultos)
 * **Matemática do Solver Financeiro (`config/parcelado.ts`)**:
   * Utilização do método de Bissecção em Javascript para deduzir a Taxa Interna de Retorno (TIR) implícita de anuidade/parcelas iguais, comparando com o desconto à vista.
   * Cálculo dinâmico do equivalente ao CDI (percentual da taxa Selic líquida) e rentabilidade equivalente anualizada.
@@ -28,52 +45,37 @@ Desenvolvemos uma calculadora de alto apelo para consumo inteligente, revelando 
   * Análise de custo de oportunidade detalhada e wrapped de compartilhamento modular.
   * Rota registrada: `/investimentos/parcelado-ou-a-vista`
 
-### 2. Novo Simulador de Fuga do Rotativo (Substituição de Dívidas)
-Criamos um simulador crítico sobre endividamento com o objetivo de salvar famílias de faturas abusivas:
+### 4. Novo Simulador de Fuga do Rotativo (Substituição de Dívidas)
 * **Matemática de Amortização Comparativa (`config/rotativo.ts`)**:
-  * Projeção mês a mês em dois cenários paralelos: manter a dívida de cartão de crédito no rotativo (~15% a.m.) contra a troca por um empréstimo pessoal ou consignado estruturado (~3% a.m.).
-  * Alertas estatísticos em tempo real de **"Dívida Infinita"** caso o pagamento mensal não supere os juros do rotativo, demonstrando que a dívida nunca será paga sem a troca de passivos.
+  * Projeção de cenários paralelos: manter a dívida de cartão de crédito no rotativo (~15% a.m.) contra a troca por um empréstimo pessoal ou consignado estruturado (~3% a.m.).
+  * Alertas estatísticos de **"Dívida Infinita"** caso o pagamento mensal não supere os juros do rotativo.
 * **Interface Educativa de Alto Impacto (`components/calculators/RotativoCalculator.tsx`)**:
   * Gráfico de área comparativo do Recharts mostrando o abismo visual da dívida do cartão explodindo exponencialmente contra a linha do empréstimo caindo a zero.
   * Guias de ação pedagógicos baseados na lei do superendividamento e consolidação ética.
   * Oportunidade perfeita de monetização por afiliados contextuais e limpos com portais de renegociação de dívidas.
   * Rota registrada: `/investimentos/fuga-do-rotativo`
 
-### 3. Nova Calculadora de Milhas ou Dinheiro (Inteligência em Milhas)
-Desenvolvemos uma calculadora de conversão baseada em uma metodologia séria e unânime no mercado de fidelidade para orientar o usuário sobre viagens e promoções:
-* **Matemática Fiel baseada no CPP (`config/miles.ts`)**:
-  * Implementação da lógica de **Custo por Mil Milhas (CPP)** como métrica definitiva de comparação.
-  * Cadastramento de taxas médias comerciais de mercado para os 5 maiores programas brasileiros: LATAM Pass, Smiles, TudoAzul, Livelo e Esfera.
-  * Aba **Milhas vs Dinheiro**: Compare o custo de emissão (milhas + taxa de embarque) contra a passagem em dinheiro. O sistema entrega o CPP real da passagem para definir se a emissão é lucrativa frente ao custo de mercado.
-  * Aba **Comprar Milhas (Promoção)**: Calcula o custo real do milhar cobrado na oferta e o compara com a média de mercado, gerando alertas didáticos contra o **"Desconto Fantasma"** (promoções com percentuais altos de desconto sobre preços de tabela inflados).
-* **Interface Premium (`components/calculators/MilesCalculator.tsx`)**:
-  * Abas dinâmicas deslizantes, métricas claras e cards informativos explicativos.
-  * Suporte ao novo sistema de embeds modulares, permitindo que blogs de viagem parceiros incorporem a ferramenta em seus artigos em um clique como um **widget de fundo transparente**.
-
-### 2. Nova Calculadora de ITBI e Custos de Cartório
-Desenvolvemos uma calculadora imobiliária de altíssimo apelo para corretores de imóveis e compradores de moradia, estimando todas as despesas adicionais de transferência:
+### 5. Nova Calculadora de ITBI e Custos de Cartório
 * **Matemática Fiel de Tributos e Cartórios (`config/itbi.ts`)**:
-  * Cadastramento de alíquotas oficiais de ITBI de capitais brasileiras importantes (com alíquota personalizada para outras cidades).
   * Regra de alíquota reduzida de ITBI para parte financiada (SFH/Minha Casa Minha Vida) a **0,5%**.
-  * Fórmulas de estimativas nacionais de emolumentos para Registro de Imóvel e Escritura Pública.
+  * Fórmulas de emolumentos para Registro de Imóvel e Escritura Pública.
 * **Isenções e Descontos por Lei Integrados (`components/calculators/ItbiCalculator.tsx`)**:
   * **Isenção de Escritura Pública**: Se for financiado, o contrato bancário tem força de escritura (Lei nº 4.380/64). O sistema zera automaticamente esse custo, informando a economia gerada.
   * **Art. 290 da Lei Federal 6.015/73**: Se for o primeiro imóvel residencial financiado, o sistema calcula e aplica **50% de desconto** nas taxas de cartório de Registro.
 
-### 3. Refatoração de Experiência do Usuário e Gráfico de Pirâmide (Realidade Brasileira)
+### 6. Refatoração de Experiência do Usuário e Gráfico de Pirâmide (Realidade Brasileira)
 * **Gráfico de Pirâmide Social Dinâmico**: Inclusão de uma belíssima representação triangular interativa de pirâmide social mostrando onde o usuário se enquadra (Classes A, B, C, D e E) baseada em seu salário real, harmonizada com o design system do site e responsiva tanto para celular quanto computador.
   * **Efeito Premium de Destaque**: O bloco e card correspondentes à classe do usuário são realçados com borda colorida de alto relevo, escala (`scale-105`), anel de brilho, sombra projetada e um badge/indicador `"Você está aqui"` flutuante e animado com pulsação suave.
   * **Faixas de Cores Curadas**: Cores elegantes alinhadas com o design (Classe A: Dourado/Amber; Classe B: Esmeralda; Classe C: Teal; Classe D: Slate; Classe E: Stone) com suporte perfeito a light e dark mode.
 * **Dropdown Simplificado e Natural**: Seletor de estados mais limpo em `BrazilianRealidadeCalculator.tsx` (ex: `Acre (AC)` em vez da estrutura poluída anterior).
 * **Consistência de Linguagem**: Em `config/realidade.ts`, remoção do sufixo ` (Estado)` nos nomes de `São Paulo` e `Rio de Janeiro`.
 * **Indicador de Classe Social (IBGE/FGV)**: Adicionamos um painel dinâmico que calcula e exibe de forma premium a classe social estimada (Classes A, B, C, D e E) com base em múltiplos de salário mínimo.
-* **Guias de Ação Personalizados**: Exibição de cards explicativos baseados em estatísticas reais (ensino técnico e estanque de dívidas de consumo para estratos baixos D/E; alocação em investimentos e proteção cambial global com Wise para estratos altos A/B/C), com ganchos nativos para o afiliado Wise do portal.
-* **Card de Compartilhamento**: Integração da Classe Social nos dados visuais gerados na imagem para compartilhamento.
+* **Guias de Ação Personalizados**: Exibição de cards explicativos baseados em estatísticas reais (ensino técnico e estanque de dívidas de consumo para D/E; alocação em investimentos e proteção cambial global com Wise para A/B/C), com ganchos nativos para o afiliado Wise do portal.
 
-### 4. Correção Crítica de SEO Técnico (Sitemap XML)
-* **Sitemap XML (`app/sitemap.ts`)**: Mapeamento de 100% das 44 páginas estáticas e parametrizadas do projeto com a priorização estratégica correta para acelerar o ranqueamento orgânico no Google.
+### 7. Correção Crítica de SEO Técnico (Sitemap XML)
+* **Sitemap XML (`app/sitemap.ts`)**: Mapeamento de 100% das 46 páginas estáticas e parametrizadas do projeto com a priorização estratégica correta para acelerar o ranqueamento orgânico no Google.
 
-### 5. Mecanismo de Widgetização Dinâmica (Embed Limpo & Transparente)
+### 8. Mecanismo de Widgetização Dinâmica (Embed Limpo & Transparente)
 * **EmbedHandler (`components/EmbedHandler.tsx`)**: Detector client-side que monitora se a URL contém `?embed=true`.
 * **CSS de Modo Embed (`app/globals.css`)**: Ocultação automática de Nav, Footer, publicidades e CTAs, e background 100% transparente para fundir o widget ao layout do blog parceiro.
 * **Botão Modular de Embed (`components/ui/ShareButtons.tsx`)**: Botão de `</> Incorporar no seu site` na base de compartilhamento de **todas as 11 calculadoras** do portal.

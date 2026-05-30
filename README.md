@@ -3,16 +3,18 @@
 Plataforma de calculadoras financeiras minimalistas de alta utilidade e educação financeira para o brasileiro. Sem cadastro, sem recolhimento de dados pessoais (sem CPF/nuvem), rodando 100% no navegador do usuário de forma privada.
 
 ## 🚀 Diferenciais do Projeto
-* **Arquitetura 100% Estática e Autônoma (Custo Zero)**: Removidas dependências instáveis de APIs de aviação de terceiros (Amadeus/Kiwi). A aplicação roda exclusivamente com bancos de dados de preços locais estáveis (`flight-prices.json`, `cities-cost.ts` e `realidade.ts`), garantindo imunidade contra desligamento de serviços, tempo de build ultrarrápido e custo vitalício zero de infraestrutura.
+* **Arquitetura 100% Estática e Autônoma (Custo Zero)**: Removidas dependências instáveis de APIs de aviação de terceiros (Amadeus/Kiwi). A aplicação roda exclusivamente com bancos de dados de preços locais estáveis (`flight-prices.json`, `cities-cost.ts` e `realidade.ts`), garantindo imunidade contra desligamento de serviços, tempo de build ultrarrápido (46 rotas estáticas geradas em menos de 6s) e custo vitalício zero de infraestrutura.
+* **UX Premium de Entrada de Dados (Bidirecionalidade)**: Sliders de alta amplitude em calculadoras críticas (como Milhas e Viver de Renda) foram equipados com **campos numéricos formatados em tempo real (`pt-BR`)**. O usuário ganha a flexibilidade de arrastar o controle para estimar rapidamente ou digitar com precisão matemática o valor exato no teclado.
+* **Sincronização Perfeita de Cores (Hotfix Tailwind v4)**: Implementado mapeamento global customizado para a variante `dark:` no Tailwind v4 sincronizada diretamente com o atributo de tema (`data-theme="dark"`), eliminando conflitos de cores brancas sobre fundo claro quando a preferência do sistema operacional diverge do tema selecionado no site.
 * **Monetização Otimizada**:
   * **Google AdSense**: Banners manuais modularizados e sutis (`AdBanner.tsx`) integrados no final das calculadoras de maior engajamento, com suporte nativo a tags globais de verificação no `<head>` (`google-adsense-account`) e arquivo de compliance `ads.txt` na raiz pública.
   * **Programa de Afiliados Wise**: Botão de conversão direta integrado contextualmente na calculadora de viagem ao lado das métricas de economia, otimizando cliques com o link de afiliado oficial.
 * **Estética Premium**: Desenvolvido sob um sistema visual moderno, com modo claro e escuro dinâmicos, paleta sutil baseada em tons de pedra/areia (`var(--c-ink)`, `var(--c-bg)`), tipografia moderna e responsividade absoluta.
 
 ## 🛠️ Stack Tecnológica
-* **Core**: Next.js (estático) & React 19
+* **Core**: Next.js 16.2 (estático com Turbopack) & React 19
 * **Tipagem**: TypeScript
-* **Estilização**: Tailwind CSS v4 (Vanilla CSS para design tokens e flexibilidade máxima)
+* **Estilização**: Tailwind CSS v4 (Vanilla CSS + CSS custom @variants para sincronização de temas e design tokens)
 * **Build & Hosting**: Netlify (Continuous Deployment via Git)
 
 ## 📁 Principais Calculadoras e Ferramentas

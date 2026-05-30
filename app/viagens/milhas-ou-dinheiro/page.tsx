@@ -37,72 +37,60 @@ export default function MilesPage() {
         </p>
       </div>
 
-      <MilesCalculator />
-
-      <div className="prose prose-sm prose-stone max-w-none space-y-6">
+           <div className="prose prose-sm prose-stone max-w-none space-y-6">
         <div>
-          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">O que é a metodologia do CPP (Custo por Mil)?</h2>
+          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Você não precisa calcular nada na mão</h2>
           <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
-            No mercado de programas de fidelidade, a métrica financeira definitiva é o <strong>CPP (Cost Per Point ou Custo por Mil Milhas)</strong>. Ele representa quanto custa cada lote de 1.000 pontos ou milhas. Essa unidade é o padrão comercial de liquidez de programas como Smiles (GOL), Latam Pass (LATAM) e TudoAzul (Azul). Saber o seu custo de milhas pessoal (ou a média do valor de mercado delas) permite comparar qualquer transação de milhas em bases justas de conversão com o Real.
+            A matemática por trás dos programas de fidelidade envolve taxas, conversões de pontos e custos de oportunidade que costumam exigir planilhas complexas ou contas exaustivas de cabeça. <strong>Nossa calculadora foi desenvolvida especificamente para assumir 100% desse esforço por você.</strong> Esqueça papel e caneta: os algoritmos integrados nas abas acima processam e cruzam todas as variáveis financeiras de forma instantânea para entregar um veredito limpo, direto e puramente matemático.
           </p>
         </div>
 
         <div>
-          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Milhas vs. Dinheiro: Quando emitir vale a pena?</h2>
+          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Milhas vs. Dinheiro: Como nosso algoritmo calcula por você?</h2>
           <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
-            Uma emissão com milhas só é financeiramente vantajosa se a <strong>sua passagem valorizar as suas milhas acima do custo de aquisição</strong>. 
-            Para calcular isso, subtraia a taxa de embarque cobrada na emissão em milhas do preço total em dinheiro. Divida esse resultado pelo lote de milhas exigidas dividido por 1.000. Isso dará o CPP da passagem. Se o CPP da passagem (a taxa que o banco ou cia aérea está "comprando" suas milhas) for <strong>maior</strong> do que o seu custo real ou o valor de mercado delas, a emissão compensa. Caso contrário, compensa mais pagar em dinheiro e preservar as milhas para emissões melhores.
+            Quando você arrasta os controles ou seleciona o seu programa de fidelidade na aba <strong>✈️ Milhas vs. Dinheiro</strong>, nosso motor de cálculo executa a seguinte lógica em milissegundos:
           </p>
-        </div>
-
-        <div>
-          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Como o site estima os valores de referência dos programas?</h2>
-          <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
-            Nossos valores de referência para cada programa são baseados nas cotações médias de liquidez comercial do mercado secundário de milhas aéreas e no custo real de resgates de passagens no Brasil hoje:
-          </p>
-          <ul className="text-stone-500 dark:text-stone-400 text-sm list-disc pl-5 space-y-1 mt-1">
-            <li><strong>TudoAzul: R$ 14,00 por mil</strong> — Programa com a menor liquidez direta de mercado, mas com boa malha doméstica nacional.</li>
-            <li><strong>Smiles: R$ 16,50 por mil</strong> — O milhar médio histórico de maior estabilidade do mercado para voos da GOL e parceiras.</li>
-            <li><strong>LATAM Pass: R$ 17,50 por mil</strong> — Valorizado pelas emissões internacionais e resgates mais seletivos da LATAM.</li>
-            <li><strong>Livelo & Esfera: R$ 35,00 por mil</strong> — Por serem pontos de bancos e altamente flexíveis, seu valor é maior pois costumam ser transferidos para as companhias aéreas com <strong>promoções de bônus de 100%</strong>. Com isso, 10.000 pontos Livelo de R$ 35,00 viram 20.000 milhas Smiles, mantendo a equivalência matemática de R$ 17,50 por milha final na cia aérea.</li>
+          <ul className="text-stone-500 dark:text-stone-400 text-sm list-disc pl-5 space-y-2 mt-2">
+            <li><strong>Isolamento da Taxa de Embarque:</strong> O sistema subtrai a taxa de embarque em dinheiro do preço da passagem comercial. Isso garante que o cálculo meça apenas a conversão do voo em si, sem distorções.</li>
+            <li><strong>Descoberta do CPP da Passagem:</strong> Ele divide a diferença líquida de preço em dinheiro pela quantidade de milhares de milhas necessárias. O resultado é o <strong>CPP da Passagem</strong>, ou seja, o valor que o programa está de fato pagando pelos seus pontos nesta emissão específica.</li>
+            <li><strong>Veredito Inteligente:</strong> Por fim, ele compara o CPP da Passagem com o custo de mercado ou de aquisição dos seus pontos (definidos nas médias comerciais ou no controle customizado). Se a passagem "pagar" mais pelo milhar do que o custo para obtê-lo, o sistema aprova a emissão e calcula o seu lucro financeiro líquido. Se for menor, ele avisa na hora para você guardar os pontos e pagar em dinheiro.</li>
           </ul>
         </div>
 
         <div>
-          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Guia Prático: Como descobrir o seu CPP de milhas pessoal?</h2>
+          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Promoções de Compra: Como o sistema identifica o "Desconto Fantasma"?</h2>
           <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
-            Se você não deseja utilizar a média automática recomendada de mercado pelo site, você pode calcular o seu CPP pessoal de acordo com a origem das suas milhas para preencher a calculadora de forma cirúrgica:
+            No mercado brasileiro, bancos e operadoras adoram anunciar promoções bombásticas com <em>"até 80% de desconto"</em> para induzir compras impulsivas. No entanto, o preço base de tabela é inflado. Na aba <strong>🪙 Comprar Milhas (Promoção)</strong>, nosso sistema remove a maquiagem publicitária: ele divide o custo real exigido pela quantidade total de pontos que cairão na sua conta. Esse CPP promocional é comparado em tempo real com o valor de resgate comercial estável de mercado do respectivo programa (como Smiles a R$ 16,50 ou LATAM a R$ 17,50). Se a compra for vantajosa, o sistema indica "Lucrativo"; se for uma armadilha inflada, ele emite um alerta vermelho imediato.
           </p>
-          <div className="space-y-3.5 mt-2 bg-stone-500/5 p-4 rounded-xl border" style={{ borderColor: 'var(--c-line)' }}>
+        </div>
+
+        <div>
+          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Onde buscar as informações para alimentar a calculadora?</h2>
+          <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
+            Para que nossa ferramenta faça o trabalho pesado e te dê a resposta ideal, você só precisa coletar de 3 a 4 dados rápidos nos canais oficiais de fidelidade e informá-los nos sliders da calculadora:
+          </p>
+          <div className="space-y-3 mt-3 bg-stone-500/5 p-4 rounded-xl border" style={{ borderColor: 'var(--c-line)' }}>
             <div className="text-xs">
-              <p className="font-bold text-stone-700 dark:text-stone-200">Cenário A: Pontos Orgânicos (De Graça no Cartão)</p>
+              <p className="font-bold text-stone-700 dark:text-stone-200">1. Para simular uma emissão de passagem (Aba 1)</p>
               <p className="text-stone-500 dark:text-stone-400 mt-1">
-                Se você acumulou seus pontos unicamente gastando no cartão de crédito do seu banco no dia a dia, <strong>o seu custo real de aquisição é R$ 0,00</strong>. No entanto, para fins de simulação inteligente, recomendamos usar a média de mercado do site (ex: R$ 16,50), pois esses pontos poderiam ser usados em outras passagens lucrativas e possuem "custo de oportunidade".
+                Faça uma simulação rápida de pesquisa de passagem no site da companhia aérea (ex: Smiles, Latam Pass, Azul). Anote e insira na calculadora: (a) o preço total da passagem em dinheiro, (b) as milhas exigidas para o trecho, (c) o valor de taxas de embarque do resgate e (d) selecione o programa para carregar o seu custo estimado.
               </p>
             </div>
             
             <div className="text-xs border-t pt-2.5" style={{ borderColor: 'var(--c-line)' }}>
-              <p className="font-bold text-stone-700 dark:text-stone-200">Cenário B: Clubes de Pontos Assinados</p>
+              <p className="font-bold text-stone-700 dark:text-stone-200">2. Para simular uma oferta de compra de pontos (Aba 2)</p>
               <p className="text-stone-500 dark:text-stone-400 mt-1">
-                Se você assina clubes (ex: Clube Smiles ou Livelo), divida o valor da assinatura mensal pela quantidade de pontos recebidos na mensalidade. Exemplo: pagar R$ 42,00 por mês por 1.000 pontos no Clube Livelo significa que seu <strong>CPP de origem é R$ 42,00 por mil</strong>.
+                No portal do banco ou operadora que está ofertando os pontos (ex: Livelo, Smiles), anote e insira na calculadora: (a) o valor total cobrado em dinheiro para assinar a promoção ou comprar o lote, (b) a quantidade total de pontos que você vai receber e (c) o programa de fidelidade correspondente para saber se há liquidez vantajosa de mercado.
               </p>
             </div>
 
             <div className="text-xs border-t pt-2.5" style={{ borderColor: 'var(--c-line)' }}>
-              <p className="font-bold text-stone-700 dark:text-stone-200">Cenário C: Transferência Bonificada (O Multiplicador)</p>
+              <p className="font-bold text-stone-700 dark:text-stone-200">3. Caso queira usar o seu custo real personalizado</p>
               <p className="text-stone-500 dark:text-stone-400 mt-1">
-                Quando você transfere pontos de bancos com bônus, o seu CPP de destino cai proporcionalmente. Exemplo: você tem 10.000 pontos Livelo que custaram R$ 42,00 por mil (Total de R$ 420,00) e os transfere para a Smiles em uma promoção de **100% de bônus**. Você receberá 20.000 milhas Smiles. 
-                Cálculo final: R$ 420,00 / 20 = <strong>seu CPP Smiles pessoal é R$ 21,00 por mil</strong>. Esse é o número exato que você deve informar na calculadora.
+                Se você assina clubes ou comprou pontos em lotes conhecidos e sabe exatamente quanto pagou por cada 1.000 pontos (ex: R$ 42,00 por milhar na Livelo), escolha a opção <strong>"Outro / Valor Customizado"</strong> e ajuste o controle deslizante do CPP de origem para seu custo real. A calculadora recalculará instantaneamente todos os cenários com base na sua realidade individual.
               </p>
             </div>
           </div>
-        </div>
-
-        <div>
-          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Como funciona o "Desconto Fantasma" na compra de pontos?</h2>
-          <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
-            Promoções de <em>"Compre pontos com 70% ou 80% de desconto"</em> são comumente veiculadas na mídia. No entanto, os programas fixam o preço base de tabela do milhar em R$ 70,00, um valor artificialmente alto que ninguém paga na prática. Mesmo com 70% de desconto, as milhas saem a R$ 21,00 por milhar. Dependendo do programa, esse valor ainda pode ser superior à média real de resgate comercial (como na Smiles, que comercialmente vale em torno de R$ 16,50). <strong>A análise séria ignora a promessa de porcentagem e foca no valor real do milhar pago.</strong>
-          </p>
         </div>
       </div>
 
