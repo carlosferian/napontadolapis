@@ -904,9 +904,19 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
                   <p className="text-[10px] text-red-400 mt-0.5">+{formatBRL(tripCost.savingsWithFintech)} com IOF</p>
                 </div>
               </div>
-              <div className="px-4 py-2 bg-stone-50 border-t border-stone-100 flex items-center justify-center gap-1.5">
-                <span className="text-xs text-stone-500">economia usando fintech:</span>
-                <span className="text-xs font-bold text-emerald-600">{formatBRL(tripCost.savingsWithFintech)} ({formatPct(tripCost.savingsPct)})</span>
+              <div className="px-4 py-3 bg-stone-50 border-t border-stone-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-stone-500">economia usando fintech:</span>
+                  <span className="text-xs font-bold text-emerald-600">{formatBRL(tripCost.savingsWithFintech)} ({formatPct(tripCost.savingsPct)})</span>
+                </div>
+                <a
+                  href="https://wise.prf.hn/click/camref:1110lGjsu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors flex items-center gap-1 shrink-0"
+                >
+                  Abrir conta Wise →
+                </a>
               </div>
             </div>
           ) : (
