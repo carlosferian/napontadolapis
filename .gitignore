@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Reddit monitor (scripts locais, não vão para o repositório)
+reddit_monitor.py
+run_reddit_monitor.bat
+setup_agendamento.ps1
+relatorios/

@@ -11,6 +11,7 @@ const investmentItems = [
   { href: '/juros-compostos', label: 'Juros Compostos', desc: 'Simule seus aportes mensais no tempo.' },
   { href: '/investimentos/viver-de-renda', label: 'Viver de Renda', desc: 'Planeje sua aposentadoria e independência financeira.' },
   { href: '/investimentos/amortizacao', label: 'Amortizar Financiamento', desc: 'Simule quitação acelerada (SAC vs Price).' },
+  { href: '/investimentos/itbi-e-cartorio', label: 'ITBI e Custos de Cartório', desc: 'Calcule as taxas extras de transferência de imóvel.' },
 ]
 
 const workItems = [

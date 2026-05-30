@@ -125,6 +125,15 @@ const calcs = [
     pillVariant: 'c-pill-blue',
     accent: 'var(--c-emerald)',
   },
+  {
+    href: '/investimentos/itbi-e-cartorio',
+    eyebrow: 'IMÓVEIS · NOVO',
+    title: 'ITBI e Custos de Cartório',
+    body: 'Estime taxas de imposto ITBI, escritura pública e registro para compras de imóveis à vista ou financiados.',
+    pill: 'ITBI & CARTÓRIO',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
 ]
 
 const principles = [

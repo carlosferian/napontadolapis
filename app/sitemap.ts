@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/apostas/probabilidades`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/investimentos`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/investimentos/amortizacao`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
+    { url: `${base}/investimentos/itbi-e-cartorio`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/investimentos/viver-de-renda`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/juros-compostos`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/fumo`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
