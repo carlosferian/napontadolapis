@@ -25,6 +25,27 @@ const CREDIT_ITEMS = [
 ] as const
 type CreditItem = typeof CREDIT_ITEMS[number]
 
+// ── 15 Rodadas Sortudas (12-15% dos jogadores) — termina no positivo ──────
+// Arco: vitória → derrota → vitória → ... → vitória final
+// Projetado para que qualquer aposta entre R$5 e R$50 com qualquer depósito termine positiva
+const LUCKY_ROUNDS = [
+  { win: true,  mult: 2.5, msg: '🎉 Primeira aposta e já ganhou {win}! Você tem jeito pra isso.' },
+  { win: false, mult: 0,   msg: '❌ Primeira derrota. Faz parte. Você ainda está no positivo.' },
+  { win: true,  mult: 2.0, msg: '🚀 Recuperou e ainda ganhou mais! +{win}. A maré está boa.' },
+  { win: false, mult: 0,   msg: '🎡 Roleta errou. Mas você está controlando bem.' },
+  { win: true,  mult: 3.0, msg: '🎉 BIG WIN! 💰 O Tigre multiplicou por 3x! +{win}. Você está muito na frente!' },
+  { win: false, mult: 0,   msg: '❌ Uma perda. Mas você ainda está bem no azul.' },
+  { win: true,  mult: 1.5, msg: '🐯 Vitória! +{win}. O saldo segue crescendo.' },
+  { win: false, mult: 0,   msg: '❌ Derrota. Normal. Você ainda tem boa margem.' },
+  { win: true,  mult: 1.8, msg: '🚀 Mais uma! +{win}. Você claramente tem instinto.' },
+  { win: false, mult: 0,   msg: '❌ Perdeu. Mas continue — você está na frente.' },
+  { win: true,  mult: 2.0, msg: '⚽ Gol! +{win}. Seu acerto está acima da média.' },
+  { win: false, mult: 0,   msg: '❌ Derrota... O saldo oscilou, mas ainda positivo.' },
+  { win: true,  mult: 1.3, msg: '🐯 Pequena vitória. +{win}. Consistência é tudo.' },
+  { win: false, mult: 0,   msg: '❌ Perdeu algum. Mas o saldo final vai te surpreender.' },
+  { win: true,  mult: 1.5, msg: '🎰 Última rodada — e você GANHOU! +{win}. Essa foi uma boa sessão.' },
+] as const
+
 // ── 15 Rodadas Pré-definidas — arco realista de um apostador real ─────────
 // Fase 1 (0-2): 3 vitórias seguidas → hook dopaminérgico forte
 // Fase 2 (3-6): altos e baixos → sensação de controle ilusória
@@ -202,7 +223,8 @@ const SLOT_EMOJIS: Record<string, [string, string, string]> = {
 
 // ── Props ─────────────────────────────────────────────────────────────────
 interface BetsCasinoProps {
-  onBankrupt: (rounds: number) => void
+  onBankrupt:  (rounds: number) => void
+  onLuckyWin:  (finalBalance: number, totalInvested: number) => void
 }
 
 // ── Log entry ─────────────────────────────────────────────────────────────
@@ -215,7 +237,9 @@ interface LogEntry {
   isDeposit?: boolean
 }
 
-export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
+export function BetsCasino({ onBankrupt, onLuckyWin }: BetsCasinoProps) {
+  // Decide no mount se esta será uma sessão sortuda (12% de chance)
+  const [isLucky] = useState(() => Math.random() < 0.12)
   const [balance, setBalance]               = useState(0)
   const [betAmount, setBetAmount]           = useState(40)
   const [modality, setModality]             = useState<string>('slots')
@@ -256,38 +280,42 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
 
     setTimeout(() => {
       setIsRolling(false)
-      const bet = Math.min(betAmount, balance)
-      const mod = MODALITIES.find(m => m.id === modality)!
+      const bet    = Math.min(betAmount, balance)
+      const mod    = MODALITIES.find(m => m.id === modality)!
+      const rounds = isLucky ? LUCKY_ROUNDS : PREDEFINED_ROUNDS
       let nextBalance = balance
       let winAmt      = 0
       let result: 'win' | 'lose' = 'lose'
       let msg: string
       let bigWinFlag  = false
 
-      if (roundCount < PREDEFINED_ROUNDS.length) {
-        // Arco dramático pré-programado (rodadas 0-14)
-        const round = PREDEFINED_ROUNDS[roundCount]
-        if (round.win && roundCount < PREDEFINED_ROUNDS.length - 1) {
+      if (roundCount < rounds.length) {
+        // Arco roteirizado (lucky ou normal)
+        const round = rounds[roundCount]
+        if (round.win) {
           winAmt      = Math.round(bet * round.mult)
           nextBalance = balance - bet + winAmt
           result      = 'win'
-          bigWinFlag  = round.mult >= 4
+          bigWinFlag  = round.mult >= 3
         } else {
           nextBalance = balance - bet
         }
         msg = round.msg.replace('{win}', formatBRL(Math.abs(winAmt - bet)))
       } else {
-        // Pós-roteiro: perda garantida a cada rodada — a ilusão acabou
+        // Pós-roteiro: perda garantida — só alcançado no arco normal se sobrou saldo
         const postMsgs = [
           `${mod.emoji} Mais uma perda. A casa nunca perde.`,
           `${mod.emoji} Derrota. A banca agradece silenciosamente.`,
           `💸 Cada clique drena o que você colocou em jogo.`,
-          `${mod.emoji} Sem sorte. Não era sorte — era matemática.`,
+          `${mod.emoji} Não era sorte — era matemática.`,
           `📉 O saldo cai. Sempre cai. É design, não azar.`,
         ]
         nextBalance = balance - bet
         msg         = postMsgs[roundCount % postMsgs.length]
       }
+
+      // Detecção de vitória na sessão sortuda (última rodada + saldo positivo)
+      const isLuckyFinalRound = isLucky && roundCount === LUCKY_ROUNDS.length - 1
 
       nextBalance = Math.max(0, nextBalance)
       const netGain = winAmt - bet
@@ -308,6 +336,10 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
         if (!muted) playRupture()
         setBankrupt(true)
         setTimeout(() => onBankrupt(roundCount + 1), 800)
+      } else if (isLuckyFinalRound) {
+        // Sessão sortuda completada com saldo positivo!
+        if (!muted) playBigWin()
+        setTimeout(() => onLuckyWin(nextBalance, totalIn), 1200)
       }
     }, 750)
   }, [balance, betAmount, isRolling, modality, muted, roundCount, onBankrupt])
