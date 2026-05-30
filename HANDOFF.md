@@ -69,6 +69,7 @@ Toda a infraestrutura do site roda de forma **100% independente, autônoma e com
   * **Faixas de Cores Curadas**: Cores elegantes alinhadas com o design (Classe A: Dourado/Amber; Classe B: Esmeralda; Classe C: Teal; Classe D: Slate; Classe E: Stone) com suporte perfeito a light e dark mode.
 * **Dropdown Simplificado e Natural**: Seletor de estados mais limpo em `BrazilianRealidadeCalculator.tsx` (ex: `Acre (AC)` em vez da estrutura poluída anterior).
 * **Consistência de Linguagem**: Em `config/realidade.ts`, remoção do sufixo ` (Estado)` nos nomes de `São Paulo` e `Rio de Janeiro`.
+* **Polos Regionais Expandidos**: Inclusão de **Curitiba (PR)** sob o grupo de *Polos Econômicos Regionais* com percentis salariais metropolitanos e cesta básica ajustada a R$ 754,00.
 * **Indicador de Classe Social (IBGE/FGV)**: Adicionamos um painel dinâmico que calcula e exibe de forma premium a classe social estimada (Classes A, B, C, D e E) com base em múltiplos de salário mínimo.
 * **Guias de Ação Personalizados**: Exibição de cards explicativos baseados em estatísticas reais (ensino técnico e estanque de dívidas de consumo para D/E; alocação em investimentos e proteção cambial global com Wise para A/B/C), com ganchos nativos para o afiliado Wise do portal.
 
