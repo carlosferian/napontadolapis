@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
-import { Play, RefreshCw, Flame } from 'lucide-react'
+import { Play, RefreshCw, Flame, Volume2, VolumeX } from 'lucide-react'
 import { formatBRL } from '@/lib/formatters'
+import { playSpin, playWin, playBigWin, playLose, playRupture } from '@/lib/casino-sounds'
 
 // ── Modalidades ──────────────────────────────────────────────────────────
 const MODALITIES = [
@@ -204,6 +205,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
   const [isRolling, setIsRolling]           = useState(false)
   const [rollingEmoji, setRollingEmoji]     = useState('🐯')
   const [bankrupt, setBankrupt]             = useState(false)
+  const [muted, setMuted]                   = useState(false)
 
   // Decay: 0 (pristine) → 100 (colapso), derivado do balance
   const decay = useMemo(
@@ -228,6 +230,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
   const handleBet = useCallback(() => {
     if (balance <= 0 || isRolling) return
     setIsRolling(true)
+    if (!muted) playSpin()
 
     setTimeout(() => {
       setIsRolling(false)
@@ -253,6 +256,15 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
       const netGain = winAmt - bet
       const msg     = round.msg.replace('{win}', formatBRL(Math.abs(netGain)))
 
+      // Sons de resultado
+      if (!muted) {
+        if (result === 'win') {
+          round.mult >= 4 ? playBigWin() : playWin()
+        } else {
+          playLose()
+        }
+      }
+
       setBalance(nextBalance)
       setRoundCount(r => r + 1)
       setLog(prev => [
@@ -261,11 +273,12 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
       ])
 
       if (nextBalance <= 0) {
+        if (!muted) playRupture()
         setBankrupt(true)
         setTimeout(() => onBankrupt(roundCount + 1), 800)
       }
     }, 750)
-  }, [balance, betAmount, isRolling, modality, roundCount, onBankrupt])
+  }, [balance, betAmount, isRolling, modality, muted, roundCount, onBankrupt])
 
   const handleReset = useCallback(() => {
     setBalance(200)
@@ -346,9 +359,19 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
               {stage < 4 ? 'CASSINO DIGITAL AO VIVO' : '💀 CASSINO MORTO'}
             </span>
           </div>
-          <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>
-            {stage < 4 ? '148.320 jogando' : 'SALDO ESGOTADO'}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>
+              {stage < 4 ? '148.320 jogando' : 'SALDO ESGOTADO'}
+            </span>
+            <button
+              onClick={() => setMuted(m => !m)}
+              className="cursor-pointer opacity-50 hover:opacity-100 transition-opacity"
+              title={muted ? 'Ativar som' : 'Silenciar'}
+              style={{ color: 'rgba(255,255,255,0.6)' }}
+            >
+              {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+            </button>
+          </div>
         </div>
 
         {/* Título */}
