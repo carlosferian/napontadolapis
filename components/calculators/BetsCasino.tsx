@@ -377,7 +377,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
                 : { background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.07)', color: '#6b7280' }
               }
             >
-              <span className="text-base block">{m.emoji}</span>
+              <span className="text-4xl block mb-1">{m.emoji}</span>
               <span className="text-[10px] font-extrabold block truncate">{m.name}</span>
               <span className="text-[9px] block mt-0.5" style={{ color: cfg.border }}>{m.edge}</span>
             </button>
