@@ -177,7 +177,7 @@ export function BrazilianRealidadeCalculator() {
             >
               {REALIDADE_STATES.map((s) => (
                 <option key={s.code} value={s.code}>
-                  {s.name} {s.code !== 'BR' ? `(${s.code})` : ''}
+                  {s.name} {s.capital && s.code !== 'BR' ? `— Capital: ${s.capital}` : ''} {s.code !== 'BR' ? `(${s.code})` : ''}
                 </option>
               ))}
             </select>
@@ -276,7 +276,7 @@ export function BrazilianRealidadeCalculator() {
             {
               label: 'Poder de Cesta Básica',
               value: salary > 0 ? `${salaryInCestasBasicas.toFixed(1).replace('.', ',')}x` : '0,0x',
-              sublabel: `Cesta a R$ ${selectedState.cestaBasica}`,
+              sublabel: `Cesta em ${selectedState.capital || 'Capitais'}: R$ ${selectedState.cestaBasica}`,
               colorClass: 'text-amber-500 dark:text-amber-400',
             },
           ]}
