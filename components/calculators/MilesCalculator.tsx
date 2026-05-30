@@ -352,10 +352,13 @@ export function MilesCalculator() {
           {/* Nota técnica sobre Milhas */}
           <div className="rounded-2xl border p-4 flex gap-3 bg-stone-500/5" style={{ borderColor: 'var(--c-line)' }}>
             <Info className="shrink-0 text-stone-500" size={18} style={{ color: 'var(--c-muted)' }} />
-            <div className="space-y-1 text-xs leading-relaxed" style={{ color: 'var(--c-muted)' }}>
-              <p className="font-semibold" style={{ color: 'var(--c-ink-2)' }}>O que é o CPP?</p>
+            <div className="space-y-1.5 text-xs leading-relaxed" style={{ color: 'var(--c-muted)' }}>
+              <p className="font-semibold" style={{ color: 'var(--c-ink-2)' }}>O que é o CPP e de onde vêm os valores?</p>
               <p>
-                CPP significa **Custo por Mil** (ou *Cost Per Point*). No mercado de fidelidade, a unidade padrão é o milhar (1.000 milhas/pontos). O CPP é a bússola para saber o custo ou benefício de cada transação imobiliária ou de voo.
+                CPP significa <strong>Custo por Mil</strong> (ou <em>Cost Per Point</em>). No mercado de fidelidade, a unidade padrão é o milhar (1.000 milhas ou pontos). O CPP é a bússola para saber se a emissão do voo ou a compra promocional de pontos realmente compensa.
+              </p>
+              <p>
+                <strong>Como identificar o seu CPP pessoal?</strong> Se você acumulou pontos de forma gratuita (em gastos normais no cartão), o seu custo é zero. Se você assina clubes (ex: Livelo a R$ 42 por mil) ou comprou pontos, divida o valor pago pela quantidade de pontos para achar o CPP de origem. Transferências com bônus de 100% reduzem o seu CPP real final na cia aérea pela metade (ex: R$ 35 o milhar na Livelo vira R$ 17,50 na Smiles com 100% de bônus).
               </p>
             </div>
           </div>
@@ -406,7 +409,7 @@ export function MilesCalculator() {
                 <div>
                   <p className="font-bold">A Lógica do Milhar (CPP da Emissão) 💡</p>
                   <p className="mt-1" style={{ color: 'var(--c-muted)' }}>
-                    Ao emitir essa passagem, o programa está "comprando" as suas milhas a um valor de **{formatBRL(emissionResults.cppOfEmission)}** por milhar. Como o valor de custo/mercado dessas milhas é de **{formatBRL(emissionResults.mileValueUsed)}**, você está gerando lucro na transação! Regra geral: **emita em milhas se o CPP da passagem for maior do que o seu custo de milhas.**
+                    Ao emitir essa passagem, o programa está "comprando" as suas milhas a um valor de <strong>{formatBRL(emissionResults.cppOfEmission)}</strong> por milhar. Como o valor de custo/mercado dessas milhas é de <strong>{formatBRL(emissionResults.mileValueUsed)}</strong>, você está gerando valor na transação! Regra geral: <strong>emita em milhas se o CPP da passagem for maior do que o seu custo de milhas.</strong>
                   </p>
                 </div>
               </div>
@@ -455,7 +458,7 @@ export function MilesCalculator() {
                 <div>
                   <p className="font-bold">Cuidado com o "Desconto Fantasma" 👻</p>
                   <p className="mt-1" style={{ color: 'var(--c-muted)' }}>
-                    As companhias aéreas e bancos adoram anunciar *"Compre pontos com 70% de desconto!"*. No entanto, o preço base de tabela do milhar é inflado artificialmente para R$ 70,00. Mesmo com 70% de desconto, o milhar sai a R$ 21,00, o que muitas vezes é **mais caro** do que o valor real de mercado. **Confie sempre na matemática do CPP, não na porcentagem de desconto anunciada.**
+                    As companhias aéreas e bancos adoram anunciar <em>"Compre pontos com 70% de desconto!"</em>. No entanto, o preço base de tabela do milhar é inflado artificialmente para R$ 70,00. Mesmo com 70% de desconto, o milhar sai a R$ 21,00, o que muitas vezes é <strong>mais caro</strong> do que o valor real de mercado. <strong>Confie sempre na matemática do CPP, não na porcentagem de desconto anunciada.</strong>
                   </p>
                 </div>
               </div>
