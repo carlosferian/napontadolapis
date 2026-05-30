@@ -14,6 +14,16 @@ const MODALITIES = [
   { id: 'roulette', emoji: '🎡', name: 'Roleta',     rtp: 0.973, edge: '2.7% de perda embutida' },
 ] as const
 
+// ── Créditos reais que podem ser depositados no cassino ───────────────────
+const CREDIT_ITEMS = [
+  { id: 'cinema',   emoji: '🎬', name: 'Ingressos de cinema',  value: 70,  desc: '2 ingressos de cinema + pipoca' },
+  { id: 'tenis',    emoji: '👟', name: 'Tênis novo',            value: 280, desc: 'um par de tênis esportivo' },
+  { id: 'celular',  emoji: '📱', name: 'Entrada do celular',    value: 500, desc: 'a entrada do celular novo' },
+  { id: 'poupanca', emoji: '💰', name: 'Poupança dos filhos',   value: 200, desc: 'a poupança mensal das crianças' },
+  { id: 'livros',   emoji: '📚', name: 'Livros novos',          value: 90,  desc: '3 livros que você queria ler' },
+] as const
+type CreditItem = typeof CREDIT_ITEMS[number]
+
 // ── 15 Rodadas Pré-definidas (arco dopamina → ruína) ─────────────────────
 // {win} no msg é substituído pelo valor real em tempo de render
 const PREDEFINED_ROUNDS = [
@@ -194,6 +204,7 @@ interface LogEntry {
   result: 'win' | 'lose'
   val: number
   msg: string
+  isDeposit?: boolean
 }
 
 export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
@@ -206,11 +217,13 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
   const [rollingEmoji, setRollingEmoji]     = useState('🐯')
   const [bankrupt, setBankrupt]             = useState(false)
   const [muted, setMuted]                   = useState(false)
+  const [decayBase, setDecayBase]           = useState(200)  // resets quando créditos são adicionados
+  const [totalIn, setTotalIn]               = useState(200)  // total colocado no cassino (cresce a cada depósito)
 
-  // Decay: 0 (pristine) → 100 (colapso), derivado do balance
+  // Decay: 0 (pristine) → 100 (colapso), relativo ao último depósito
   const decay = useMemo(
-    () => Math.max(0, Math.round((200 - balance) / 2)),
-    [balance]
+    () => Math.max(0, Math.round((decayBase - balance) / (decayBase / 100))),
+    [balance, decayBase]
   )
   const stage = useMemo(() => getDecayStage(decay), [decay])
   const cfg   = STAGE_CONFIGS[stage]
@@ -234,35 +247,48 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
 
     setTimeout(() => {
       setIsRolling(false)
-      const idx       = Math.min(roundCount, PREDEFINED_ROUNDS.length - 1)
-      const round     = PREDEFINED_ROUNDS[idx]
-      const bet       = Math.min(betAmount, balance)
-      const mod       = MODALITIES.find(m => m.id === modality)!
+      const bet = Math.min(betAmount, balance)
+      const mod = MODALITIES.find(m => m.id === modality)!
       let nextBalance = balance
       let winAmt      = 0
       let result: 'win' | 'lose' = 'lose'
+      let msg: string
+      let bigWinFlag  = false
 
-      if (round.win && idx < PREDEFINED_ROUNDS.length - 1) {
-        winAmt      = Math.round(bet * round.mult)
-        nextBalance = balance - bet + winAmt
-        result      = 'win'
+      if (roundCount < PREDEFINED_ROUNDS.length) {
+        // Arco dramático pré-programado (rodadas 0-14)
+        const round = PREDEFINED_ROUNDS[roundCount]
+        if (round.win && roundCount < PREDEFINED_ROUNDS.length - 1) {
+          winAmt      = Math.round(bet * round.mult)
+          nextBalance = balance - bet + winAmt
+          result      = 'win'
+          bigWinFlag  = round.mult >= 4
+        } else {
+          nextBalance = balance - bet
+        }
+        msg = round.msg.replace('{win}', formatBRL(Math.abs(winAmt - bet)))
       } else {
-        nextBalance = balance - bet
+        // Pós-roteiro: odds reais da modalidade — a casa sempre vence no longo prazo
+        const rtp  = mod.rtp
+        const wins = Math.random() < (rtp * 0.45)
+        if (wins) {
+          const mult  = 1.6 + Math.random() * 1.4
+          winAmt      = Math.round(bet * mult)
+          nextBalance = balance - bet + winAmt
+          result      = 'win'
+          msg         = `${mod.emoji} Ganhou dessa vez. Mas a cada rodada a casa retém ${Math.round((1 - rtp) * 100)}% do seu dinheiro...`
+        } else {
+          nextBalance = balance - bet
+          msg         = `${mod.emoji} Derrota. O saldo caindo inexoravelmente. A matemática não perdoa.`
+        }
       }
 
       nextBalance = Math.max(0, nextBalance)
-
-      // Preenche {win} na mensagem com o valor real
       const netGain = winAmt - bet
-      const msg     = round.msg.replace('{win}', formatBRL(Math.abs(netGain)))
 
-      // Sons de resultado
       if (!muted) {
-        if (result === 'win') {
-          round.mult >= 4 ? playBigWin() : playWin()
-        } else {
-          playLose()
-        }
+        if (result === 'win') { bigWinFlag ? playBigWin() : playWin() }
+        else                  { playLose() }
       }
 
       setBalance(nextBalance)
@@ -280,6 +306,22 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
     }, 750)
   }, [balance, betAmount, isRolling, modality, muted, roundCount, onBankrupt])
 
+  const handleAddCredit = useCallback((item: CreditItem) => {
+    const newBalance = balance + item.value
+    setBalance(newBalance)
+    setDecayBase(newBalance)   // cassino volta a brilhar com o novo crédito
+    setTotalIn(prev => prev + item.value)
+    if (!muted) playWin()
+    setLog(prev => [{
+      id: Date.now(),
+      mod: item.emoji,
+      result: 'win' as const,
+      val: item.value,
+      msg: `Você colocou ${item.desc} no cassino. +${formatBRL(item.value)} no saldo.`,
+      isDeposit: true,
+    }, ...prev.slice(0, 14)])
+  }, [balance, muted])
+
   const handleReset = useCallback(() => {
     setBalance(200)
     setBetAmount(20)
@@ -288,6 +330,8 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
     setLog([])
     setBankrupt(false)
     setIsRolling(false)
+    setDecayBase(200)
+    setTotalIn(200)
   }, [])
 
   const slotBase = SLOT_EMOJIS[modality] ?? SLOT_EMOJIS.slots
@@ -465,49 +509,101 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
         </div>
 
         {/* Feedback da última rodada */}
-        {log.length > 0 && (
-          <div
-            className="rounded-xl p-4 border"
-            style={{
-              background: log[0].result === 'win' ? 'rgba(74,222,128,0.06)' : 'rgba(248,113,113,0.06)',
-              borderColor: log[0].result === 'win' ? 'rgba(74,222,128,0.2)' : 'rgba(248,113,113,0.2)',
-            }}
-          >
-            <div className="flex justify-between items-start gap-3">
-              <div className="flex gap-2 min-w-0">
-                <span className="text-xl shrink-0">{log[0].mod}</span>
-                <span className="text-sm font-semibold leading-snug break-words min-w-0" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                  {log[0].msg}
+        {log.length > 0 && (() => {
+          const entry = log[0]
+          const isDep = entry.isDeposit
+          const bg    = isDep ? 'rgba(245,158,11,0.08)' : entry.result === 'win' ? 'rgba(74,222,128,0.06)' : 'rgba(248,113,113,0.06)'
+          const bc    = isDep ? 'rgba(245,158,11,0.3)'  : entry.result === 'win' ? 'rgba(74,222,128,0.2)'  : 'rgba(248,113,113,0.2)'
+          const vc    = isDep ? '#fbbf24'               : entry.result === 'win' ? '#4ade80'               : '#f87171'
+          return (
+            <div className="rounded-xl p-4 border" style={{ background: bg, borderColor: bc }}>
+              <div className="flex justify-between items-start gap-3">
+                <div className="flex gap-2 min-w-0">
+                  <span className="text-xl shrink-0">{entry.mod}</span>
+                  <span className="text-sm font-semibold leading-snug break-words min-w-0" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                    {entry.msg}
+                  </span>
+                </div>
+                <span className="text-lg font-black tabular-nums shrink-0 whitespace-nowrap" style={{ color: vc }}>
+                  {entry.result === 'win' ? '+' : ''}{formatBRL(entry.val)}
                 </span>
               </div>
-              <span
-                className="text-lg font-black tabular-nums shrink-0 whitespace-nowrap"
-                style={{ color: log[0].result === 'win' ? '#4ade80' : '#f87171' }}
-              >
-                {log[0].result === 'win' ? '+' : ''}{formatBRL(log[0].val)}
-              </span>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* Valor por rodada */}
-        <div className="space-y-2 border-t pt-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-          <div className="flex justify-between text-[10px]">
+        <div className="space-y-3 border-t pt-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="flex justify-between items-center text-[10px]">
             <span className="font-bold text-stone-500 uppercase tracking-wider">Aposta por rodada</span>
-            <span className="font-extrabold" style={{ color: cfg.border }}>{formatBRL(betAmount)}</span>
+            <span className="font-extrabold text-base" style={{ color: cfg.border }}>{formatBRL(betAmount)}</span>
           </div>
+          {/* Chips de valor rápido */}
+          <div className="flex gap-1.5 flex-wrap">
+            {[5, 10, 20, 50].map(v => (
+              <button
+                key={v}
+                onClick={() => setBetAmount(Math.min(v, balance))}
+                disabled={isRolling || bankrupt || v > balance}
+                className="px-3 py-1.5 rounded-lg text-xs font-extrabold border cursor-pointer transition-all disabled:opacity-25"
+                style={betAmount === v
+                  ? { background: cfg.border, color: '#000', borderColor: 'transparent' }
+                  : { background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: '#9ca3af' }
+                }
+              >
+                R$ {v}
+              </button>
+            ))}
+            <button
+              onClick={() => setBetAmount(Math.max(5, balance))}
+              disabled={isRolling || bankrupt || balance <= 0}
+              className="px-3 py-1.5 rounded-lg text-xs font-extrabold border cursor-pointer transition-all disabled:opacity-25"
+              style={{ background: 'rgba(239,68,68,0.12)', borderColor: 'rgba(239,68,68,0.35)', color: '#f87171' }}
+            >
+              All-in
+            </button>
+          </div>
+          {/* Slider fino */}
           <input
-            type="range" min={5} max={50} step={5}
-            value={betAmount}
+            type="range" min={5} max={Math.max(5, balance)} step={5}
+            value={Math.min(betAmount, balance)}
             disabled={isRolling || bankrupt}
             onChange={e => setBetAmount(Number(e.target.value))}
             className="w-full h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-40"
             style={{ backgroundColor: 'rgba(255,255,255,0.08)', accentColor: cfg.border } as React.CSSProperties}
           />
-          <div className="flex justify-between text-[9px] text-stone-600">
-            <span>R$ 5</span><span>R$ 50</span>
-          </div>
         </div>
+
+        {/* Depositar créditos reais */}
+        {!bankrupt && (
+          <div className="space-y-2 border-t pt-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+            <div className="flex justify-between items-center">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-600">Depositar mais créditos:</span>
+              {totalIn > 200 && (
+                <span className="text-[9px] font-extrabold" style={{ color: 'rgba(245,158,11,0.7)' }}>
+                  Total colocado: {formatBRL(totalIn)}
+                </span>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+              {CREDIT_ITEMS.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => handleAddCredit(item)}
+                  disabled={isRolling}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl border cursor-pointer transition-all disabled:opacity-40 text-left hover:brightness-125"
+                  style={{ background: 'rgba(245,158,11,0.05)', borderColor: 'rgba(245,158,11,0.2)' }}
+                >
+                  <span className="text-xl shrink-0">{item.emoji}</span>
+                  <div className="min-w-0">
+                    <div className="text-[9px] font-extrabold truncate" style={{ color: 'rgba(255,255,255,0.7)' }}>{item.name}</div>
+                    <div className="text-[10px] font-black" style={{ color: '#fbbf24' }}>{formatBRL(item.value)}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Botão principal */}
         {bankrupt ? (
