@@ -139,6 +139,51 @@ export function BrazilianRealidadeCalculator() {
     return `Você faz parte da elite econômica brasileira (Top ${Math.max(0.1, 100 - nationalPercentile).toFixed(1)}%). O abismo social entre você e a base é gigantesco.`
   }, [nationalPercentile, salary])
 
+  // Determinação de Classe Social (Critério FGV/IBGE baseado em Salários Mínimos da Renda Individual)
+  const socialClass = useMemo(() => {
+    if (salary <= 0) return { letter: '-', name: 'Não Calculado', color: 'text-stone-400', desc: 'Insira um salário válido para calcular sua classe social.' }
+    const multiples = salary / MINIMUM_WAGE
+    
+    if (multiples > 20) {
+      return {
+        letter: 'A',
+        name: 'Classe A (Elite Econômica)',
+        color: 'text-amber-500 border-amber-500 dark:text-amber-400 dark:border-amber-400',
+        desc: 'Sua renda mensal individual é superior a 20 salários mínimos. Você faz parte do topo absoluto da pirâmide financeira brasileira.'
+      }
+    }
+    if (multiples > 10) {
+      return {
+        letter: 'B',
+        name: 'Classe B (Classe Média Alta)',
+        color: 'text-emerald-600 border-emerald-600 dark:text-emerald-400 dark:border-emerald-400',
+        desc: 'Sua renda mensal individual está entre 10 e 20 salários mínimos. Padrão de vida de alta renda no cenário socioeconômico do país.'
+      }
+    }
+    if (multiples > 4) {
+      return {
+        letter: 'C',
+        name: 'Classe C (Classe Média)',
+        color: 'text-teal-600 border-teal-600 dark:text-teal-400 dark:border-teal-400',
+        desc: 'Sua renda mensal individual está entre 4 e 10 salários mínimos. Classe média consolidada sob a métrica estatística nacional.'
+      }
+    }
+    if (multiples > 2) {
+      return {
+        letter: 'D',
+        name: 'Classe D (Classe Média Baixa)',
+        color: 'text-stone-700 border-stone-600 dark:text-stone-300 dark:border-stone-400',
+        desc: 'Sua renda mensal individual está entre 2 e 4 salários mínimos. Faixa vulnerável às variações inflacionárias do custo de vida.'
+      }
+    }
+    return {
+      letter: 'E',
+      name: 'Classe E (Classe Baixa / Vulnerável)',
+      color: 'text-stone-500 border-stone-400 dark:text-stone-400 dark:border-stone-500',
+      desc: 'Sua renda mensal individual é de até 2 salários mínimos. Base da pirâmide financeira nacional, de extrema restrição orçamentária.'
+    }
+  }, [salary])
+
   // Formatação em string dos percentis para os cards
   const nationalDisplay = useMemo(() => {
     return nationalPercentile.toFixed(1).replace('.', ',')
@@ -276,6 +321,23 @@ export function BrazilianRealidadeCalculator() {
             infoTooltip="A porcentagem indica o percentil exato em que seu salário se enquadra na população economicamente ativa ocupada. Um percentil de 90% significa que você ganha mais que 90% dos brasileiros."
           />
         </div>
+
+        {/* Classe Social Indicador */}
+        {salary > 0 && (
+          <div 
+            className="rounded-2xl border p-4 flex items-center gap-4 bg-stone-500/5 animate-fadeIn" 
+            style={{ borderColor: 'var(--c-line)' }}
+          >
+            <div className={`w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-xl font-bold border-2 ${socialClass.color} bg-white dark:bg-stone-900`} style={{ borderColor: 'currentColor' }}>
+              {socialClass.letter}
+            </div>
+            <div className="space-y-0.5 text-left">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">Classe Social Estimada (Métrica IBGE/FGV)</span>
+              <h4 className="text-sm font-extrabold" style={{ color: 'var(--c-ink)' }}>{socialClass.name}</h4>
+              <p className="text-xs" style={{ color: 'var(--c-muted)' }}>{socialClass.desc}</p>
+            </div>
+          </div>
+        )}
 
         {/* Sub-métricas rápidas */}
         <MetricGrid
@@ -435,7 +497,7 @@ export function BrazilianRealidadeCalculator() {
                 { label: 'Meu Salário Líquido', value: formatBRL(salary) },
                 { label: selectedState.group === 'polo' ? `No polo de ${selectedState.capital}` : `No estado de ${selectedState.code}`, value: `Mais rico que ${stateDisplay}%` },
                 { label: 'Salários Mínimos', value: `${salaryInMinimumWages.toFixed(1).replace('.', ',')} mínimos` },
-                { label: 'Cestas Básicas', value: `${salaryInCestasBasicas.toFixed(1).replace('.', ',')} unidades` },
+                { label: 'Classe Social (IBGE)', value: `Classe ${socialClass.letter}` },
               ]}
               footer="a pirâmide da desigualdade social sob a ponta do lápis."
               accentColor={isTopTier ? '#f59e0b' : '#0a8a7e'}
