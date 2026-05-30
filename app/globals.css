@@ -366,3 +366,26 @@ body {
   min-width: 190px;
 }
 
+/* ─── Embed Mode Overrides ────────────────────────── */
+html.is-embedded nav,
+html.is-embedded footer,
+html.is-embedded .calm-header,
+html.is-embedded .prose,
+html.is-embedded .c-cta-box,
+html.is-embedded .c-ad-banner,
+html.is-embedded #adsense-global-banner {
+  display: none !important;
+}
+
+html.is-embedded body {
+  background-color: transparent !important;
+}
+
+html.is-embedded main {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  max-width: 100% !important;
+}
+

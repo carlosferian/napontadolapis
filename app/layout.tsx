@@ -5,6 +5,7 @@ import Script from 'next/script'
 import './globals.css'
 import { Nav } from '@/components/Nav'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { EmbedHandler } from '@/components/EmbedHandler'
 
 export const metadata: Metadata = {
   title: {
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className="min-h-screen calm-bg overflow-x-hidden">
+        <EmbedHandler />
         {gaId && (
           <>
             <Script
