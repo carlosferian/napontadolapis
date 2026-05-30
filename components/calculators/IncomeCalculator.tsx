@@ -21,6 +21,19 @@ import {
 } from 'recharts'
 import { HelpCircle, Sparkles, AlertTriangle, ShieldCheck, Flame, RefreshCw } from 'lucide-react'
 
+// Funções auxiliares para formatação de BRL em inputs de texto
+const getBRLDisplayValue = (num: number, isTarget: boolean, computedVal: number) => {
+  const currentVal = isTarget ? computedVal : num
+  if (currentVal === 0) return ''
+  return Math.round(currentVal).toLocaleString('pt-BR')
+}
+
+const parseBRLInputValue = (value: string): number => {
+  const cleanValue = value.replace(/\D/g, '')
+  if (cleanValue === '') return 0
+  return parseInt(cleanValue, 10)
+}
+
 export function IncomeCalculator() {
   // Input states
   const [C, setC] = useState<number>(1000000) // Capital Inicial
@@ -79,6 +92,11 @@ export function IncomeCalculator() {
     updateField(field, val)
   }
 
+  const handleBRLInputChange = (field: 'C' | 'R', rawValue: string) => {
+    const numericValue = parseBRLInputValue(rawValue)
+    handleInputChange(field, numericValue)
+  }
+
   // Reset values
   const handleReset = () => {
     setC(0)
@@ -135,21 +153,22 @@ export function IncomeCalculator() {
             <div className="flex justify-between items-center">
               <label htmlFor="capital-input" className="text-sm font-semibold flex items-center gap-1.5" style={{ color: 'var(--c-muted)' }}>
                 Capital Acumulado
-                {target === 'C' && <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">⚡ Auto</span>}
+                {target === 'C' && <span className="text-[10px] bg-[var(--c-emerald-soft)] text-emerald-700 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">⚡ Auto</span>}
               </label>
               <div className="relative w-40">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium" style={{ color: 'var(--c-muted)' }}>R$</span>
                 <input
                   id="capital-input"
-                  type="number"
-                  value={target === 'C' ? (results.C === 0 ? '' : Math.round(results.C)) : (C === 0 ? '' : Math.round(C))}
-                  placeholder="0,00"
-                  onChange={(e) => handleInputChange('C', Math.max(0, Number(e.target.value) || 0))}
+                  type="text"
+                  inputMode="numeric"
+                  value={getBRLDisplayValue(C, target === 'C', results.C)}
+                  placeholder="0"
+                  onChange={(e) => handleBRLInputChange('C', e.target.value)}
                   onFocus={() => prepareForEdit('C')}
-                  className={`w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'C' ? 'bg-emerald-500/[0.04] text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : 'bg-transparent'}`}
+                  className={`w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'C' ? 'bg-emerald-500/[0.04] border-emerald-500/20' : 'bg-transparent'}`}
                   style={{
-                    color: target === 'C' ? undefined : 'var(--c-ink)',
-                    borderColor: target === 'C' ? undefined : 'var(--c-line)'
+                    color: target === 'C' ? 'var(--c-emerald)' : 'var(--c-ink)',
+                    borderColor: target === 'C' ? 'var(--c-emerald-soft)' : 'var(--c-line)'
                   }}
                 />
               </div>
@@ -176,21 +195,22 @@ export function IncomeCalculator() {
             <div className="flex justify-between items-center">
               <label htmlFor="withdrawal-input" className="text-sm font-semibold flex items-center gap-1.5" style={{ color: 'var(--c-muted)' }}>
                 Retirada Mensal Desejada
-                {target === 'R' && <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">⚡ Auto</span>}
+                {target === 'R' && <span className="text-[10px] bg-[var(--c-emerald-soft)] text-emerald-700 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">⚡ Auto</span>}
               </label>
               <div className="relative w-40">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium" style={{ color: 'var(--c-muted)' }}>R$</span>
                 <input
                   id="withdrawal-input"
-                  type="number"
-                  value={target === 'R' ? (results.R === 0 ? '' : Math.round(results.R)) : (R === 0 ? '' : Math.round(R))}
-                  placeholder="0,00"
-                  onChange={(e) => handleInputChange('R', Math.max(0, Number(e.target.value) || 0))}
+                  type="text"
+                  inputMode="numeric"
+                  value={getBRLDisplayValue(R, target === 'R', results.R)}
+                  placeholder="0"
+                  onChange={(e) => handleBRLInputChange('R', e.target.value)}
                   onFocus={() => prepareForEdit('R')}
-                  className={`w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'R' ? 'bg-emerald-500/[0.04] text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : 'bg-transparent'}`}
+                  className={`w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'R' ? 'bg-emerald-500/[0.04] border-emerald-500/20' : 'bg-transparent'}`}
                   style={{
-                    color: target === 'R' ? undefined : 'var(--c-ink)',
-                    borderColor: target === 'R' ? undefined : 'var(--c-line)'
+                    color: target === 'R' ? 'var(--c-emerald)' : 'var(--c-ink)',
+                    borderColor: target === 'R' ? 'var(--c-emerald-soft)' : 'var(--c-line)'
                   }}
                 />
               </div>
@@ -217,7 +237,7 @@ export function IncomeCalculator() {
             <div className="flex justify-between items-center">
               <label htmlFor="interest-input" className="text-sm font-semibold flex items-center gap-1.5" style={{ color: 'var(--c-muted)' }}>
                 Rentabilidade Anual (% a.a.)
-                {target === 'I' && <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">⚡ Auto</span>}
+                {target === 'I' && <span className="text-[10px] bg-[var(--c-emerald-soft)] text-emerald-700 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">⚡ Auto</span>}
               </label>
               <div className="relative w-32">
                 <input
@@ -228,10 +248,10 @@ export function IncomeCalculator() {
                   placeholder="0,00"
                   onChange={(e) => handleInputChange('I', Math.max(0, Number(e.target.value) || 0))}
                   onFocus={() => prepareForEdit('I')}
-                  className={`w-full text-right border rounded-xl pr-7 pl-3 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'I' ? 'bg-emerald-500/[0.04] text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : 'bg-transparent'}`}
+                  className={`w-full text-right border rounded-xl pr-7 pl-3 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'I' ? 'bg-emerald-500/[0.04] border-emerald-500/20' : 'bg-transparent'}`}
                   style={{
-                    color: target === 'I' ? undefined : 'var(--c-ink)',
-                    borderColor: target === 'I' ? undefined : 'var(--c-line)'
+                    color: target === 'I' ? 'var(--c-emerald)' : 'var(--c-ink)',
+                    borderColor: target === 'I' ? 'var(--c-emerald-soft)' : 'var(--c-line)'
                   }}
                 />
                 <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>%</span>
@@ -259,23 +279,24 @@ export function IncomeCalculator() {
             <div className="flex justify-between items-center">
               <label htmlFor="duration-input" className="text-sm font-semibold flex items-center gap-1.5" style={{ color: 'var(--c-muted)' }}>
                 Tempo de Retirada (Anos)
-                {target === 'T' && <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">⚡ Auto</span>}
+                {target === 'T' && <span className="text-[10px] bg-[var(--c-emerald-soft)] text-emerald-700 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">⚡ Auto</span>}
               </label>
               <div className="relative w-28">
                 <input
                   id="duration-input"
-                  type="number"
-                  value={target === 'T' ? (results.isPerpetual ? 'Perpétuo' : (results.T === 0 ? '' : Math.round(results.T))) : (T === 0 ? '' : Math.round(T))}
+                  type="text"
+                  inputMode="numeric"
+                  value={target === 'T' ? (results.isPerpetual ? 'Perpétuo' : (results.T === 0 ? '' : Math.round(results.T).toString())) : (T === 0 ? '' : Math.round(T).toString())}
                   placeholder="0"
                   disabled={target === 'T' && results.isPerpetual}
                   onChange={(e) => handleInputChange('T', Math.max(0, Number(e.target.value) || 0))}
                   onFocus={() => prepareForEdit('T')}
-                  className={`w-full text-right border rounded-xl pr-3.5 pl-3 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'T' ? 'bg-emerald-500/[0.04] text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : 'bg-transparent'} disabled:opacity-100`}
+                  className={`w-full text-right border rounded-xl pr-3.5 pl-3 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums transition-colors duration-200 ${target === 'T' ? 'bg-emerald-500/[0.04] border-emerald-500/20' : 'bg-transparent'} disabled:opacity-100`}
                   style={{
-                    color: target === 'T' ? (results.isPerpetual ? 'var(--c-emerald)' : undefined) : 'var(--c-ink)',
-                    borderColor: target === 'T' ? undefined : 'var(--c-line)',
+                    color: target === 'T' ? 'var(--c-emerald)' : 'var(--c-ink)',
+                    borderColor: target === 'T' ? 'var(--c-emerald-soft)' : 'var(--c-line)',
                     opacity: 1,
-                    WebkitTextFillColor: target === 'T' && results.isPerpetual ? 'var(--c-emerald)' : undefined
+                    WebkitTextFillColor: target === 'T' ? 'var(--c-emerald)' : 'var(--c-ink)'
                   }}
                 />
               </div>
@@ -308,7 +329,7 @@ export function IncomeCalculator() {
             ✕ Limpar tudo
           </button>
           <span style={{ color: 'var(--c-muted)' }}>
-            Variável calculada atual: <strong className="text-emerald-600 dark:text-emerald-400">{target === 'C' ? 'Capital' : target === 'R' ? 'Retirada' : target === 'I' ? 'Rentabilidade' : 'Duração'}</strong>
+            Variável calculada atual: <strong className="text-[var(--c-emerald)] dark:text-emerald-400">{target === 'C' ? 'Capital' : target === 'R' ? 'Retirada' : target === 'I' ? 'Rentabilidade' : 'Duração'}</strong>
           </span>
         </div>
       </div>
