@@ -175,11 +175,29 @@ export function BrazilianRealidadeCalculator() {
                 borderColor: 'var(--c-line)'
               }}
             >
-              {REALIDADE_STATES.map((s) => (
-                <option key={s.code} value={s.code}>
-                  {s.name} {s.capital && s.code !== 'BR' ? `— Capital: ${s.capital}` : ''} {s.code !== 'BR' ? `(${s.code})` : ''}
-                </option>
-              ))}
+              <optgroup label="Nacional" style={{ fontWeight: 'bold' }}>
+                {REALIDADE_STATES.filter(s => s.group === 'nacional').map((s) => (
+                  <option key={s.code} value={s.code}>
+                    {s.name}
+                  </option>
+                ))}
+              </optgroup>
+
+              <optgroup label="Estados (Médias Gerais)" style={{ fontWeight: 'bold' }}>
+                {REALIDADE_STATES.filter(s => s.group === 'estado').map((s) => (
+                  <option key={s.code} value={s.code}>
+                    {s.name} {s.capital ? `— Medição: ${s.capital}` : ''} ({s.code})
+                  </option>
+                ))}
+              </optgroup>
+
+              <optgroup label="Polos Econômicos Regionais" style={{ fontWeight: 'bold' }}>
+                {REALIDADE_STATES.filter(s => s.group === 'polo').map((s) => (
+                  <option key={s.code} value={s.code}>
+                    {s.name}
+                  </option>
+                ))}
+              </optgroup>
             </select>
           </div>
 
@@ -263,7 +281,7 @@ export function BrazilianRealidadeCalculator() {
         <MetricGrid
           metrics={[
             {
-              label: `No estado: ${selectedState.code}`,
+              label: selectedState.group === 'polo' ? `No polo: ${selectedState.capital}` : `No estado: ${selectedState.code}`,
               value: salary > 0 ? `Supera ${stateDisplay}%` : '0,0%',
               sublabel: 'da população local',
             },
@@ -276,7 +294,9 @@ export function BrazilianRealidadeCalculator() {
             {
               label: 'Poder de Cesta Básica',
               value: salary > 0 ? `${salaryInCestasBasicas.toFixed(1).replace('.', ',')}x` : '0,0x',
-              sublabel: `Cesta em ${selectedState.capital || 'Capitais'}: R$ ${selectedState.cestaBasica}`,
+              sublabel: selectedState.group === 'polo' 
+                ? `Cesta em ${selectedState.capital}: R$ ${selectedState.cestaBasica}`
+                : `Cesta em ${selectedState.capital || 'Capitais'}: R$ ${selectedState.cestaBasica}`,
               colorClass: 'text-amber-500 dark:text-amber-400',
             },
           ]}
@@ -413,7 +433,7 @@ export function BrazilianRealidadeCalculator() {
               mainLabel={`ganho mais que ${nationalDisplay}% dos brasileiros`}
               metrics={[
                 { label: 'Meu Salário Líquido', value: formatBRL(salary) },
-                { label: `No estado de ${selectedState.code}`, value: `Mais rico que ${stateDisplay}%` },
+                { label: selectedState.group === 'polo' ? `No polo de ${selectedState.capital}` : `No estado de ${selectedState.code}`, value: `Mais rico que ${stateDisplay}%` },
                 { label: 'Salários Mínimos', value: `${salaryInMinimumWages.toFixed(1).replace('.', ',')} mínimos` },
                 { label: 'Cestas Básicas', value: `${salaryInCestasBasicas.toFixed(1).replace('.', ',')} unidades` },
               ]}
