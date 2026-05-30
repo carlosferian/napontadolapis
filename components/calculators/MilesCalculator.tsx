@@ -384,19 +384,18 @@ export function MilesCalculator() {
                     label: 'Custo Total em Milhas',
                     value: formatBRL(emissionResults.totalMilesEmissionCost),
                     sublabel: `milhas: ${formatBRL(emissionResults.milesConvertedToCash)} + taxa: ${formatBRL(boardingTax)}`,
-                    colorClass: 'text-stone-950 dark:text-white font-bold',
                   },
                   {
                     label: 'CPP da Passagem',
                     value: `${formatBRL(emissionResults.cppOfEmission)} / mil`,
                     sublabel: `valor pago pelas suas milhas nesta emissão`,
-                    colorClass: 'text-teal-600 dark:text-teal-400 font-bold',
+                    colorClass: 'text-[var(--c-emerald)] dark:text-emerald-400 font-bold',
                   },
                   {
                     label: 'Custo do seu Milhar',
                     value: `${formatBRL(emissionResults.mileValueUsed)} / mil`,
                     sublabel: `referência para o programa ${emissionProgram === 'custom' ? 'Customizado' : selectedEmissionProgram?.name}`,
-                    colorClass: 'text-stone-500',
+                    colorClass: 'text-[var(--c-muted)] dark:text-stone-400',
                   },
                 ]}
               />
@@ -432,13 +431,12 @@ export function MilesCalculator() {
                     label: 'CPP da Promoção',
                     value: `${formatBRL(purchaseResults.cppOfPurchase)} / mil`,
                     sublabel: `custo real a cada 1.000 milhas compradas`,
-                    colorClass: 'text-stone-950 dark:text-white font-bold',
                   },
                   {
                     label: 'Preço de Mercado',
                     value: `${formatBRL(purchaseResults.marketValuePerThousand)} / mil`,
                     sublabel: `média do milhar do programa ${purchaseProgram === 'custom' ? 'Customizado' : selectedPurchaseProgram?.name}`,
-                    colorClass: 'text-teal-600 dark:text-teal-400 font-bold',
+                    colorClass: 'text-[var(--c-emerald)] dark:text-emerald-400 font-bold',
                   },
                   {
                     label: 'Veredito Financeiro',
