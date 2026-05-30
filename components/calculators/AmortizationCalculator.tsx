@@ -295,10 +295,10 @@ export function AmortizationCalculator() {
           <div className="space-y-1.5" style={{ color: 'var(--c-muted)' }}>
             <p className="font-bold" style={{ color: 'var(--c-ink-2)' }}>Diferença entre SAC e Tabela Price:</p>
             <p>
-              Na **SAC (Sistema de Amortização Constante)**, a amortização é fixa e a parcela começa mais alta e diminui todo mês à medida que os juros caem. Representa 90% dos contratos habitacionais.
+              Na <strong>SAC (Sistema de Amortização Constante)</strong>, a amortização é fixa e a parcela começa mais alta e diminui todo mês à medida que os juros caem. Representa 90% dos contratos habitacionais.
             </p>
             <p>
-              Na **Tabela Price**, a parcela começa mais baixa e permanece fixa ao longo de todo o prazo. Porém, a amortização inicial é muito lenta, fazendo com que o saldo devedor demore muito mais para cair, resultando em mais juros pagos no final das contas.
+              Na <strong>Tabela Price</strong>, a parcela começa mais baixa e permanece fixa ao longo de todo o prazo. Porém, a amortização inicial é muito lenta, fazendo com que o saldo devedor demore muito mais para cair, resultando em mais juros pagos no final das contas.
             </p>
           </div>
         </div>
@@ -437,9 +437,9 @@ export function AmortizationCalculator() {
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold uppercase">Mais Eficiente</span>
               </div>
               <ul className="text-[11px] leading-relaxed space-y-1" style={{ color: 'var(--c-muted)' }}>
-                <li>• **Total pago (com extra):** {formatBRL(results.sacWithExtra.totalPaid)}</li>
-                <li>• **Juros totais pagos:** {formatBRL(results.sacWithExtra.totalInterest)}</li>
-                <li>• **Diferença de economia:** O SAC economiza **{formatBRL(Math.max(0, results.priceWithExtra.totalPaid - results.sacWithExtra.totalPaid))}** líquidos em relação à Tabela Price neste cenário.</li>
+                <li>• <strong>Total pago (com extra):</strong> {formatBRL(results.sacWithExtra.totalPaid)}</li>
+                <li>• <strong>Juros totais pagos:</strong> {formatBRL(results.sacWithExtra.totalInterest)}</li>
+                <li>• <strong>Diferença de economia:</strong> O SAC economiza <strong>{formatBRL(Math.max(0, results.priceWithExtra.totalPaid - results.sacWithExtra.totalPaid))}</strong> líquidos em relação à Tabela Price neste cenário.</li>
               </ul>
             </div>
 
@@ -450,9 +450,9 @@ export function AmortizationCalculator() {
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-400 font-bold uppercase">Mais Suave Inicial</span>
               </div>
               <ul className="text-[11px] leading-relaxed space-y-1" style={{ color: 'var(--c-muted)' }}>
-                <li>• **Total pago (com extra):** {formatBRL(results.priceWithExtra.totalPaid)}</li>
-                <li>• **Juros totais pagos:** {formatBRL(results.priceWithExtra.totalInterest)}</li>
-                <li>• **Vantagem original:** A parcela inicial começa menor, o que pode facilitar a aprovação do financiamento no banco devido ao limite de renda.</li>
+                <li>• <strong>Total pago (com extra):</strong> {formatBRL(results.priceWithExtra.totalPaid)}</li>
+                <li>• <strong>Juros totais pagos:</strong> {formatBRL(results.priceWithExtra.totalInterest)}</li>
+                <li>• <strong>Vantagem original:</strong> A parcela inicial começa menor, o que pode facilitar a aprovação do financiamento no banco devido ao limite de renda.</li>
               </ul>
             </div>
           </div>
@@ -464,7 +464,7 @@ export function AmortizationCalculator() {
           <div>
             <p className="font-bold">Estratégia Bola de Neve Inversa ☃️</p>
             <p className="mt-1" style={{ color: 'var(--c-muted)' }}>
-              Quando você investe, os juros compostos trabalham a seu favor. Quando você financia, os juros trabalham contra você. Ao realizar **amortizações extras**, você inverte essa lógica: você liquida a cota principal da dívida, extinguindo os juros sobre aquela fração para sempre. É o método mais eficiente do mundo para cortar despesas financeiras obrigatórias.
+              Quando você investe, os juros compostos trabalham a seu favor. Quando você financia, os juros trabalham contra você. Ao realizar <strong>amortizações extras</strong>, você inverte essa lógica: você liquida a cota principal da dívida, extinguindo os juros sobre aquela fração para sempre. É o método mais eficiente do mundo para cortar despesas financeiras obrigatórias.
             </p>
           </div>
         </div>

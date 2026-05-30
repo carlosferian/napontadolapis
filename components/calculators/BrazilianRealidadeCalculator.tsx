@@ -297,7 +297,7 @@ export function BrazilianRealidadeCalculator() {
           <div className="space-y-1 text-xs leading-relaxed" style={{ color: 'var(--c-muted)' }}>
             <p className="font-semibold" style={{ color: 'var(--c-ink-2)' }}>Sobre a base utilizada:</p>
             <p>
-              Os cálculos consideram o rendimento mensal individual e são baseados nos microdados da **PNAD Contínua (IBGE)** e cesta básica do **DIEESE**. Os valores referem-se à renda líquida aproximada de impostos e encargos.
+              Os cálculos consideram o rendimento mensal individual e são baseados nos microdados da <strong>PNAD Contínua (IBGE)</strong> e cesta básica do <strong>DIEESE</strong>. Os valores referem-se à renda líquida aproximada de impostos e encargos.
             </p>
           </div>
         </div>
@@ -374,7 +374,7 @@ export function BrazilianRealidadeCalculator() {
                     <div>
                       <p className="font-bold text-stone-800 dark:text-stone-100">O Retorno Prático do Ensino Técnico 🎓</p>
                       <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
-                        Pesquisas do IBGE e do SENAI revelam que profissionais com **curso técnico** têm taxa de empregabilidade acima de 80% e ganham, em média, **32% mais** do que profissionais com apenas o ensino médio regular. Focar em qualificações técnicas rápidas ou certificações de tecnologia é o caminho de educação com maior retorno financeiro imediato no país.
+                        Pesquisas do IBGE e do SENAI revelam que profissionais com <strong>curso técnico</strong> têm taxa de empregabilidade acima de 80% e ganham, em média, <strong>32% mais</strong> do que profissionais com apenas o ensino médio regular. Focar em qualificações técnicas rápidas ou certificações de tecnologia é o caminho de educação com maior retorno financeiro imediato no país.
                       </p>
                     </div>
                   </div>
@@ -384,7 +384,7 @@ export function BrazilianRealidadeCalculator() {
                     <div>
                       <p className="font-bold text-stone-800 dark:text-stone-100">Estancar o Sangramento de Juros de Consumo 💳</p>
                       <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
-                        Dados da CNC mostram que mais de 78% das famílias brasileiras estão endividadas. O rotativo do cartão de crédito (com taxas de juros que superam 400% ao ano) é a maior barreira de empobrecimento individual do país. Priorizar a liquidação de dívidas de consumo caras e evitar compras parceladas no carnê ou cartão é a decisão financeira individual de maior impacto imediato.
+                        Dados da CNC mostram que mais de 78% das famílias brasileiras estão endividadas. O <strong>rotativo do cartão de crédito (com taxas de juros que superam 400% ao ano)</strong> é a maior barreira de empobrecimento individual do país. Priorizar a liquidação de dívidas de consumo caras e evitar compras parceladas no carnê ou cartão é a decisão financeira individual de maior impacto imediato.
                       </p>
                     </div>
                   </div>
@@ -394,7 +394,7 @@ export function BrazilianRealidadeCalculator() {
                     <div>
                       <p className="font-bold text-stone-800 dark:text-stone-100">A Reserva de Emergência 🛡️</p>
                       <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
-                        Guardar mesmo que R$ 30 ou R$ 50 por mês em uma conta com rendimento diário constrói uma "reserva de paz". Ter um colchão de proteção mínimo para imprevistos domésticos ou de saúde impede que você precise recorrer a empréstimos pessoais abusivos em emergências, rompendo o ciclo da vulnerabilidade.
+                        Guardar mesmo que R$ 30 ou R$ 50 por mês em uma conta com rendimento diário constrói uma <strong>reserva de paz</strong>. Ter um colchão de proteção mínimo para imprevistos domésticos ou de saúde impede que você precise recorrer a empréstimos pessoais abusivos em emergências, rompendo o ciclo da vulnerabilidade.
                       </p>
                     </div>
                   </div>
@@ -412,7 +412,7 @@ export function BrazilianRealidadeCalculator() {
                     <div>
                       <p className="font-bold text-stone-800 dark:text-stone-100">Sair do Ralo Invisível da Poupança 📉</p>
                       <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
-                        Apesar de o Brasil ter uma das maiores taxas de juros reais do mundo, bilhões de reais ainda estão presos na caderneta de poupança, que historicamente perde para a inflação real (IPCA). Alocar seu colchão de liquidez em contas de rendimento 100% do CDI ou Tesouro Selic protege o poder de compra com o menor risco de crédito possível.
+                        Apesar de o Brasil ter uma das maiores taxas de juros reais do mundo, bilhões de reais ainda estão presos na caderneta de poupança, que historicamente perde para a inflação real (IPCA). Alocar seu colchão de liquidez em contas de rendimento 100% do <strong>CDI ou Tesouro Selic</strong> protege o poder de compra com o menor risco de crédito possível.
                       </p>
                     </div>
                   </div>
@@ -422,7 +422,7 @@ export function BrazilianRealidadeCalculator() {
                     <div>
                       <p className="font-bold text-stone-800 dark:text-stone-100">Fidelidade aos Aportes Mensais ☃️</p>
                       <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
-                        Estudos de finanças comportamentais indicam que a consistência e a disciplina de poupar de 10% a 20% da renda de forma automática superam estatisticamente qualquer tentativa de escolher "ações quentes" no mercado. Deixe os juros compostos trabalharem de forma passiva no tempo.
+                        Estudos de finanças comportamentais indicam que a consistência e a disciplina de poupar de 10% a 20% da renda de forma automática superam estatisticamente qualquer tentativa de escolher <strong>ações quentes</strong> no mercado. Deixe os juros compostos trabalharem de forma passiva no tempo.
                       </p>
                     </div>
                   </div>
@@ -432,7 +432,7 @@ export function BrazilianRealidadeCalculator() {
                     <div>
                       <p className="font-bold text-stone-800 dark:text-stone-100">Blindagem Cambial e Internacionalização (Risco Brasil) 🌍</p>
                       <p style={{ color: 'var(--c-muted)' }} className="mt-0.5 text-xs">
-                        Manter 100% dos seus investimentos em Reais expõe todo o seu patrimônio ao risco soberano e inflacionário local. Alocar de 10% a 30% da sua riqueza em moedas fortes e ativos globais (como Dólar ou Euro através de contas de câmbio inteligente, como a nossa parceira Wise) atua como um excelente seguro de volatilidade do patrimônio contra crises locais.
+                        Manter 100% dos seus investimentos em <strong>Reais</strong> expõe todo o seu patrimônio ao risco soberano e inflacionário local. Alocar de 10% a 30% da sua riqueza em moedas fortes e ativos globais (como Dólar ou Euro através de contas de câmbio inteligente, como a nossa parceira <strong>Wise</strong>) atua como um excelente seguro de volatilidade do patrimônio contra crises locais.
                       </p>
                     </div>
                   </div>
