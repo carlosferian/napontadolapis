@@ -33,11 +33,12 @@ O resultado final tem que ser educativo, compartilhável e inesquecível — esp
 
 ```
 app/apostas/page.tsx                          ← atualizar header e metadata
-app/apostas/probabilidades/page.tsx           ← substituir por redirect para /apostas#matematica
+app/apostas/probabilidades/page.tsx           ← DELETAR (rota removida do sitemap)
 components/calculators/BetsCalculator.tsx     ← reescrita completa
 components/calculators/OddsCalculator.tsx     ← sem alteração (não deletado; apenas sem rota própria)
 lib/calculations/probability.ts              ← sem alteração (funções reutilizadas na Fase 3)
 config/rates.ts                              ← sem alteração
+app/sitemap.ts                               ← remover entrada de /apostas/probabilidades
 ```
 
 ### Estado do componente `BetsCalculator`
@@ -46,7 +47,7 @@ config/rates.ts                              ← sem alteração
 type Phase = 'casino' | 'rupture' | 'narrative'
 
 // Fase 1 — Cassino
-balance: number          // inicia em 100, mínimo 0
+balance: number          // inicia em 200, mínimo 0
 betAmount: number        // 2–50
 selectedModality: string // 'slots' | 'crash' | 'sports' | 'roulette'
 roundCount: number       // 0–15
@@ -54,7 +55,7 @@ log: RoundLogEntry[]
 isRolling: boolean
 rollingEmoji: string
 // decay NÃO é estado — é valor derivado:
-// const decay = useMemo(() => Math.min(100, 100 - balance), [balance])
+// const decay = useMemo(() => Math.round((200 - balance) / 2), [balance])
 
 // Fase 2 — Ruptura
 phase: Phase             // 'casino' | 'rupture' | 'narrative' — transição global de fase
@@ -79,7 +80,7 @@ Fundo escuro `#14102a` com gradientes neon. Aparência de app real de bets — n
 
 ### Sistema de Decadência Progressiva (5 estágios)
 
-O `decay` é computado como `Math.min(100, 100 - balance)`. Cada estágio muda variáveis CSS aplicadas inline no container do cassino:
+O `decay` é computado como `Math.round((200 - balance) / 2)` — mapeia saldo de 200→0 para decay de 0→100. Cada estágio muda variáveis CSS aplicadas inline no container do cassino:
 
 | Estágio | Decay % | Cor dominante | O que muda |
 |---------|---------|---------------|------------|
@@ -121,7 +122,7 @@ Disparada quando `balance === 0` (após o giro 15 ou all-in que zera o saldo).
    - Lado direito (60%): `background: #f8f7f5`, fade-in de texto de impacto
 5. **t=1200ms** — Texto aparece no lado direito:
    - Título: `"A ilusão acabou."`
-   - Subtítulo: `"R$ 100 perdidos em {roundCount} cliques. É assim que funciona toda vez."`
+   - Subtítulo: `"R$ 200 perdidos em {roundCount} cliques. É assim que funciona toda vez."`
    - CTA: botão `"Ver a verdade completa →"` que dispara scroll suave para a Fase 3
 
 ### Implementação técnica
@@ -206,17 +207,9 @@ Conteúdo:
 
 ---
 
-## Redirecionamento de `/apostas/probabilidades`
+## Remoção de `/apostas/probabilidades`
 
-```typescript
-// app/apostas/probabilidades/page.tsx
-import { redirect } from 'next/navigation'
-export default function Page() {
-  redirect('/apostas#matematica')
-}
-```
-
-O `id="matematica"` é adicionado ao container do Capítulo 2 para que o anchor funcione.
+O arquivo `app/apostas/probabilidades/page.tsx` é **deletado**. A rota deixa de existir. A entrada correspondente é removida de `app/sitemap.ts`. O componente `OddsCalculator.tsx` permanece em disco (não deletar — pode ser referenciado por código compilado) mas nenhuma página o importa mais.
 
 ---
 
@@ -237,4 +230,4 @@ O `id="matematica"` é adicionado ao container do Capítulo 2 para que o anchor 
 2. A interface do cassino é convincente o suficiente para provocar desconforto ao "quebrar"
 3. A Fase 3 é compartilhável — especialmente o gráfico de dopamina e o card de custo real
 4. Zero erros de TypeScript e zero warnings no build
-5. A página `/apostas/probabilidades` redireciona corretamente
+5. A rota `/apostas/probabilidades` retorna 404 (rota removida) e não aparece no sitemap
