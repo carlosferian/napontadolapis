@@ -22,8 +22,8 @@ Desenvolvemos uma calculadora de conversão baseada em uma metodologia séria e 
 * **Matemática Fiel baseada no CPP (`config/miles.ts`)**:
   * Implementação da lógica de **Custo por Mil Milhas (CPP)** como métrica definitiva de comparação.
   * Cadastramento de taxas médias comerciais de mercado para os 5 maiores programas brasileiros: LATAM Pass, Smiles, TudoAzul, Livelo e Esfera.
-  * Aba **Milhas vs Dinheiro**: Calcula o custo da emissão considerando o valor de mercado dos pontos e a taxa de embarque, comparando contra a passagem em dinheiro e entregando o CPP da passagem para julgar a vantajosidade.
-  * Aba **Comprar Milhas (Promoção)**: Calcula o custo real do milhar cobrado na oferta e compara com o preço médio de resgate, gerando alertas didáticos contra o **"Desconto Fantasma"** (promoções de alto percentual mas com preço base superfaturado).
+  * Aba **Milhas vs Dinheiro**: Compare o custo de emissão (milhas + taxa de embarque) contra a passagem em dinheiro. O sistema entrega o CPP real da passagem para definir se a emissão é lucrativa frente ao custo de mercado.
+  * Aba **Comprar Milhas (Promoção)**: Calcula o custo real do milhar cobrado na oferta e o compara com a média de mercado, gerando alertas didáticos contra o **"Desconto Fantasma"** (promoções com percentuais altos de desconto sobre preços de tabela inflados).
 * **Interface Premium (`components/calculators/MilesCalculator.tsx`)**:
   * Abas dinâmicas deslizantes, métricas claras e cards informativos explicativos.
   * Suporte ao novo sistema de embeds modulares, permitindo que blogs de viagem parceiros incorporem a ferramenta em seus artigos em um clique como um **widget de fundo transparente**.
@@ -46,12 +46,36 @@ Desenvolvemos uma calculadora imobiliária de altíssimo apelo para corretores d
 * **Card de Compartilhamento**: Integração da Classe Social nos dados visuais gerados na imagem para compartilhamento.
 
 ### 4. Correção Crítica de SEO Técnico (Sitemap XML)
-* **Sitemap Completo (`app/sitemap.ts`)**: Mapeamento de 100% das 44 páginas estáticas e parametrizadas do projeto com a priorização estratégica correta para acelerar o ranqueamento orgânico no Google.
+* **Sitemap XML (`app/sitemap.ts`)**: Mapeamento de 100% das 44 páginas estáticas e parametrizadas do projeto com a priorização estratégica correta para acelerar o ranqueamento orgânico no Google.
 
 ### 5. Mecanismo de Widgetização Dinâmica (Embed Limpo & Transparente)
 * **EmbedHandler (`components/EmbedHandler.tsx`)**: Detector client-side que monitora se a URL contém `?embed=true`.
 * **CSS de Modo Embed (`app/globals.css`)**: Ocultação automática de Nav, Footer, publicidades e CTAs, e background 100% transparente para fundir o widget ao layout do blog parceiro.
 * **Botão Modular de Embed (`components/ui/ShareButtons.tsx`)**: Botão de `</> Incorporar no seu site` na base de compartilhamento de **todas as 11 calculadoras** do portal.
+
+---
+
+## Governança de Parcerias e Monetização (Awin / Redes de Afiliados)
+
+Para futuras parcerias de conversão na Calculadora de Milhas ou outras áreas (como *Livelo, Smiles, Decolar* etc.), a seguinte governança técnica **deve ser seguida sem exceção** para manter o portal rápido, seguro, independente e com SEO impecável:
+
+1. **Performance Absoluta (Sem Banners ou Scripts Externos) ⚡**:
+   * **Proibido**: Instalar pixels de rastreamento de afiliados, scripts globais de redes de CPA, iframes promocionais ou banners dinâmicos em Javascript fornecidos pelas redes. Esses scripts degradam severamente a velocidade de carregamento e atrasam a interatividade da página, destruindo as pontuações de Core Web Vitals e o SEO do Next.js.
+   * **Recomendado**: Utilizar estritamente **links de redirecionamento em HTML puro (`<a>`)**. O botão de chamada para o parceiro deve ser apenas um hiperlink padrão direcionando para a URL de afiliado gerada no portal da rede (ex: Awin/Lomadee). Isso consome **zero kilobytes** de processamento local, preservando o carregamento instantâneo.
+2. **Declaração de Transparência para o Google (SEO Técnico) 🔍**:
+   * Para evitar punições algorítmicas do Google (*Thin Affiliates* ou desconfiança de transferência artificial de força de link/PageRank), todo link de afiliado ou patrocinado no código deve carregar obrigatoriamente as tags de segurança:
+     ```typescript
+     <a href="URL_DE_AFILIADO" target="_blank" rel="noopener noreferrer sponsored">
+       Texto do Botão
+     </a>
+     ```
+   * A tag **`rel="sponsored"`** sinaliza honestidade técnica para os robôs de busca. O Google reconhece a intenção comercial legítima e protege a autoridade de busca do seu domínio.
+3. **Privacidade e Imparcialidade Radical (Cálculos 100% Locais) 🛡️**:
+   * O portal se posiciona como um simulador de utilidade pública independente e sem captação de dados/e-mails. 
+   * **Arquitetura**: O processamento matemático e as simulações devem continuar rodando 100% client-side (no navegador do usuário), de forma anônima.
+   * **Monetização**: Os ganchos de comissão devem ser oferecidos exclusivamente de forma **passiva e contextual no final do funil de resultados** (como uma sugestão prática de ação para o cliente baseado no veredito matemático do cálculo), mantendo o julgamento analítico do sistema inabalável e imparcial.
+4. **Compliance com o Leitor**:
+   * Recomenda-se manter uma linha explicativa discreta na base ou rodapé do site informando aos leitores que pequenas comissões geradas por links recomendados de resultado ajudam a manter o portal 100% independente, gratuito e sem anúncios invasivos.
 
 ---
 
