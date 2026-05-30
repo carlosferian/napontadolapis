@@ -549,7 +549,7 @@ export function OddsCalculator() {
                 <span>BANCO CENTRAL DO BRASIL (09/2024)</span>
               </div>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--c-ink-2)' }}>
-                Os brasileiros transferiram **R$ 20,8 bilhões** via Pix para casas de apostas em um único mês. Cerca de **5 milhões de beneficiários do Bolsa Família** gastaram **R$ 3 bilhões** em bets nesse período (média de R$ 100 por pessoa).
+                Os brasileiros transferiram <strong>R$ 20,8 bilhões</strong> via Pix para casas de apostas em um único mês. Cerca de <strong>5 milhões de beneficiários do Bolsa Família</strong> gastaram <strong>R$ 3 bilhões</strong> em bets nesse período (média de R$ 100 por pessoa).
               </p>
             </div>
 
@@ -560,7 +560,7 @@ export function OddsCalculator() {
                 <span>SOCIEDADE BRASILEIRA DE VAREJO (2024)</span>
               </div>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--c-ink-2)' }}>
-                **63% dos apostadores** tiveram sua renda principal comprometida. **23% reduziram a compra de vestuário** e **19% sacrificaram gastos com saúde e medicamentos** para continuar apostando.
+                <strong>63% dos apostadores</strong> tiveram sua renda principal comprometida. <strong>23% reduziram a compra de vestuário</strong> e <strong>19% sacrificaram gastos com saúde e medicamentos</strong> para continuar apostando.
               </p>
             </div>
 
@@ -571,7 +571,7 @@ export function OddsCalculator() {
                 <span>INSTITUTO DE PSIQUIATRIA DA USP</span>
               </div>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--c-ink-2)' }}>
-                A facilidade do acesso móvel e a sensação de "ganho fácil" aumentaram os diagnósticos de ludomania (vício em jogo) em mais de **150% nos últimos 3 anos**, afetando de forma severa o orçamento familiar.
+                A facilidade do acesso móvel e a sensação de "ganho fácil" aumentaram os diagnósticos de ludomania (vício em jogo) em mais de <strong>150% nos últimos 3 anos</strong>, afetando de forma severa o orçamento familiar.
               </p>
             </div>
           </div>
