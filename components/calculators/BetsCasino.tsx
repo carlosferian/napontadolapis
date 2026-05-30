@@ -441,6 +441,32 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
           </div>
         </div>
 
+        {/* Feedback da última rodada */}
+        {log.length > 0 && (
+          <div
+            className="rounded-xl p-4 border"
+            style={{
+              background: log[0].result === 'win' ? 'rgba(74,222,128,0.06)' : 'rgba(248,113,113,0.06)',
+              borderColor: log[0].result === 'win' ? 'rgba(74,222,128,0.2)' : 'rgba(248,113,113,0.2)',
+            }}
+          >
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex gap-2 min-w-0">
+                <span className="text-xl shrink-0">{log[0].mod}</span>
+                <span className="text-sm font-semibold leading-snug break-words min-w-0" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                  {log[0].msg}
+                </span>
+              </div>
+              <span
+                className="text-lg font-black tabular-nums shrink-0 whitespace-nowrap"
+                style={{ color: log[0].result === 'win' ? '#4ade80' : '#f87171' }}
+              >
+                {log[0].result === 'win' ? '+' : ''}{formatBRL(log[0].val)}
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Valor por rodada */}
         <div className="space-y-2 border-t pt-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <div className="flex justify-between text-[10px]">
@@ -483,28 +509,6 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
           </button>
         )}
 
-        {/* Log de rodadas */}
-        {log.length > 0 && (
-          <div
-            className="rounded-xl border overflow-y-auto max-h-36 p-3 space-y-2"
-            style={{ background: 'rgba(0,0,0,0.3)', borderColor: 'rgba(255,255,255,0.05)' }}
-          >
-            {log.map(entry => (
-              <div key={entry.id} className="flex justify-between items-start gap-2 text-xs">
-                <div className="flex gap-1.5 min-w-0">
-                  <span className="shrink-0">{entry.mod}</span>
-                  <span className="text-stone-500 leading-tight break-words min-w-0">{entry.msg}</span>
-                </div>
-                <span
-                  className="font-extrabold tabular-nums shrink-0"
-                  style={{ color: entry.result === 'win' ? '#4ade80' : '#f87171' }}
-                >
-                  {entry.result === 'win' ? '+' : ''}{formatBRL(entry.val)}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   )
