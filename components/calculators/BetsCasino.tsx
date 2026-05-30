@@ -14,13 +14,14 @@ const MODALITIES = [
   { id: 'roulette', emoji: '🎡', name: 'Roleta',     rtp: 0.973, edge: '2.7% de perda embutida' },
 ] as const
 
-// ── Créditos reais que podem ser depositados no cassino ───────────────────
+// ── Créditos reais que podem ser depositados — cada um APENAS UMA VEZ ─────
 const CREDIT_ITEMS = [
-  { id: 'cinema',   emoji: '🎬', name: 'Ingressos de cinema',  value: 70,  desc: '2 ingressos de cinema + pipoca' },
+  { id: 'cinema',   emoji: '🎬', name: 'Cinema (2x)',          value: 70,  desc: '2 ingressos de cinema + pipoca' },
   { id: 'tenis',    emoji: '👟', name: 'Tênis novo',            value: 280, desc: 'um par de tênis esportivo' },
-  { id: 'celular',  emoji: '📱', name: 'Entrada do celular',    value: 500, desc: 'a entrada do celular novo' },
-  { id: 'poupanca', emoji: '💰', name: 'Poupança dos filhos',   value: 200, desc: 'a poupança mensal das crianças' },
-  { id: 'livros',   emoji: '📚', name: 'Livros novos',          value: 90,  desc: '3 livros que você queria ler' },
+  { id: 'celular',  emoji: '📱', name: 'Entrada celular',       value: 500, desc: 'a entrada do celular novo' },
+  { id: 'poupanca', emoji: '💰', name: 'Poupança filhos',       value: 200, desc: 'a poupança mensal das crianças' },
+  { id: 'livros',   emoji: '📚', name: 'Livros (3x)',           value: 90,  desc: '3 livros que você queria ler' },
+  { id: 'jantar',   emoji: '🍕', name: 'Jantar família',        value: 150, desc: 'o jantar em família do fim de semana' },
 ] as const
 type CreditItem = typeof CREDIT_ITEMS[number]
 
@@ -219,6 +220,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
   const [muted, setMuted]                   = useState(false)
   const [decayBase, setDecayBase]           = useState(200)  // resets quando créditos são adicionados
   const [totalIn, setTotalIn]               = useState(200)  // total colocado no cassino (cresce a cada depósito)
+  const [usedCreditIds, setUsedCreditIds]   = useState<string[]>([]) // cada item só pode ser usado 1x
 
   // Decay: 0 (pristine) → 100 (colapso), relativo ao último depósito
   const decay = useMemo(
@@ -270,7 +272,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
       } else {
         // Pós-roteiro: odds reais da modalidade — a casa sempre vence no longo prazo
         const rtp  = mod.rtp
-        const wins = Math.random() < (rtp * 0.45)
+        const wins = Math.random() < (rtp * 0.28) // house edge elevado — drena o saldo
         if (wins) {
           const mult  = 1.6 + Math.random() * 1.4
           winAmt      = Math.round(bet * mult)
@@ -307,20 +309,22 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
   }, [balance, betAmount, isRolling, modality, muted, roundCount, onBankrupt])
 
   const handleAddCredit = useCallback((item: CreditItem) => {
+    if (usedCreditIds.includes(item.id)) return
     const newBalance = balance + item.value
     setBalance(newBalance)
-    setDecayBase(newBalance)   // cassino volta a brilhar com o novo crédito
+    setDecayBase(newBalance)
     setTotalIn(prev => prev + item.value)
+    setUsedCreditIds(prev => [...prev, item.id])
     if (!muted) playWin()
     setLog(prev => [{
       id: Date.now(),
       mod: item.emoji,
       result: 'win' as const,
       val: item.value,
-      msg: `Você colocou ${item.desc} no cassino. +${formatBRL(item.value)} no saldo.`,
+      msg: `Você jogou ${item.desc} no cassino. +${formatBRL(item.value)} no saldo.`,
       isDeposit: true,
     }, ...prev.slice(0, 14)])
-  }, [balance, muted])
+  }, [balance, muted, usedCreditIds])
 
   const handleReset = useCallback(() => {
     setBalance(200)
@@ -332,13 +336,14 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
     setIsRolling(false)
     setDecayBase(200)
     setTotalIn(200)
+    setUsedCreditIds([])
   }, [])
 
   const slotBase = SLOT_EMOJIS[modality] ?? SLOT_EMOJIS.slots
 
   return (
     <div
-      className="rounded-[32px] border-2 overflow-hidden"
+      className="rounded-2xl sm:rounded-[32px] border-2 overflow-hidden"
       style={{
         background:   cfg.containerBg,
         borderColor:  cfg.border,
@@ -391,7 +396,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
         >💸</div>
       ))}
 
-      <div className="relative z-10 p-6 space-y-5">
+      <div className="relative z-10 p-3 sm:p-5 space-y-3 sm:space-y-4">
         {/* Header */}
         <div className="flex justify-between items-center pb-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <div className="flex items-center gap-1.5">
@@ -438,13 +443,13 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
               key={m.id}
               onClick={() => !isRolling && setModality(m.id)}
               disabled={isRolling || bankrupt}
-              className="p-2.5 rounded-2xl border text-left transition-all cursor-pointer disabled:opacity-40"
+              className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border text-left transition-all cursor-pointer disabled:opacity-40"
               style={modality === m.id
                 ? { background: `${cfg.border}18`, borderColor: cfg.border, color: 'white' }
                 : { background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.07)', color: '#6b7280' }
               }
             >
-              <span className="text-4xl block mb-1">{m.emoji}</span>
+              <span className="text-2xl sm:text-4xl block mb-0.5 sm:mb-1">{m.emoji}</span>
               <span className="text-[10px] font-extrabold block truncate">{m.name}</span>
               <span className="text-[9px] block mt-0.5" style={{ color: cfg.border }}>{m.edge}</span>
             </button>
@@ -452,14 +457,14 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
         </div>
 
         {/* Slots */}
-        <div className="flex gap-3 justify-center">
+        <div className="flex gap-2 sm:gap-3 justify-center">
           {[0, 1, 2].map(i => {
             const overrideEmoji = cfg.slotEmojis[i]
             const displayEmoji  = overrideEmoji ?? slotBase[i]
             return (
               <div
                 key={i}
-                className="w-16 h-20 rounded-xl border-2 flex items-center justify-center text-3xl"
+                className="w-14 h-16 sm:w-16 sm:h-20 rounded-xl border-2 flex items-center justify-center text-2xl sm:text-3xl"
                 style={{
                   background:   `linear-gradient(160deg, ${cfg.containerBg}, rgba(0,0,0,0.4))`,
                   borderColor:  cfg.slotBorders[i],
@@ -487,7 +492,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
           <div>
             <span className="block text-[10px] font-bold uppercase tracking-wider text-stone-500">Saldo Virtual</span>
             <span
-              className="block text-3xl font-black tabular-nums mt-0.5"
+              className="block text-2xl sm:text-3xl font-black tabular-nums mt-0.5"
               style={{
                 color:      cfg.balanceColor,
                 textShadow: stage === 0 ? '0 0 10px rgba(252,211,77,0.5)' : 'none',
@@ -533,7 +538,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
         })()}
 
         {/* Valor por rodada */}
-        <div className="space-y-3 border-t pt-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="space-y-2 border-t pt-3" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <div className="flex justify-between items-center text-[10px]">
             <span className="font-bold text-stone-500 uppercase tracking-wider">Aposta por rodada</span>
             <span className="font-extrabold text-base" style={{ color: cfg.border }}>{formatBRL(betAmount)}</span>
@@ -576,31 +581,39 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
 
         {/* Depositar créditos reais */}
         {!bankrupt && (
-          <div className="space-y-2 border-t pt-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="space-y-2 border-t pt-3" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
             <div className="flex justify-between items-center">
-              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-600">Depositar mais créditos:</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-600">
+                Jogar seus bens ({CREDIT_ITEMS.length - usedCreditIds.length} restantes):
+              </span>
               {totalIn > 200 && (
                 <span className="text-[9px] font-extrabold" style={{ color: 'rgba(245,158,11,0.7)' }}>
-                  Total colocado: {formatBRL(totalIn)}
+                  {formatBRL(totalIn)} no total
                 </span>
               )}
             </div>
-            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-              {CREDIT_ITEMS.map(item => (
+            <div className="grid grid-cols-3 gap-1 sm:gap-1.5">
+              {CREDIT_ITEMS.map(item => {
+                const used = usedCreditIds.includes(item.id)
+                return (
                 <button
                   key={item.id}
-                  onClick={() => handleAddCredit(item)}
-                  disabled={isRolling}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl border cursor-pointer transition-all disabled:opacity-40 text-left hover:brightness-125"
-                  style={{ background: 'rgba(245,158,11,0.05)', borderColor: 'rgba(245,158,11,0.2)' }}
+                  onClick={() => !used && handleAddCredit(item)}
+                  disabled={isRolling || used}
+                  className="flex flex-col items-center gap-0.5 px-1 py-2 sm:py-2.5 rounded-xl border transition-all text-center"
+                  style={used
+                    ? { background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.06)', cursor: 'default', opacity: 0.35 }
+                    : { background: 'rgba(245,158,11,0.06)', borderColor: 'rgba(245,158,11,0.2)', cursor: 'pointer' }
+                  }
                 >
-                  <span className="text-xl shrink-0">{item.emoji}</span>
-                  <div className="min-w-0">
-                    <div className="text-[9px] font-extrabold truncate" style={{ color: 'rgba(255,255,255,0.7)' }}>{item.name}</div>
-                    <div className="text-[10px] font-black" style={{ color: '#fbbf24' }}>{formatBRL(item.value)}</div>
+                  <span className="text-xl sm:text-2xl leading-none">{used ? '✓' : item.emoji}</span>
+                  <div className="min-w-0 w-full px-0.5">
+                    <div className="text-[8px] sm:text-[9px] font-extrabold truncate leading-tight" style={{ color: used ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.7)' }}>{item.name}</div>
+                    <div className="text-[10px] font-black" style={{ color: used ? 'rgba(255,255,255,0.2)' : '#fbbf24' }}>{formatBRL(item.value)}</div>
                   </div>
                 </button>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}
@@ -609,7 +622,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
         {bankrupt ? (
           <button
             onClick={handleReset}
-            className="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
             style={{ background: cfg.border, color: '#000' }}
           >
             <RefreshCw size={16} /> Recomeçar
@@ -618,7 +631,7 @@ export function BetsCasino({ onBankrupt }: BetsCasinoProps) {
           <button
             onClick={handleBet}
             disabled={isRolling}
-            className="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-transform active:scale-95"
+            className="w-full py-3 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-transform active:scale-95"
             style={{ background: cfg.btnBg, color: cfg.btnColor, boxShadow: cfg.btnShadow }}
           >
             {isRolling
