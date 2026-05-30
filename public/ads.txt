@@ -1,0 +1,3 @@
+# ads.txt para A Ponta do Lápis
+google.com, pub-1917277909427173, DIRECT, f08c47fec0942fa0
+
