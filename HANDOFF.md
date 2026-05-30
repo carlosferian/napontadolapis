@@ -80,6 +80,20 @@ Toda a infraestrutura do site roda de forma **100% independente, autônoma e com
 * **CSS de Modo Embed (`app/globals.css`)**: Ocultação automática de Nav, Footer, publicidades e CTAs, e background 100% transparente para fundir o widget ao layout do blog parceiro.
 * **Botão Modular de Embed (`components/ui/ShareButtons.tsx`)**: Botão de `</> Incorporar no seu site` na base de compartilhamento de **todas as 11 calculadoras** do portal.
 
+### 9. Super-Gamificação Pedagógica contra o Vício em Apostas
+Overhaul completo da Calculadora de Apostas (`components/calculators/BetsCalculator.tsx`), direcionada especialmente para o público jovem e pessoas com dificuldade de leitura/matemática básica, transmitindo o impacto das Bets de forma puramente emocional, visual e experimental:
+* **Simulador da Ilusão (Lobby Gamificado de Bets)**:
+  * Lobby de apostas com visual de cassino digital com picos neon e cores vibrantes.
+  * Escolha entre 4 modalidades populares brasileiras: **Tigrinho (Slots), Foguetinho (Crash), Múltiplas (Esportes) e Roleta**.
+  * **Ciclo de Dopamina Programado (15 rodadas manuais)**: O simulador entrega propositalmente pequenas vitórias no início (giros 1, 2 e 5 - "Big Win") para simular o efeito dopaminérgico que vicia o apostador, seguido de um dreno rápido e inevitável de saldo até a falência (`R$ 0,00`).
+* **Piloto Automático de Edge Matemático (1.000 Rodadas Velozes)**:
+  * Executa um loop instantâneo com as margens reais das plataformas (RTP de 75% a 97.3%). Demonstra visualmente a teoria da ruína do jogador: a longo prazo, a perda de 100% do saldo é uma certeza estatística absoluta.
+* **Calculadora de Perda Real Paralela**:
+  * Uma segunda aba mantém a ferramenta original de perda acumulada mensal no papel, agora equipada com os novos inputs numéricos interativos e bidirecionais com pontos de milhares.
+* **Painel Rodapé de Prevenção e Impacto Real**:
+  * Inclusão de dados oficiais do Banco Central/DIEESE sobre o impacto das Bets no consumo das famílias de baixa renda brasileiras.
+  * Ganchos práticos de acolhimento gratuito e contato direto com **Jogadores Anônimos do Brasil**, tratamento clínico de ludopatia no **SUS (CAPS)** e orientações de **Autoexclusão de CPF** nas plataformas de apostas.
+
 ---
 
 ## Governança de Parcerias e Monetização (Awin / Redes de Afiliados)
