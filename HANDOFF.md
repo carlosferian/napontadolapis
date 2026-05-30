@@ -1,260 +1,71 @@
 # Handoff — A Ponta do Lápis
 
-**Última atualização:** 2026-05-25  
+**Última atualização:** 2026-05-29  
 **Branch de desenvolvimento:** `claude/friendly-hypatia-HwfUk`  
-**Stack:** Next.js 16.2.6 · React 19 · TypeScript · Tailwind CSS v4 · Vercel (deploy pendente)  
+**Stack:** Next.js 16.2.6 · React 19 · TypeScript · Tailwind CSS v4 · Netlify (deploy contínuo ativo)  
 **Domínio registrado:** `apontadolapis.com.br`
 
 ---
 
 ## Estado atual
 
-O projeto está completo e buildando sem erros. São **33 páginas estáticas** geradas, prontas para deploy.
+O projeto está completo e compilando sem erros. Foram geradas **42 páginas estáticas** com sucesso no Next.js (prontas para deploy e indexação pelo Google).
+
+Toda a arquitetura do site foi atualizada com sucesso para rodar de forma **100% independente, autônoma e com custo zero vitalício**, eliminando qualquer dependência de chaves de API externas de terceiros instáveis de aviação (Amadeus/Kiwi.com), o que garante imunidade contra o encerramento do portal Amadeus em julho de 2026.
 
 ---
 
-## O que foi feito — sessões anteriores (2026-05-23 / 2026-05-24)
+## O que foi feito — Sessão Atual (2026-05-29)
 
-### Repaginação visual completa
+### 1. Correção de Contraste e Rótulos no `/realidade-brasileira`
+*   **Visibilidade Unificada no Modo Claro:** Ajustamos o primeiro card de métricas (que exibe o estado ou polo selecionado). Removemos a classe explícita `text-stone-900 dark:text-stone-100` para permitir que o valor herde nativamente a variável de tema `--c-ink` (que muda dinamicamente de `#0F1110` no modo claro para `#F1EFE8` no modo escuro). Isso corrigiu e normalizou o contraste para o estado do Paraná (PR) e todas as outras opções de estados e polos.
 
-Nova paleta extraída do logo (gradiente verde-floresta → teal → ciano):
+### 2. Integração de Curitiba (PR) como Destino de Viagem
+*   **Planejador de Viagens (`config/travel.ts`):** Adicionamos Curitiba como destino nacional sob a região `'brasil'` com todas as suas informações padrão (voo de GRU estimado entre R$ 250 e R$ 500, orçamentos diários de viagem por estilo de vida, média de 4 dias e destaques como Jardim Botânico e Ópera de Arame). 
+*   **Tabela de Preços (`config/flight-prices.json`):** Adicionamos as tarifas de voo de baseline de R$ 250 a R$ 500 para a capital curitibana. A nova página dinâmica `/viagens/curitiba` foi gerada e testada com sucesso absoluto no build.
 
-| Token | Antes | Depois |
-|---|---|---|
-| `brand-paper` (fundo) | `#faf9f6` creme | `#EEF2F9` azul-acinzentado |
-| `brand-pencil` (acento) | `#f2c94c` amarelo | `#00C4BE` ciano |
-| `brand-graphite` (texto) | `#333333` cinza | `#172030` azul-escuro |
-| `category-growth` | `#27ae60` | `#1A5E40` verde-floresta |
-| `category-dream` | `#2d9cdb` azul | `#0A8A7E` teal |
+### 3. Transição para Arquitetura Independente e Offline
+*   **Remoção de Cron e Scripts de Terceiros:** Diante da descontinuação confirmada do portal Amadeus Self-Service para julho de 2026 e do bloqueio de novos registros de desenvolvedores na Kiwi.com Tequila, convertemos o site para um modelo 100% autônomo.
+*   **Limpeza de Código:** Removemos o workflow do GitHub Actions (`.github/workflows/update-prices.yml`) e o script NodeJS de integração com a Amadeus (`scripts/update-prices.mjs`). 
+*   **Resultado:** O site consome com exclusividade o banco de dados estável local `flight-prices.json`. O site é agora imune a falhas de APIs externas, tem custo de requisições de servidores igual a zero e o deploy é ultra-rápido. A atualização média das passagens pode ser feita de forma manual e estável em 3 minutos a cada 6 meses, alterando diretamente o JSON local.
 
-Tipografia: `Cormorant Garamond` (serif editorial) + `Manrope` (sans-serif limpo).
+### 4. Suporte a Polos Econômicos Regionais no Realidade BR
+*   **Expansão Geográfica (`config/realidade.ts`):** Incluímos polos econômicos de grande relevância nacional no `REALIDADE_STATES` (como Campinas, Londrina, Maringá, Joinville, Uberlândia, Juiz de Fora, Santos, Caxias do Sul, etc.). As cestas básicas dos polos foram estimadas de forma proporcional com base nos índices de alimentação de nosso banco de custos de cidades.
+*   **Layout Premium `<optgroup>`:** O dropdown de seleção de localidade no simulador de realidade brasileira foi estruturado de forma visualmente rica e organizada por grupos (Nacional, Estados e Polos Regionais).
+*   **Formatação Dinâmica de Cards:** Quando um polo é selecionado, os cards de métricas e os cards de compartilhamento (Share Cards) adaptam-se de forma inteligente (exibindo `No polo: Londrina` e `No polo de Londrina` em vez de siglas genéricas, e mostrando `Cesta em Londrina: R$ 716`).
 
-### Calculadoras — base
+### 5. Migração de Infraestrutura comercial para o Netlify
+*   **Plano Starter Comercial do Netlify:** Conectamos o repositório no Netlify, ativando a esteira de Continuous Deployment automática baseada em pushes na branch `claude/friendly-hypatia-HwfUk`. Como o plano do Netlify Starter permite uso comercial gratuito de forma 100% legalizada, o site está livre de infração de termos de serviço de uso não comercial ao ativar anúncios ou parceiros.
+*   **Delegação DNS do Netlify:** Iniciamos a migração de DNS do site adicionando os servidores de nome (`dns1.p04.nsone.net`, etc.) como provedores padrão no painel de controle do registrador do domínio (`apontadolapis.com.br`).
 
-- **Gastos com Apostas** — custo real, EV corrigido, comparativo com Selic
-- **Probabilidades** — InfoTip por métrica, analogia dramática, links de ajuda para dependência (JA, CVV, CAPS AD)
-- **Custo do Fumo** — modo cigarro + modo vape/pod (Elf Bar, Juul, líquido avulso)
-- **Comparativo de Investimentos** — CDB, Tesouro, poupança, ações
-- **Calculadora de Viagem** — câmbio + IOF, exportar .txt, limpar dados, editar extras inline
-- **Dividir a Conta** — por item com atribuição por pessoa, edição/remoção inline, modo igualmente, copiar em Markdown
-
-### Preços de passagens — atualização automática semanal
-
-- `config/flight-prices.json` — dados de preços separados do código
-- `scripts/update-prices.mjs` — busca Amadeus API para 21 destinos
-- `.github/workflows/update-prices.yml` — cron toda segunda 8h BRT
-
-**Para ativar:** developers.amadeus.com → criar app → adicionar `AMADEUS_CLIENT_ID` e `AMADEUS_CLIENT_SECRET` como secrets no GitHub Actions.
+### 6. Estruturação de Anúncios Discretos e Premium (Google AdSense)
+*   **Tag de Anúncio Global (`app/layout.tsx`):** Integramos a tag global do AdSense usando o componente `<Script>` do Next.js e vinculando de forma dinâmica ao client ID do ambiente (`process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID`).
+*   **Componente Modular `AdBanner` (`components/AdBanner.tsx`):** Criamos um componente de anúncio display horizontal responsivo e discreto que respeita a identidade de luxo do site. 
+    *   *Modo Dev:* Exibe uma caixa pontilhada de placeholder discreta identificada como "Espaço Publicitário" para visualização espacial do layout.
+    *   *Modo Prod:* Se o ID do AdSense não estiver ativo nas variáveis de ambiente do Netlify, o componente retorna `null` e não exibe nenhuma caixa de erro ou espaço vazio para o usuário final.
+*   **Integração Inicial:** Inserimos o componente `AdBanner` discretamente ao final das calculadoras de **Realidade Brasileira** (`/trabalho/realidade-brasileira`) e **Custo de Vida** (`/viagens/custo-de-vida`), logo acima do rodapé de fontes.
 
 ---
 
-## O que foi feito — sessão atual (2026-05-28)
+## Próximos passos (Amanhã e próximas sessões)
 
-### 1. Comparador de Custo de Vida entre Cidades (`/viagens/custo-de-vida`)
-*   **Banco de Dados Integrado (`config/cities-cost.ts`):** Cobertura geográfica de 100% do território nacional com paridade de preços normalizada (São Paulo = 100). Mapeia as 27 capitais, 12 polos econômicos regionais de grande porte e 26 regiões de "Interior" unificadas para representar os demais municípios menores por estado.
-*   **Componente Interativo (`CostOfLivingCalculator.tsx`):** Entrada de custo mensal atual, seletor com botão swap e sliders dinâmicos de peso (Moradia e Alimentação com resíduo automático de Serviços somando 100%).
-*   **Diferencial por Categoria:** Barras de decaimento de preços e métricas para tomada de decisão e arbitragem geográfica (trabalho remoto para capitais vivendo no interior).
+### 1. Validação do Netlify DNS e SSL (PENDENTE - INFRAESTRUTURA)
+*   **Ação:** Acompanhar e certificar que a propagação dos novos Nameservers do Netlify (`dns1.p04.nsone.net`, etc.) cadastrados no Registro.br foi finalizada globalmente.
+*   **Validação:** Testar o acesso do site no domínio próprio `apontadolapis.com.br` e certificar que o certificado de segurança SSL gratuito (HTTPS) foi emitido e ativado no painel do Netlify.
 
-### 2. Calculadora de Amortização de Financiamento SAC vs. Price (`/investimentos/amortizacao`)
-*   **Mecanismo Matemático (`lib/calculations/amortization.ts`):** Projeção de financiamento SAC e Tabela Price amortizando aportes extraordinários (mensais adicionais) com opções de redução de prazo (quitação acelerada) ou redução de parcelas.
-*   **Visualização Gráfica (`AmortizationCalculator.tsx`):** Gráfico Recharts de decaimento de saldo devedor comparando o contrato original vs. contrato acelerado (amostrado anualmente para excelente performance e visualização).
-*   **Métricas de Juros Economizados:** ResultHero detalhando exatamente quantos juros e anos de boleto foram dizimados pela amortização extra.
+### 2. Cadastro no Google AdSense (PENDENTE - COMERCIAL)
+*   **Timing Crítico:** **Aguardar de 24h a 48h** após a propagação do DNS para realizar a inscrição no Google AdSense. Isso garante que o robô do Google encontre o site online de forma estável no novo servidor do Netlify e evita qualquer reprovação automática por inacessibilidade de site.
+*   **Inscrição:** Acessar o [Google AdSense](https://adsense.google.com/), cadastrar `apontadolapis.com.br`, obter a ID de anunciante (`ca-pub-XXXXXXXXXXXXXXXX`) e submeter para análise.
 
-### 3. Overhaul Artístico de Luxo dos Cartões de Compartilhamento (Share Cards)
-*   **Identidade Premium Luminous Dark-Slate (`ShareCard.tsx` e `TravelShareCard.tsx`):** Conversão total do layout simplório claro para um modelo Black Premium de altíssimo luxo editorial:
-    *   Fundo slate-navy escuro (`#1E2538`) e auras de iluminação neonatal radial glow baseadas na cor do tema (opacidades 12% e 8%).
-    *   Fronteiras finas e discretas, cabeçalhos/rodapés em slate escuro (`#141A29`), indicador neon dot ativo e tipografia Inter ultra-bold de 64px para o valor principal.
-    *   **Frosted-Glass Panels (Glassmorphism):** Blocos de métricas convertidos para panels de vidro translúcido (`rgba(255, 255, 255, 0.02)` com bordas sutis e reflexos internos).
-*   **Propagação Global:** Atualiza automaticamente 10 calculadoras que usam `ShareCardBase`/`TravelShareCard`.
-*   **Odds de Apostas (`OddsCalculator.tsx`):** Redesenho correspondente na calculadora de probabilidades esportivas, que possuía o cartão `OddsShareCard` customizado inline, aplicando auras na cor de risco coral-vermelho (`#ef4444`).
+### 3. Configuração de Variáveis de Ambiente no Netlify (PENDENTE - CONFIGURAÇÃO)
+Assim que o DNS propagar e as IDs do Google forem geradas, cadastre as seguintes variáveis de ambiente no painel do Netlify em **Site configuration** > **Environment variables**:
+*   `NEXT_PUBLIC_GA_ID` ➡️ `G-XXXXXXXXXX` (ID do Google Analytics 4 para medição de tráfego) — *Criar como Standard/Variable*.
+*   `NEXT_PUBLIC_ADSENSE_CLIENT_ID` ➡️ `ca-pub-XXXXXXXXXXXXXXXX` (ID do AdSense para ativação de propagandas) — *Criar como Standard/Variable*.
 
-### 4. Padronização Global do Rodapé de Referências (`SourcesFooter`)
-*   **Dividir a Conta (`/dividir`):** Adicionada menção de fontes à Lei da Gorjeta nº 13.419/2017 e Código de Defesa do Consumidor (Art. 39) sobre taxas facultativas.
-*   **Probabilidades de Apostas (`/apostas/probabilidades`):** Substituição do rodapé manual pelo componente de fontes unificado, citando Valor Esperado, Teorema Central do Limite e o relatório sobre bets do Banco Central do Brasil.
-*   **Branding Check:** Correção de typos legados trocando "Na Ponta" por "A Ponta do Lápis" nos metadados da página de probabilidades.
-
-### 5. Correção de Contraste na Calculadora de Viver de Renda (`/investimentos/viver-de-renda`) e Componentes Globais
-*   **Correção dos Rótulos dos MetricCards (Global):** Descobrimos que o uso da cor `--c-muted` (`#6B6E6A`) em cima do fundo de card `--c-surface` (`#F4F2EC`) resultava em um contraste muito baixo em modo claro (cinza-claro sobre creme). Substituímos globalmente no `MetricCard.tsx` o uso inline dessa variável pelas classes explícitas `text-stone-600 dark:text-stone-400` para os rótulos e `text-stone-500 dark:text-stone-400` para os sub-rótulos. **Isso corrigiu e aumentou o contraste de todos os rótulos de métricas em todas as calculadoras do site de forma unificada!**
-*   **Melhoria nos Alertas de Perpetuidade/Consumo:** Corrigidos os textos e cabeçalhos dos blocos de insight no Viver de Renda. Em modo claro, o texto verde do alerta perpétuo passou de `text-emerald-800` para `text-emerald-900 dark:text-emerald-200` com cabeçalho `text-emerald-950 dark:text-emerald-100 font-extrabold`. No alerta de consumo de capital, passou para `text-amber-950 dark:text-amber-200` com cabeçalho `text-amber-950 dark:text-amber-100 font-extrabold`, alcançando legibilidade perfeita.
-*   **Ajuste de Cores do Tema:** Trocada a classe `text-amber-500` para `text-amber-700 dark:text-amber-400` no card de "Juros Gerados". Atualizados os elementos com `text-stone-400` para `text-stone-500 dark:text-stone-400` (botão de reset e disclaimer do gráfico).
-*   **Overriding de Inputs Desabilitados (Safari/iOS):** Quando o capital é perpétuo, o campo `T` (Tempo) é desabilitado e preenchido com "Perpétuo". Para evitar que navegadores forcem um cinza nativo ilegível, adicionamos explicitamente as propriedades `-webkit-text-fill-color: var(--c-emerald)`, `color: var(--c-emerald)`, `opacity: 1` no objeto `style` com a classe `disabled:opacity-100`, mantendo o verde vivo e perfeitamente legível tanto em modo light quanto dark.
-
----
-
-## O que foi feito — sessão anterior (2026-05-25)
-
-### Rebrand: Na Ponta do Lápis → A Ponta do Lápis
-
-Motivo: MEC lançou em novembro/2025 o programa federal "Na Ponta do Lápis" (educação financeira), colidindo com nome e nicho do site. Rebrand para evitar conflito de marca e SEO.
-
-- Todas as ocorrências de "Na/na Ponta do Lápis" substituídas por "A/a Ponta do Lápis"
-- Domínio `napontadolapis.com.br` estava tomado → registrado `apontadolapis.com.br`
-- `metadataBase` atualizado em `app/layout.tsx`, `sitemap.ts`, `robots.ts`
-- Watermarks dos share cards atualizadas (`apontadolapis.com.br`)
-- SEO reorientado para keywords funcionais: "calculadora de apostas", "custo cigarro", "calculadora viagem câmbio IOF" etc.
-
-### Nav melhorias
-
-- "Dividir" → **"Dividir conta"** (label mais descritivo)
-- Link dividir conta visível a partir de `sm` (antes só `md`)
-- Ícones de lixeira (Trash2) e lápis (Pencil) do Lucide React no SplitBillCalculator
-
-### SplitBillCalculator — separação visual
-
-- Cards de resultado por pessoa agora têm header escuro (`#172030 → #1A2E3E`) com nome em branco e total em teal (`#00C4BE`), claramente diferentes da seção de itens (fundo claro)
-- `SectionDivider` "O que cada um deve" separa as duas seções
-- "Total geral" também usa header escuro para consistência
-
-### SplitBillCalculator — onboarding e tooltips
-
-- **Guia de 3 passos** contextual logo após o seletor de modo — atualiza quando o usuário troca entre "Por item" e "Igualmente"
-- **Componente `Tip`** (botão `?` com bubble dark no hover/click):
-  - "Quem está na conta?" → explica renomear e mínimo de 2 pessoas
-  - "Gorjeta" → explica divisão proporcional ao consumo
-  - "Valor total da conta" (modo igualmente) → instrução sobre incluir taxas
-- **`title` nativo** nos PersonChips (estado toggle legível no hover) e label "Quem divide este item?"
-- Subtítulo inline na seção "Adicionar item" orienta o fluxo em 2 etapas
-
----
-
-## Próximos passos (por prioridade)
-
-### 1. Deploy no Vercel — BLOQUEANTE para tudo abaixo
-
-Ver checklist completo mais abaixo.
-
-### 2. Wise — afiliado (configurar após deploy)
-
-O usuário aderiu ao programa de afiliados da Wise via Partnerize (`join.partnerize.com/wise/en`).
-
-**O que foi acordado nas regras:**
-- Partner type a selecionar: **Content / Publisher**
-- Ação comissionável: **transferência cross-currency** feita por novo usuário cadastrado via link
-- Mínimo de pagamento: £20 · Cookie: 365 dias
-- **Proibido:** pop-ups, toolbars, incentivos, retargeting, comprar keywords da marca Wise
-
-**O que falta fazer no código:**
-- Criar um componente `WiseCTA` discreto (sem popup, sem banner intrusivo) para exibir nas calculadoras de viagem e dividir conta
-- Sugestão de posicionamento: após os resultados da calculadora de viagem, dentro do card escuro que já existe ao final
-- Link deve conter o parâmetro de afiliado fornecido pelo Partnerize após aprovação
-- **Não implementar antes de ter o link de afiliado aprovado**
-
-### 3. Seguro-Desemprego — calculadora pendente
-
-**URL planejada:** `/trabalho/seguro-desemprego`
-
-**Pergunta em aberto:** a calculadora deve checar elegibilidade antes de calcular, ou assumir que a pessoa já tem direito?
-- Opção A: **Só calcula** — assume demissão sem justa causa, foca no valor e parcelas
-- Opção B: **Checa elegibilidade** — 3–4 perguntas rápidas antes
-- Opção C: **As duas etapas** — mini-checklist + cálculo
-
-**Lógica de cálculo (CLT geral — verificar tabela MTE atual antes de implementar):**
-```
-Até R$ 2.041,39          → 80% da média salarial
-R$ 2.041,39 – R$ 3.402,35 → 80% da 1ª faixa + 50% do excedente
-Acima de R$ 3.402,35     → teto fixo (~R$ 2.230 — verificar MTE)
-```
-
-**Parcelas:**
-| Nº pedido | Meses trabalhados | Parcelas |
-|---|---|---|
-| 1º | 6–11 meses | 4 |
-| 1º | 12–23 meses | 5 |
-| 1º | 24+ meses | 5 |
-| 2º | 6–11 meses | 3 |
-| 2º | 12–23 meses | 4 |
-| 2º | 24+ meses | 5 |
-| 3º+ | 6–11 meses | 3 |
-| 3º+ | 12–23 meses | 4 |
-| 3º+ | 24+ meses | 5 |
-
-Empregado doméstico e pescador artesanal têm regras próprias — verificar Portaria MTE vigente.  
-Fonte: [empregabrasil.mte.gov.br](https://empregabrasil.mte.gov.br)
-
-### 4. Rescisão trabalhista
-
-`/trabalho/rescisao` — ~200k buscas/mês. Próxima prioridade após o seguro-desemprego.
-
-### 5. Pensão alimentícia
-
-Pausada — valor é definido por juiz, precisamos definir o framing antes de implementar.
-
-### 6. Google AdSense
-
-Solicitar aprovação assim que o site estiver no ar há algumas semanas com conteúdo indexado.
-
----
-
-## Deploy — checklist completo
-
-> **Domínio correto:** `apontadolapis.com.br` (registrado). Atualizar qualquer referência antiga a `napontadolapis.com.br`.
-
-### 1. Conta e repositório
-- [ ] Garantir que o repo `carlosferian/napontadolapis` está no GitHub com a branch principal atualizada
-
-### 2. Importar no Vercel
-- [ ] vercel.com → **"Add New Project"** → selecionar repo `napontadolapis`
-- [ ] Framework: **Next.js** (detectado automaticamente)
-- [ ] Clicar em **Deploy** — ~2 min
-- [ ] Testar URL gerada (`napontadolapis.vercel.app`) no celular
-
-### 3. Domínio customizado
-- [ ] Vercel: Settings → Domains → adicionar `apontadolapis.com.br`
-- [ ] No painel do registro.br: registro **A** (IP do Vercel) + **CNAME** (`www`)
-- [ ] Aguardar propagação DNS (geralmente < 1h) e verificar HTTPS ativo
-
-### 4. Ativar preços automáticos de passagens
-- [ ] Criar conta em [developers.amadeus.com](https://developers.amadeus.com)
-- [ ] Criar app → copiar Client ID e Client Secret
-- [ ] GitHub: Settings → Secrets → Actions → `AMADEUS_CLIENT_ID` + `AMADEUS_CLIENT_SECRET`
-- [ ] Testar: Actions → "Atualizar preços de passagens" → Run workflow
-
-### 5. Google Search Console
-- [ ] search.google.com/search-console → adicionar `apontadolapis.com.br`
-- [ ] Verificar domínio via DNS
-- [ ] Submeter sitemap: `https://apontadolapis.com.br/sitemap.xml`
-
-### 6. Google Analytics 4
-- [ ] analytics.google.com → criar propriedade → copiar Measurement ID (`G-XXXXXXXXXX`)
-- [ ] Adicionar no `app/layout.tsx`:
-```tsx
-<script async src={`https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX`} />
-<script dangerouslySetInnerHTML={{ __html: `
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
-` }} />
-```
-
-### 7. AdSense (2–4 semanas para aprovação)
-- [ ] adsense.google.com → criar conta → adicionar site `apontadolapis.com.br`
-- [ ] Inserir snippet de verificação no `<head>`
-- [ ] Aguardar aprovação → configurar ad units
-
-> **Ordem real:** Vercel → Domínio → Search Console → GA4 → Amadeus → AdSense → Wise afiliado
-
----
-
-## Taxas para manter atualizadas
-
-`config/rates.ts`:
-```typescript
-selic: 0.1375,        // bcb.gov.br
-cdi: 0.1375,          // = Selic
-poupanca: 0.065,      // 70% da Selic quando Selic > 8,5%
-tesouroDireto: 0.155,
-lastUpdated: '2026-05'
-```
-
-`config/travel.ts` → `TRAVEL_CONFIG`:
-```typescript
-defaultUSDtoBRL: 5.75,  // câmbio padrão (usuário pode editar)
-iofCreditCard: 0.0438,  // IOF — pode mudar por decreto
-```
-
-`config/flight-prices.json` → atualizado automaticamente toda segunda via GitHub Actions.  
-Faixas do seguro-desemprego → atualizar em `lib/calculations/unemployment.ts` (a criar) a cada reajuste do salário mínimo.
+### 4. Substituição das IDs de Slots de Anúncios (PENDENTE - CÓDIGO)
+*   Após a aprovação formal do AdSense pelo Google (geralmente de 2 a 14 dias), acesse a sua conta, crie os blocos de anúncio horizontais responsivos de display, copie os códigos de `slot` fornecidos pelo AdSense e atualizar os códigos de `slot` fictícios do componente `AdBanner` nas duas calculadoras:
+    *   `app/trabalho/realidade-brasileira/page.tsx`
+    *   `app/viagens/custo-de-vida/page.tsx`
 
 ---
 
@@ -262,31 +73,35 @@ Faixas do seguro-desemprego → atualizar em `lib/calculations/unemployment.ts` 
 
 ```
 napontadolapis/
+├── .github/
+│   └── workflows/
+│       └── (removido update-prices.yml)
 ├── app/
-│   ├── layout.tsx
+│   ├── layout.tsx                        ← GA4 + AdSense global script tags
 │   ├── page.tsx
 │   ├── apostas/
 │   │   ├── page.tsx
-│   │   └── probabilidades/page.tsx
+│   │   └── probabilidades/page.tsx       ← Bold JSX tags para Bacen & SBVC
 │   ├── investimentos/
 │   │   ├── page.tsx
 │   │   ├── viver-de-renda/page.tsx
-│   │   └── amortizacao/page.tsx          ← Novo! Amortização SAC vs Price
+│   │   └── amortizacao/page.tsx
 │   ├── fumo/page.tsx
 │   ├── dividir/page.tsx
 │   ├── trabalho/
-│   │   ├── realidade-brasileira/page.tsx
+│   │   ├── realidade-brasileira/page.tsx  ← AdBanner integrado no final
 │   │   ├── seguro-desemprego/page.tsx
 │   │   └── rescisao/page.tsx
 │   ├── viagens/
 │   │   ├── page.tsx
 │   │   ├── planejar/page.tsx
-│   │   ├── custo-de-vida/page.tsx        ← Novo! Comparador de Custo de Vida
-│   │   └── [destino]/page.tsx            ← 21 páginas SSG
+│   │   ├── custo-de-vida/page.tsx        ← AdBanner integrado no final
+│   │   └── [destino]/page.tsx            ← 22 destinos (Curitiba integrada!)
 │   ├── sitemap.ts
 │   └── robots.ts
 ├── components/
-│   ├── Nav.tsx
+│   ├── Nav.tsx                           ← Intent delay (150ms) no hover
+│   ├── AdBanner.tsx                      ← Novo! Componente modular do AdSense
 │   ├── calculators/
 │   │   ├── BetsCalculator.tsx
 │   │   ├── OddsCalculator.tsx
@@ -294,15 +109,15 @@ napontadolapis/
 │   │   ├── SmokeCalculator.tsx
 │   │   ├── TravelCalculator.tsx
 │   │   ├── SplitBillCalculator.tsx
-│   │   ├── BrazilianRealidadeCalculator.tsx
+│   │   ├── BrazilianRealidadeCalculator.tsx ← Suporte a Polos Regionais + optgroups
 │   │   ├── UnemploymentCalculator.tsx
 │   │   ├── RescissionCalculator.tsx
 │   │   ├── IncomeCalculator.tsx
-│   │   ├── CostOfLivingCalculator.tsx    ← Novo! Custo de vida UI
-│   │   └── AmortizationCalculator.tsx    ← Novo! Amortização UI
+│   │   ├── CostOfLivingCalculator.tsx
+│   │   └── AmortizationCalculator.tsx
 │   ├── share/
-│   │   ├── ShareCard.tsx                ← Upgradado para Black Luminous Mode!
-│   │   └── TravelShareCard.tsx           ← Upgradado para Black Luminous Mode!
+│   │   ├── ShareCard.tsx
+│   │   └── TravelShareCard.tsx
 │   └── ui/
 │       ├── CalculatorCard.tsx
 │       ├── ResultHero.tsx
@@ -317,15 +132,10 @@ napontadolapis/
 │       └── SourcesFooter.tsx
 ├── config/
 │   ├── rates.ts
-│   ├── travel.ts
-│   ├── flight-prices.json
-│   ├── realidade.ts
-│   └── cities-cost.ts                    ← Novo! Banco de custos das cidades
-├── scripts/
-│   └── update-prices.mjs
-├── .github/
-│   └── workflows/
-│       └── update-prices.yml
+│   ├── travel.ts                         ← Curitiba adicionada como destino!
+│   ├── flight-prices.json                ← Curitiba baseline adicionado!
+│   ├── realidade.ts                      ← Cidades polos regionais + grupos cadastrados!
+│   └── cities-cost.ts
 ├── public/
 │   └── logo.png
 └── lib/
@@ -337,19 +147,8 @@ napontadolapis/
     │   ├── income.ts
     │   ├── rescission.ts
     │   ├── unemployment.ts
-    │   └── amortization.ts               ← Novo! Engine matemática de amortização
+    │   └── amortization.ts
     ├── formatters.ts
     ├── shareCard.ts
     └── contextualComments.ts
 ```
-
----
-
-## Decisões de arquitetura
-
-- **Vercel** — hospedagem (free tier, nativo Next.js)
-- **html2canvas** — share cards (carregado dinamicamente, não afeta bundle)
-- **Recharts** — gráfico de evolução da poupança
-- Todas calculadoras são **100% client-side** — sem APIs externas, sem custo de servidor
-- `params` em rotas dinâmicas como `Promise<>` (padrão Next.js 15+)
-- Preços de passagens em JSON separado para permitir atualização automática sem tocar TypeScript
