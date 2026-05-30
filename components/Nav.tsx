@@ -35,7 +35,41 @@ export function Nav() {
   const workRef = useRef<HTMLDivElement>(null)
   const habitsRef = useRef<HTMLDivElement>(null)
 
-  // Close dropdowns on click outside
+  const investmentsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const workTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const habitsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const openInvestments = () => {
+    if (investmentsTimeoutRef.current) clearTimeout(investmentsTimeoutRef.current)
+    setInvestmentsOpen(true)
+  }
+  const closeInvestments = () => {
+    investmentsTimeoutRef.current = setTimeout(() => {
+      setInvestmentsOpen(false)
+    }, 150)
+  }
+
+  const openWork = () => {
+    if (workTimeoutRef.current) clearTimeout(workTimeoutRef.current)
+    setWorkOpen(true)
+  }
+  const closeWork = () => {
+    workTimeoutRef.current = setTimeout(() => {
+      setWorkOpen(false)
+    }, 150)
+  }
+
+  const openHabits = () => {
+    if (habitsTimeoutRef.current) clearTimeout(habitsTimeoutRef.current)
+    setHabitsOpen(true)
+  }
+  const closeHabits = () => {
+    habitsTimeoutRef.current = setTimeout(() => {
+      setHabitsOpen(false)
+    }, 150)
+  }
+
+  // Close dropdowns on click outside and clean up timeouts
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (investmentsRef.current && !investmentsRef.current.contains(event.target as Node)) {
@@ -49,7 +83,12 @@ export function Nav() {
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      if (investmentsTimeoutRef.current) clearTimeout(investmentsTimeoutRef.current)
+      if (workTimeoutRef.current) clearTimeout(workTimeoutRef.current)
+      if (habitsTimeoutRef.current) clearTimeout(habitsTimeoutRef.current)
+    }
   }, [])
 
   return (
@@ -73,8 +112,8 @@ export function Nav() {
           <div 
             ref={investmentsRef} 
             className="relative"
-            onMouseEnter={() => setInvestmentsOpen(true)}
-            onMouseLeave={() => setInvestmentsOpen(false)}
+            onMouseEnter={openInvestments}
+            onMouseLeave={closeInvestments}
           >
             <button
               onClick={() => setInvestmentsOpen(!investmentsOpen)}
@@ -114,8 +153,8 @@ export function Nav() {
           <div 
             ref={workRef} 
             className="relative"
-            onMouseEnter={() => setWorkOpen(true)}
-            onMouseLeave={() => setWorkOpen(false)}
+            onMouseEnter={openWork}
+            onMouseLeave={closeWork}
           >
             <button
               onClick={() => setWorkOpen(!workOpen)}
@@ -155,8 +194,8 @@ export function Nav() {
           <div 
             ref={habitsRef} 
             className="relative"
-            onMouseEnter={() => setHabitsOpen(true)}
-            onMouseLeave={() => setHabitsOpen(false)}
+            onMouseEnter={openHabits}
+            onMouseLeave={closeHabits}
           >
             <button
               onClick={() => setHabitsOpen(!habitsOpen)}
