@@ -1,4 +1,10 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover', // permite safe-area-inset-* no iOS
+}
 import Image from 'next/image'
 import Link from 'next/link'
 import Script from 'next/script'
