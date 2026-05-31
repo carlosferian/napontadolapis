@@ -10,7 +10,7 @@ import { ShareButtons } from '@/components/ui/ShareButtons'
 import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { SectionDivider } from '@/components/ui/SectionDivider'
-import { compoundMonthly } from '@/lib/calculations/compound'
+import { compoundMonthly, deflateToToday } from '@/lib/calculations/compound'
 import { formatBRL } from '@/lib/formatters'
 import { comments } from '@/lib/contextualComments'
 import { RATES } from '@/config/rates'
@@ -41,8 +41,12 @@ export function SmokeCalculator() {
 
   const cost10y = annualCost * 10
   const cost30y = annualCost * 30
-  const invested10y = compoundMonthly(monthlyCost, 10, RATES.selic)
-  const invested30y = compoundMonthly(monthlyCost, 30, RATES.selic)
+  const invested10y     = compoundMonthly(monthlyCost, 10, RATES.selic)
+  const invested30y     = compoundMonthly(monthlyCost, 30, RATES.selic)
+  // Valores reais: deflacionados pelo IPCA de 5% a.a. (meta histórica do BCB)
+  const IPCA            = 0.05
+  const realInvested10y = deflateToToday(invested10y, 10, IPCA)
+  const realInvested30y = deflateToToday(invested30y, 30, IPCA)
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:items-start">
@@ -138,11 +142,22 @@ export function SmokeCalculator() {
 
         <MetricGrid
           metrics={[
-            { label: 'Após 10 anos', value: formatBRL(invested10y), sublabel: 'investindo o mesmo valor', colorClass: 'text-emerald-600' },
-            { label: 'Após 30 anos', value: formatBRL(invested30y), sublabel: 'juros compostos', colorClass: 'text-emerald-600' },
-            { label: 'Diferença (30a)', value: formatBRL(invested30y - cost30y), sublabel: 'a favor do investimento', colorClass: 'text-amber-500' },
+            { label: 'Após 10 anos (nominal)', value: formatBRL(invested10y), sublabel: 'investindo o mesmo valor', colorClass: 'text-emerald-600' },
+            { label: 'Após 10 anos (real)', value: formatBRL(realInvested10y), sublabel: 'poder de compra de hoje', colorClass: 'text-emerald-700' },
+            { label: 'Após 30 anos (nominal)', value: formatBRL(invested30y), sublabel: 'juros compostos + inflação', colorClass: 'text-emerald-600' },
           ]}
         />
+
+        {/* Alerta sobre inflação nas projeções longas */}
+        <div className="rounded-xl border p-3.5 text-xs leading-relaxed" style={{ background: 'var(--c-copper-soft)', borderColor: 'var(--c-copper-soft)' }}>
+          <p className="font-bold mb-1" style={{ color: 'var(--c-copper)' }}>💡 Sobre os valores em 30 anos</p>
+          <p style={{ color: 'var(--c-muted)' }}>
+            {formatBRL(invested30y)} é o valor <strong>nominal</strong> — o que aparece no extrato.
+            Em poder de compra de hoje (IPCA 5% a.a.), isso equivale a{' '}
+            <strong style={{ color: 'var(--c-copper)' }}>{formatBRL(realInvested30y)}</strong>.
+            Ainda assim, é muito mais do que os {formatBRL(cost30y)} queimados em fumo.
+          </p>
+        </div>
 
         <ComparisonList monthlyAmount={monthlyCost} comparisons={comparisons} title="Com esse valor mensal você pagaria" />
 

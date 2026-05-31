@@ -9,6 +9,7 @@ import { formatBRL, formatBRLDecimal, formatPct } from '@/lib/formatters'
 import {
   AreaChart,
   Area,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -24,6 +25,7 @@ interface EvolutionPoint {
   interest: number
   cumulativeInterest: number
   total: number
+  realTotal: number  // deflacionado pelo IPCA acumulado
 }
 
 interface CustomTooltipProps {
@@ -67,6 +69,7 @@ export function CompoundInterestCalculator() {
   const [interestType, setInterestType] = useState<'annual' | 'monthly'>('annual')
   const [period, setPeriod] = useState(0)
   const [periodType, setPeriodType] = useState<'years' | 'months'>('years')
+  const [inflation, setInflation] = useState(5) // IPCA %
 
   // UI states
   const [tableType, setTableType] = useState<'yearly' | 'monthly'>('yearly')
@@ -75,7 +78,8 @@ export function CompoundInterestCalculator() {
   // Calculations
   const results = useMemo(() => {
     const totalMonths = periodType === 'years' ? period * 12 : period
-    
+    const inflationMonthly = Math.pow(1 + inflation / 100, 1 / 12) - 1
+
     // Effective monthly interest rate
     let r = 0
     if (interestType === 'monthly') {
@@ -93,12 +97,9 @@ export function CompoundInterestCalculator() {
     
     // Month 0 (Starting point)
     evolution.push({
-      period: 0,
-      label: 'Início',
-      invested: initialInvestment,
-      interest: 0,
-      cumulativeInterest: 0,
-      total: initialInvestment
+      period: 0, label: 'Início',
+      invested: initialInvestment, interest: 0, cumulativeInterest: 0,
+      total: initialInvestment, realTotal: initialInvestment,
     })
 
     for (let m = 1; m <= totalMonths; m++) {
@@ -106,52 +107,47 @@ export function CompoundInterestCalculator() {
       balance = balance + interestForMonth + monthlyContribution
       totalInvested += monthlyContribution
       cumulativeInterest += interestForMonth
-      
+      // Deflacionar pelo IPCA acumulado até este mês
+      const inflationFactor = Math.pow(1 + inflationMonthly, m)
       evolution.push({
-        period: m,
-        label: `Mês ${m}`,
-        invested: totalInvested,
-        interest: interestForMonth,
-        cumulativeInterest: cumulativeInterest,
-        total: balance
+        period: m, label: `Mês ${m}`,
+        invested: totalInvested, interest: interestForMonth,
+        cumulativeInterest, total: balance,
+        realTotal: balance / inflationFactor,
       })
     }
 
     // Yearly evolution (consolidate every 12 months)
     const yearlyEvolution: EvolutionPoint[] = []
     yearlyEvolution.push({
-      period: 0,
-      label: 'Início',
-      invested: initialInvestment,
-      interest: 0,
-      cumulativeInterest: 0,
-      total: initialInvestment
+      period: 0, label: 'Início',
+      invested: initialInvestment, interest: 0, cumulativeInterest: 0,
+      total: initialInvestment, realTotal: initialInvestment,
     })
 
     for (let i = 12; i <= totalMonths; i += 12) {
       const point = evolution[i]
       yearlyEvolution.push({
-        period: i / 12,
-        label: `Ano ${i / 12}`,
+        period: i / 12, label: `Ano ${i / 12}`,
         invested: point.invested,
         interest: evolution.slice(i - 11, i + 1).reduce((sum, p) => sum + p.interest, 0),
         cumulativeInterest: point.cumulativeInterest,
-        total: point.total
+        total: point.total,
+        realTotal: point.realTotal,
       })
     }
 
-    // Handle partial final year if period type is monthly and not multiple of 12
     if (totalMonths % 12 !== 0) {
       const finalPoint = evolution[totalMonths]
       const years = Math.ceil(totalMonths / 12)
       const prevPivot = Math.floor(totalMonths / 12) * 12
       yearlyEvolution.push({
-        period: years,
-        label: `${years}º Ano (parcial)`,
+        period: years, label: `${years}º Ano (parcial)`,
         invested: finalPoint.invested,
         interest: evolution.slice(prevPivot + 1, totalMonths + 1).reduce((sum, p) => sum + p.interest, 0),
         cumulativeInterest: finalPoint.cumulativeInterest,
-        total: finalPoint.total
+        total: finalPoint.total,
+        realTotal: finalPoint.realTotal,
       })
     }
 
@@ -159,20 +155,20 @@ export function CompoundInterestCalculator() {
       totalAccumulated: balance,
       totalInvested: totalInvested,
       totalInterest: cumulativeInterest,
+      realTotalAccumulated: evolution[evolution.length - 1]?.realTotal ?? balance,
       evolution,
       yearlyEvolution,
       totalMonths,
     }
-  }, [initialInvestment, monthlyContribution, interestRate, interestType, period, periodType])
+  }, [initialInvestment, monthlyContribution, interestRate, interestType, period, periodType, inflation])
 
   const chartData = useMemo(() => {
-    // If period is large, show yearly points to keep chart performant and crisp
     const rawData = results.totalMonths > 36 ? results.yearlyEvolution : results.evolution
-    
     return rawData.map(p => ({
       label: p.label,
-      'Valor Investido': p.invested,
+      'Valor Investido':  p.invested,
       'Juros Acumulados': p.cumulativeInterest,
+      'Valor Real':       Math.round(p.realTotal),
     }))
   }, [results])
 
@@ -482,6 +478,49 @@ export function CompoundInterestCalculator() {
               <span>{periodType === 'years' ? '40 anos' : '360 meses'}</span>
             </div>
           </div>
+
+          {/* 5. Inflação — novo campo crítico */}
+          <div className="space-y-2.5 pt-2 border-t-2 border-dashed" style={{ borderColor: 'var(--c-copper-soft)' }}>
+            <div className="flex justify-between items-center">
+              <label htmlFor="inflation-rate" className="text-base font-semibold" style={{ color: 'var(--c-copper)' }}>
+                Inflação Anual (IPCA)
+              </label>
+              <div className="relative w-28">
+                <input
+                  id="inflation-rate"
+                  type="number"
+                  min={0}
+                  max={20}
+                  step={0.5}
+                  value={inflation === 0 ? '' : inflation}
+                  placeholder="0,00"
+                  onChange={e => setInflation(Math.max(0, Math.min(20, Number(e.target.value) || 0)))}
+                  className="w-full text-right border rounded-xl pr-7 pl-3 py-2 text-base font-bold focus:outline-none focus:ring-2 tabular-nums bg-transparent"
+                  style={{ color: 'var(--c-copper)', borderColor: 'var(--c-copper-soft)' }}
+                />
+                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-semibold" style={{ color: 'var(--c-copper)' }}>%</span>
+              </div>
+            </div>
+            <input
+              type="range" min={0} max={15} step={0.5}
+              value={inflation}
+              onChange={e => setInflation(Number(e.target.value))}
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+              style={{ backgroundColor: 'var(--c-line)', accentColor: 'var(--c-copper)' } as React.CSSProperties}
+            />
+            <div className="flex justify-between text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
+              <span>0%</span><span>15% a.a.</span>
+            </div>
+            {/* Taxa real calculada */}
+            <div className="flex items-center justify-between rounded-lg px-3 py-2 text-xs" style={{ background: 'var(--c-copper-soft)' }}>
+              <span style={{ color: 'var(--c-copper)' }}>
+                Valor real em {periodType === 'years' ? `${period} anos` : `${period} meses`}:
+              </span>
+              <span className="font-black text-sm" style={{ color: results.realTotalAccumulated > results.totalInvested ? 'var(--c-emerald)' : '#dc2626' }}>
+                {formatBRL(results.realTotalAccumulated)}
+              </span>
+            </div>
+          </div>
         </CalculatorCard>
 
         {/* Clear buttons */}
@@ -608,9 +647,47 @@ export function CompoundInterestCalculator() {
                 fill="url(#colorInterest)"
                 strokeWidth={2}
               />
+              {/* Linha de valor real — a verdade corrigida pela inflação */}
+              {inflation > 0 && (
+                <Line
+                  type="monotone"
+                  dataKey="Valor Real"
+                  stroke="#f59e0b"
+                  strokeWidth={2}
+                  strokeDasharray="5 3"
+                  dot={false}
+                  name="Valor Real (hoje)"
+                />
+              )}
             </AreaChart>
           </ResponsiveContainer>
-          
+
+          {/* Legenda das linhas */}
+          {inflation > 0 && (
+            <div className="flex gap-4 text-[10px] font-semibold flex-wrap" style={{ color: 'var(--c-muted)' }}>
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block w-4 h-2 rounded" style={{ background: '#10b981' }} /> Nominal (extrato)
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block w-4 border-t-2 border-dashed" style={{ borderColor: '#f59e0b' }} /> Real (poder de compra de hoje)
+              </span>
+            </div>
+          )}
+
+          {/* Alerta de erosão inflacionária */}
+          {inflation > 0 && results.totalMonths > 0 && results.realTotalAccumulated > 0 && (
+            <div className="rounded-xl px-4 py-3 text-xs leading-relaxed" style={{ background: 'var(--c-copper-soft)' }}>
+              <p className="font-bold mb-1" style={{ color: 'var(--c-copper)' }}>
+                💡 Inflação de {inflation}% a.a. corrói {formatPct(100 - (results.realTotalAccumulated / results.totalAccumulated) * 100)} do valor nominal
+              </p>
+              <p style={{ color: 'var(--c-muted)' }}>
+                Nominal: <strong style={{ color: 'var(--c-ink)' }}>{formatBRL(results.totalAccumulated)}</strong>
+                {' '}→ Real (poder de compra hoje): <strong style={{ color: 'var(--c-copper)' }}>{formatBRL(results.realTotalAccumulated)}</strong>.
+                A linha tracejada âmbar mostra o quanto seu dinheiro vale de verdade ao longo do tempo.
+              </p>
+            </div>
+          )}
+
           {results.totalInterest > results.totalInvested && (
             <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 rounded-xl px-4 py-2.5 text-xs text-emerald-800 dark:text-emerald-300">
               💡 <strong>Efeito Bola de Neve!</strong> A partir deste período, os rendimentos em juros são maiores do que o capital total que você tirou do próprio bolso.
