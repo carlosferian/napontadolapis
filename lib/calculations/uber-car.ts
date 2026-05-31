@@ -115,7 +115,6 @@ export function calculateUberVsCar(
   // Electric car adjustments
   if (ft === 'eletrico') {
     maintKm = maintKm * 0.60
-    fuelEff = 1
   }
 
   // Fuel cost per km
@@ -189,8 +188,8 @@ export function calculateUberVsCar(
   const fixedCar      = depreciation + ipvaMonthly + insuranceMo + parking + washing + licensingMo + opportunity + financing
   const varCarPerKm   = fuelPricePerKm + maintKm + toll
   const avgTripDist   = extra.avgDistanceKm > 0 ? extra.avgDistanceKm : 8
-  const effectiveUPKm = uberPricePerKm + (uberBaseFare / avgTripDist)
-  const tpFixed       = commuteTP
+  const effectiveUPKm = extra.uberPricePerKm + (extra.uberBaseFare / avgTripDist)
+  const tpFixed       = commuteTP + commuteUber
 
   const breakEvenKm = effectiveUPKm > varCarPerKm
     ? Math.max(0, (fixedCar - tpFixed) / (effectiveUPKm - varCarPerKm))
@@ -211,17 +210,19 @@ export function calculateUberVsCar(
   let currentVal    = carValue
 
   for (let year = 1; year <= 5; year++) {
-    const annualDepr = currentVal * deprPct / 100
-    currentVal      -= annualDepr
+    const startVal    = currentVal
+    const yearDeprPct = year === 1 ? deprPct : deprPctBase
+    const annualDepr  = startVal * yearDeprPct / 100
+    currentVal        = startVal - annualDepr
 
     const yearCar =
       annualDepr +
-      currentVal * ipvaPct / 100 +
+      startVal * ipvaPct / 100 +
       insurance +
       FIXED_CAR_DEFAULTS.licensingAnnual +
       (parking + washing) * 12 +
       kmPerMonth * 12 * (fuelPricePerKm + maintKm + toll) +
-      currentVal * selicAnnual +
+      startVal * selicAnnual +
       financing * 12
 
     totalCar5y += yearCar
