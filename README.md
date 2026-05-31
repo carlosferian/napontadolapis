@@ -8,7 +8,7 @@ Plataforma de calculadoras financeiras minimalistas de alta utilidade e educaç�
 - **Correção Inflacionária Real**: Todas as calculadoras financeiras de longo prazo (Viver de Renda, Juros Compostos, Custo do Fumo) usam **taxa real = Selic − IPCA** para projeções honestas.
 - **Tabela IRPF 2026 Atualizada**: Calculadora de Viver de Renda inclui o IR progressivo com a **Lei dos 5 Mil (Lei 15.270/2025)** — isenção total até R$5.000, redutor parcial até R$7.350.
 - **Taxas Automáticas via BCB**: Selic, CDI, IPCA e câmbio são buscados diariamente pela API oficial do Banco Central via GitHub Actions (`npm run update-rates`).
-- **UX Premium**: Inputs numéricos formatados em pt-BR com 2 casas decimais, sliders sincronizados, dark/light mode, totalmente responsivo.
+- **UX Premium**: Inputs numéricos formatados em pt-BR com 2 casas decimais, sliders sincronizados, dark/light mode, responsividade mobile avançada com gerenciamento inteligente de espaço de tela (instruções colapsáveis) e botões de compartilhamento rápido.
 - **Privacidade by Design**: Nenhum dado financeiro sai do navegador. Calculadoras rodam 100% client-side.
 
 ## 🛠️ Stack Tecnológica

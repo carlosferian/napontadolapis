@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/dividir`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
     { url: `${base}/trabalho/realidade-brasileira`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
     { url: `${base}/trabalho/rescisao`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${base}/trabalho/seguro-desemplego`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
+    { url: `${base}/trabalho/seguro-desemprego`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/viagens`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/viagens/custo-de-vida`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/viagens/milhas-ou-dinheiro`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },

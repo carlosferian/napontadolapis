@@ -96,30 +96,22 @@ export function BetsRupture({ rounds, onReveal, onRestart }: BetsRuptureProps) {
   // Step 4: SPLIT SCREEN FINAL
   return (
     <div
-      className="rounded-[32px] border-2 overflow-hidden"
+      className="rounded-2xl sm:rounded-[32px] border-2 overflow-hidden flex flex-col sm:grid sm:grid-cols-[40%_4px_1fr]"
       style={{
         borderColor: '#dc2626',
-        display: 'grid',
-        gridTemplateColumns: '42% 4px 1fr',
         minHeight: 360,
       }}
     >
       {/* LADO ESQUERDO — cassino morto */}
       <div
+        className="py-6 px-4 sm:py-7 sm:px-5 flex flex-col items-center justify-center gap-2.5 shrink-0 relative animate-pulse"
         style={{
           background: '#0d0000',
           backgroundImage: 'radial-gradient(ellipse at 50% 50%, rgba(80,0,0,0.4) 0%, transparent 70%)',
-          padding: '28px 20px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 10,
           filter: 'grayscale(0.65)',
-          position: 'relative',
-          alignItems: 'center',
-          justifyContent: 'center',
         }}
       >
-        <svg className="absolute top-0 right-0 pointer-events-none" width="80" height="100%" viewBox="0 0 80 360" preserveAspectRatio="none" style={{ opacity: 0.55 }}>
+        <svg className="absolute top-0 right-0 pointer-events-none hidden sm:block" width="80" height="100%" viewBox="0 0 80 360" preserveAspectRatio="none" style={{ opacity: 0.55 }}>
           <path d="M80,0 L55,50 L68,110 L42,105 L58,200 L30,192 L44,310 L18,360" stroke="#dc2626" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
         </svg>
         <div style={{ fontSize: 28, filter: 'brightness(0.4)' }}>💀</div>
@@ -134,9 +126,10 @@ export function BetsRupture({ rounds, onReveal, onRestart }: BetsRuptureProps) {
 
       {/* RAIO CENTRAL */}
       <div
+        className="w-full h-1 sm:w-auto sm:h-full"
         style={{
-          background: 'linear-gradient(to bottom, rgba(255,255,255,0.9), #ef4444 20%, #dc2626 70%, #991b1b)',
-          boxShadow: '0 0 16px rgba(220,38,38,0.5), -4px 0 20px rgba(220,38,38,0.3), 4px 0 20px rgba(220,38,38,0.3)',
+          background: 'linear-gradient(to right, rgba(255,255,255,0.9), #ef4444 20%, #dc2626 70%, #991b1b)',
+          boxShadow: '0 0 16px rgba(220,38,38,0.5)',
           position: 'relative',
           zIndex: 10,
         }}
@@ -144,31 +137,22 @@ export function BetsRupture({ rounds, onReveal, onRestart }: BetsRuptureProps) {
 
       {/* LADO DIREITO — revelação */}
       <div
+        className="py-8 px-5 sm:py-8 sm:px-6 flex flex-col justify-center items-center text-center gap-3"
         style={{
           background: '#f8f7f5',
-          padding: '32px 24px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-          gap: 12,
           animation: 'slide-in-right 0.5s ease-out both',
         }}
       >
         <div style={{ animation: 'fade-up 0.4s 0.15s both' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6, justifyContent: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6, justifySelf: 'center' }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#059669', boxShadow: '0 0 6px #059669' }}/>
             <span style={{ fontSize: 8, fontWeight: 800, color: '#059669', letterSpacing: 3, textTransform: 'uppercase' }}>A REALIDADE</span>
           </div>
           <h2
+            className="text-stone-900 font-black leading-tight text-2xl sm:text-3xl"
             style={{
-              fontSize: 26,
-              fontWeight: 900,
-              color: '#111827',
-              lineHeight: 1.15,
               fontFamily: "'Cormorant Garamond', serif",
-              marginBottom: 8,
+              margin: '6px 0 8px',
             }}
           >
             A ilusão<br/>acabou.
@@ -176,13 +160,13 @@ export function BetsRupture({ rounds, onReveal, onRestart }: BetsRuptureProps) {
           <p style={{ fontSize: 13, color: '#dc2626', fontWeight: 700, marginBottom: 10 }}>
             R$ 200 perdidos em {rounds} cliques.
           </p>
-          <p style={{ fontSize: 11, color: '#6b7280', lineHeight: 1.6, maxWidth: 180 }}>
+          <p style={{ fontSize: 11, color: '#6b7280', lineHeight: 1.6, maxWidth: 220 }}>
             É assim que funciona toda vez.<br/>
             A matemática é implacável.
           </p>
         </div>
 
-        <div style={{ animation: 'fade-up 0.4s 0.45s both', marginTop: 4, display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+        <div style={{ animation: 'fade-up 0.4s 0.45s both', marginTop: 4, display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center', width: '100%' }}>
           <button
             onClick={onReveal}
             style={{
@@ -197,7 +181,10 @@ export function BetsRupture({ rounds, onReveal, onRestart }: BetsRuptureProps) {
               letterSpacing: 1,
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: 6,
+              width: '100%',
+              maxWidth: 220,
             }}
           >
             Ver a verdade completa →

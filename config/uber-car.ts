@@ -69,9 +69,9 @@ export const FUEL_PRICES: Record<FuelType, number> = {
 }
 
 export const UBER_DEFAULTS = {
-  pricePerKm:       2.00,
-  baseFare:         3.00,
-  tpTicketDefault:  4.40,
+  pricePerKm:       2.40,
+  baseFare:         6.00,
+  tpTicketDefault:  5.00,
 }
 
 export const FIXED_CAR_DEFAULTS = {

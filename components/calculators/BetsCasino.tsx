@@ -252,6 +252,7 @@ export function BetsCasino({ onBankrupt, onLuckyWin }: BetsCasinoProps) {
   const [decayBase, setDecayBase]           = useState(0)
   const [totalIn, setTotalIn]               = useState(0)
   const [usedCreditIds, setUsedCreditIds]   = useState<string[]>([])
+  const [showExtraDeposit, setShowExtraDeposit] = useState(false)
 
   // Decay: 0 (pristine) → 100 (colapso). Guarda contra decayBase=0 (antes do 1º depósito)
   const decay = useMemo(
@@ -477,48 +478,52 @@ export function BetsCasino({ onBankrupt, onLuckyWin }: BetsCasinoProps) {
 
         {/* Seletor de modalidades */}
         {/* Mobile: 4 chips em linha. Desktop: grid 2x2 com info completa */}
-        <div className="grid grid-cols-4 sm:grid-cols-2 gap-1.5 sm:gap-2">
-          {MODALITIES.map(m => (
-            <button
-              key={m.id}
-              onClick={() => !isRolling && setModality(m.id)}
-              disabled={isRolling || bankrupt}
-              className="flex flex-col items-center sm:items-start p-1.5 sm:p-2.5 sm:rounded-2xl rounded-xl border transition-all cursor-pointer disabled:opacity-40 text-center sm:text-left"
-              style={modality === m.id
-                ? { background: `${cfg.border}18`, borderColor: cfg.border, color: 'white' }
-                : { background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.07)', color: '#6b7280' }
-              }
-            >
-              <span className="text-xl sm:text-2xl lg:text-4xl block leading-none mb-0.5">{m.emoji}</span>
-              <span className="text-[8px] sm:text-[10px] font-extrabold block truncate w-full leading-tight">{m.name}</span>
-              <span className="hidden sm:block text-[9px] mt-0.5" style={{ color: cfg.border }}>{m.edge}</span>
-            </button>
-          ))}
-        </div>
+        {balance > 0 && (
+          <div className="grid grid-cols-4 sm:grid-cols-2 gap-1.5 sm:gap-2">
+            {MODALITIES.map(m => (
+              <button
+                key={m.id}
+                onClick={() => !isRolling && setModality(m.id)}
+                disabled={isRolling || bankrupt}
+                className="flex flex-col items-center sm:items-start p-1.5 sm:p-2.5 sm:rounded-2xl rounded-xl border transition-all cursor-pointer disabled:opacity-40 text-center sm:text-left"
+                style={modality === m.id
+                  ? { background: `${cfg.border}18`, borderColor: cfg.border, color: 'white' }
+                  : { background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.07)', color: '#6b7280' }
+                }
+              >
+                <span className="text-xl sm:text-2xl lg:text-4xl block leading-none mb-0.5">{m.emoji}</span>
+                <span className="text-[8px] sm:text-[10px] font-extrabold block truncate w-full leading-tight">{m.name}</span>
+                <span className="hidden sm:block text-[9px] mt-0.5" style={{ color: cfg.border }}>{m.edge}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Slots */}
-        <div className="flex gap-2 sm:gap-3 justify-center">
-          {[0, 1, 2].map(i => {
-            const overrideEmoji = cfg.slotEmojis[i]
-            const displayEmoji  = overrideEmoji ?? slotBase[i]
-            return (
-              <div
-                key={i}
-                className="w-14 h-16 sm:w-16 sm:h-20 rounded-xl border-2 flex items-center justify-center text-2xl sm:text-3xl"
-                style={{
-                  background:   `linear-gradient(160deg, ${cfg.containerBg}, rgba(0,0,0,0.4))`,
-                  borderColor:  cfg.slotBorders[i],
-                  boxShadow:    cfg.slotGlows[i] !== 'none' ? `0 0 12px ${cfg.slotGlows[i]}` : 'none',
-                  filter:       `grayscale(${cfg.grayscale}) brightness(${stage === 4 ? 0.35 : 1})`,
-                  animation:    isRolling ? 'casino-flicker-fast 0.12s infinite' : undefined,
-                  transition:   'filter 1s ease, border-color 1s ease',
-                }}
-              >
-                {isRolling ? rollingEmoji : displayEmoji}
-              </div>
-            )
-          })}
-        </div>
+        {balance > 0 && (
+          <div className="flex gap-2 sm:gap-3 justify-center">
+            {[0, 1, 2].map(i => {
+              const overrideEmoji = cfg.slotEmojis[i]
+              const displayEmoji  = overrideEmoji ?? slotBase[i]
+              return (
+                <div
+                  key={i}
+                  className="w-12 h-14 sm:w-16 sm:h-20 rounded-xl border-2 flex items-center justify-center text-2xl sm:text-3xl"
+                  style={{
+                    background:   `linear-gradient(160deg, ${cfg.containerBg}, rgba(0,0,0,0.4))`,
+                    borderColor:  cfg.slotBorders[i],
+                    boxShadow:    cfg.slotGlows[i] !== 'none' ? `0 0 12px ${cfg.slotGlows[i]}` : 'none',
+                    filter:       `grayscale(${cfg.grayscale}) brightness(${stage === 4 ? 0.35 : 1})`,
+                    animation:    isRolling ? 'casino-flicker-fast 0.12s infinite' : undefined,
+                    transition:   'filter 1s ease, border-color 1s ease',
+                  }}
+                >
+                  {isRolling ? rollingEmoji : displayEmoji}
+                </div>
+              )
+            })}
+          </div>
+        )}
 
         {/* Estado dormant: convite para depositar o primeiro bem */}
         {balance === 0 && !bankrupt && (
@@ -639,43 +644,84 @@ export function BetsCasino({ onBankrupt, onLuckyWin }: BetsCasinoProps) {
 
         {/* Depositar / Entrar com créditos */}
         {!bankrupt && (
-          <div className="space-y-2 border-t pt-3" style={{ borderColor: balance === 0 ? 'rgba(224,179,90,0.15)' : 'rgba(255,255,255,0.06)' }}>
-            <div className="flex justify-between items-center">
-              <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: balance === 0 ? 'rgba(224,179,90,0.6)' : '#57534e' }}>
-                {balance === 0
-                  ? `Seus bens (escolha um para entrar):`
-                  : `Jogar mais bens (${CREDIT_ITEMS.length - usedCreditIds.length} restantes):`
-                }
-              </span>
-              {totalIn > 0 && (
-                <span className="text-[9px] font-extrabold" style={{ color: 'rgba(245,158,11,0.7)' }}>
-                  {formatBRL(totalIn)} em jogo
-                </span>
-              )}
-            </div>
-            <div className="grid grid-cols-3 gap-1 sm:gap-1.5">
-              {CREDIT_ITEMS.map(item => {
-                const used = usedCreditIds.includes(item.id)
-                return (
-                <button
-                  key={item.id}
-                  onClick={() => !used && handleAddCredit(item)}
-                  disabled={isRolling || used}
-                  className="flex flex-col items-center gap-0.5 px-1 py-2 sm:py-2.5 rounded-xl border transition-all text-center"
-                  style={used
-                    ? { background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.06)', cursor: 'default', opacity: 0.35 }
-                    : { background: 'rgba(245,158,11,0.06)', borderColor: 'rgba(245,158,11,0.2)', cursor: 'pointer' }
-                  }
-                >
-                  <span className="text-xl sm:text-2xl leading-none">{used ? '✓' : item.emoji}</span>
-                  <div className="min-w-0 w-full px-0.5">
-                    <div className="text-[8px] sm:text-[9px] font-extrabold truncate leading-tight" style={{ color: used ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.7)' }}>{item.name}</div>
-                    <div className="text-[10px] font-black" style={{ color: used ? 'rgba(255,255,255,0.2)' : '#fbbf24' }}>{formatBRL(item.value)}</div>
+          <div className="space-y-2 border-t pt-3.5" style={{ borderColor: balance === 0 ? 'rgba(224,179,90,0.15)' : 'rgba(255,255,255,0.06)' }}>
+            {balance > 0 ? (
+              <>
+                <div className="flex justify-between items-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowExtraDeposit(v => !v)}
+                    className="text-[9px] font-bold uppercase tracking-wider cursor-pointer hover:opacity-75 transition-opacity"
+                    style={{ color: 'rgba(245,158,11,0.8)' }}
+                  >
+                    {showExtraDeposit ? '▲ Ocultar depósito de bens' : '▼ Depositar outro bem em jogo...'}
+                  </button>
+                  {totalIn > 0 && (
+                    <span className="text-[9px] font-extrabold" style={{ color: 'rgba(245,158,11,0.7)' }}>
+                      {formatBRL(totalIn)} total
+                    </span>
+                  )}
+                </div>
+                
+                {showExtraDeposit && (
+                  <div className="grid grid-cols-3 gap-1 mt-2">
+                    {CREDIT_ITEMS.map(item => {
+                      const used = usedCreditIds.includes(item.id)
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => !used && handleAddCredit(item)}
+                          disabled={isRolling || used}
+                          className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-xl border transition-all text-center"
+                          style={used
+                            ? { background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.06)', cursor: 'default', opacity: 0.35 }
+                            : { background: 'rgba(245,158,11,0.06)', borderColor: 'rgba(245,158,11,0.2)', cursor: 'pointer' }
+                          }
+                        >
+                          <span className="text-lg leading-none">{used ? '✓' : item.emoji}</span>
+                          <div className="min-w-0 w-full px-0.5">
+                            <div className="text-[8px] font-extrabold truncate leading-tight" style={{ color: used ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.7)' }}>{item.name}</div>
+                            <div className="text-[9px] font-black" style={{ color: used ? 'rgba(255,255,255,0.2)' : '#fbbf24' }}>{formatBRL(item.value)}</div>
+                          </div>
+                        </button>
+                      )
+                    })}
                   </div>
-                </button>
-                )
-              })}
-            </div>
+                )}
+              </>
+            ) : (
+              // Balance === 0: show full picker
+              <>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-amber-400">
+                    Seus bens (escolha um para penhorar e jogar):
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1 sm:gap-1.5">
+                  {CREDIT_ITEMS.map(item => {
+                    const used = usedCreditIds.includes(item.id)
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => !used && handleAddCredit(item)}
+                        disabled={isRolling || used}
+                        className="flex flex-col items-center gap-0.5 px-1 py-2 sm:py-2.5 rounded-xl border transition-all text-center"
+                        style={used
+                          ? { background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.06)', cursor: 'default', opacity: 0.35 }
+                          : { background: 'rgba(245,158,11,0.06)', borderColor: 'rgba(245,158,11,0.2)', cursor: 'pointer' }
+                        }
+                      >
+                        <span className="text-xl sm:text-2xl leading-none">{used ? '✓' : item.emoji}</span>
+                        <div className="min-w-0 w-full px-0.5">
+                          <div className="text-[8px] sm:text-[9px] font-extrabold truncate leading-tight" style={{ color: used ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.7)' }}>{item.name}</div>
+                          <div className="text-[10px] font-black" style={{ color: used ? 'rgba(255,255,255,0.2)' : '#fbbf24' }}>{formatBRL(item.value)}</div>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </>
+            )}
           </div>
         )}
 

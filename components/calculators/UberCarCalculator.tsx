@@ -75,7 +75,7 @@ export function UberCarCalculator() {
   const [customInsurance, setCustomInsurance] = useState<number | null>(null)
   const [customFuelEff, setCustomFuelEff] = useState<number | null>(null)
   const [customMaintKm, setCustomMaintKm] = useState<number | null>(null)
-  const [parkingMonthly, setParkingMonthly] = useState(0)
+  const [parkingMonthly, setParkingMonthly] = useState(250)
   const [washingMonthly, setWashingMonthly] = useState(100)
 
   // Financing
@@ -88,9 +88,9 @@ export function UberCarCalculator() {
   const [commuteDistKm, setCommuteDistKm] = useState(15)
   const [workDays, setWorkDays] = useState(22)
   const [commuteMode, setCommuteMode] = useState<CommuteMode>('mixed_tp_go_uber_back')
-  const [tpTicket, setTpTicket] = useState(4.40)
-  const [uberPricePerKm, setUberPricePerKm] = useState(2.00)
-  const [uberBaseFare, setUberBaseFare] = useState(3.00)
+  const [tpTicket, setTpTicket] = useState(5.00)
+  const [uberPricePerKm, setUberPricePerKm] = useState(2.40)
+  const [uberBaseFare, setUberBaseFare] = useState(6.00)
 
   // Extra trips
   const [extraTrips, setExtraTrips] = useState(8)
@@ -180,7 +180,7 @@ export function UberCarCalculator() {
     ? 'Custo equivalente (diferença < R$50)'
     : results.winner === 'car'
     ? 'Carro mais barato por mês'
-    : 'Uber+TP mais barato por mês'
+    : 'Uber + Transporte Público mais barato por mês'
   const heroColor = results.winner === 'tie'
     ? 'text-stone-500'
     : results.winner === 'car'
@@ -448,10 +448,10 @@ export function UberCarCalculator() {
               <label className="text-sm font-semibold" style={{ color: 'var(--c-muted)' }}>Modo de deslocamento</label>
               <div className="grid grid-cols-2 gap-1.5">
                 {([
-                  ['tp_only',               'So Transp. Publico'],
-                  ['uber_only',             'So Uber'],
-                  ['mixed_tp_go_uber_back', 'TP na ida, Uber na volta'],
-                  ['mixed_uber_go_tp_back', 'Uber na ida, TP na volta'],
+                  ['tp_only',               'Só Transporte Público (TP)'],
+                  ['uber_only',             'Só Uber'],
+                  ['mixed_tp_go_uber_back', 'Transp. Público na ida, Uber na volta'],
+                  ['mixed_uber_go_tp_back', 'Uber na ida, Transp. Público na volta'],
                 ] as [CommuteMode, string][]).map(([val, lbl]) => (
                   <button
                     key={val}
@@ -471,7 +471,7 @@ export function UberCarCalculator() {
 
             {tpInvolved && (
               <SliderRow
-                label="Tarifa do transporte publico (R$)"
+                label="Tarifa do Transporte Público (TP) (R$)"
                 value={tpTicket}
                 min={1} max={12} step={0.10}
                 onChange={setTpTicket}
@@ -539,8 +539,8 @@ export function UberCarCalculator() {
             results.winner === 'tie'
               ? 'As opções custam praticamente o mesmo.'
               : results.winner === 'car'
-              ? `Carro total: ${formatBRL(results.carMonthly.total)}/mês vs. Uber+TP: ${formatBRL(results.uberTpMonthly.total)}/mês`
-              : `Uber+TP total: ${formatBRL(results.uberTpMonthly.total)}/mês vs. Carro: ${formatBRL(results.carMonthly.total)}/mês`
+              ? `Carro total: ${formatBRL(results.carMonthly.total)}/mês vs. Uber + Transp. Público: ${formatBRL(results.uberTpMonthly.total)}/mês`
+              : `Uber + Transp. Público total: ${formatBRL(results.uberTpMonthly.total)}/mês vs. Carro: ${formatBRL(results.carMonthly.total)}/mês`
           }
           colorClass={heroColor}
         />
@@ -602,7 +602,7 @@ export function UberCarCalculator() {
             </p>
             <p className="text-xs" style={{ color: 'var(--c-muted)' }}>
               {breakEvenFinite
-                ? `Abaixo desse volume, Uber+TP é mais barato. Você roda ${kmPerMonth.toLocaleString('pt-BR')} km/mês.`
+                ? `Abaixo desse volume, Uber + Transporte Público é mais barato. Você roda ${kmPerMonth.toLocaleString('pt-BR')} km/mês.`
                 : 'Neste cenário, o carro é sempre mais econômico para qualquer volume de km.'}
             </p>
           </div>
@@ -619,7 +619,7 @@ export function UberCarCalculator() {
               <Tooltip
                 formatter={(v, name) => [
                   formatBRL(Number(v)),
-                  name === 'carCost' ? 'Carro' : 'Uber+TP',
+                  name === 'carCost' ? 'Carro' : 'Uber + Transp. Público',
                 ]}
                 labelFormatter={label => `${label} km/mês`}
                 contentStyle={{
@@ -652,7 +652,7 @@ export function UberCarCalculator() {
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-4 h-0.5 inline-block rounded" style={{ backgroundColor: '#10b981' }} />
-              <span style={{ color: '#10b981' }}>Uber + TP</span>
+              <span style={{ color: '#10b981' }}>Uber + Transp. Público</span>
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-4 h-0.5 inline-block rounded" style={{ backgroundColor: '#6366f1', borderTop: '2px dashed #6366f1', background: 'none' }} />
@@ -678,7 +678,7 @@ export function UberCarCalculator() {
             colorClass: 'text-amber-600 dark:text-amber-400',
           },
           {
-            label:      'Total — Uber+TP (5 anos)',
+            label:      'Total — Uber + Transp. Público (5 anos)',
             value:      formatBRL(results.fiveYear.totalUberTP),
             sublabel:   'corrigido pela inflacao anual',
             colorClass: 'text-emerald-600 dark:text-emerald-400',
@@ -702,7 +702,7 @@ export function UberCarCalculator() {
             <p>
               Aplicando {formatBRL(carValue)} na Selic a {(RATES.selic * 100).toFixed(1)}% a.a., você acumularia{' '}
               <strong>{formatBRL(results.fiveYear.selicGainTotal)}</strong> em juros nos proximos 5 anos —
-              suficiente para pagar {formatBRL(results.fiveYear.totalUberTP)} de Uber+TP
+              suficiente para pagar {formatBRL(results.fiveYear.totalUberTP)} de Uber + Transporte Público
               {results.fiveYear.selicGainTotal > results.fiveYear.totalUberTP
                 ? ' com sobra.'
                 : ' parcialmente.'}
@@ -730,12 +730,12 @@ export function UberCarCalculator() {
                   ? 'EMPATE'
                   : results.winner === 'car'
                   ? `CARRO -${formatBRL(diff)}`
-                  : `UBER+TP -${formatBRL(diff)}`
+                  : `UBER + TRANSP. PÚBLICO -${formatBRL(diff)}`
               }
               mainLabel={`por mês com ${kmPerMonth.toLocaleString('pt-BR')} km rodados`}
               metrics={[
                 { label: 'Custo carro/mês',  value: formatBRL(results.carMonthly.total) },
-                { label: 'Custo Uber+TP/mês', value: formatBRL(results.uberTpMonthly.total) },
+                { label: 'Custo Uber + Transp. Público/mês', value: formatBRL(results.uberTpMonthly.total) },
                 { label: 'Ponto de equilibrio', value: breakEvenFinite ? `${Math.round(results.breakEvenKm).toLocaleString('pt-BR')} km` : 'Uber sempre +' },
                 { label: 'Oportunidade 5a', value: formatBRL(results.fiveYear.selicGainTotal) },
               ]}

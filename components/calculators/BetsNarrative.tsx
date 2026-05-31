@@ -142,10 +142,10 @@ export function BetsNarrative({ onRestart }: { onRestart: () => void }) {
         </div>
       </div>
 
-      <div className="grid" style={{ gridTemplateColumns: '56px 1fr' }}>
+      <div className="flex flex-col sm:grid sm:grid-cols-[56px_1fr]">
 
-        {/* Sidebar de capítulos */}
-        <div className="flex flex-col items-center py-5 gap-1" style={{ background: '#111827' }}>
+        {/* Sidebar de capítulos (Horizontal no mobile, vertical no desktop) */}
+        <div className="flex flex-row sm:flex-col items-center justify-around sm:justify-start py-3 px-4 sm:py-5 sm:px-0 gap-1.5 shrink-0" style={{ background: '#111827' }}>
           {CHAPTER_META.map((m, i) => (
             <button
               key={i}
@@ -153,7 +153,7 @@ export function BetsNarrative({ onRestart }: { onRestart: () => void }) {
               title={m.label}
               className="w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm cursor-pointer transition-all"
               style={i === chapter
-                ? { background: `${m.color}22`, borderColor: m.color, transform: 'scale(1.15)', color: m.color }
+                ? { background: `${m.color}22`, borderColor: m.color, transform: 'scale(1.1)', color: m.color }
                 : { background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)', color: '#4b5563' }
               }
             >
@@ -167,7 +167,7 @@ export function BetsNarrative({ onRestart }: { onRestart: () => void }) {
 
           {/* ── CAPÍTULO 0: PSICOLOGIA ── */}
           {chapter === 0 && (
-            <div className="p-6 space-y-5">
+            <div className="p-4 sm:p-6 space-y-5">
               <div>
                 <span className="text-[9px] font-extrabold uppercase tracking-[3px]" style={{ color: '#ef4444' }}>Capítulo 1 · Psicologia</span>
                 <h2 className="text-2xl font-black text-stone-900 mt-1 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
@@ -222,7 +222,7 @@ export function BetsNarrative({ onRestart }: { onRestart: () => void }) {
 
           {/* ── CAPÍTULO 1: MATEMÁTICA ── */}
           {chapter === 1 && (
-            <div id="matematica" className="p-6 space-y-5">
+            <div id="matematica" className="p-4 sm:p-6 space-y-5">
               <div>
                 <span className="text-[9px] font-extrabold uppercase tracking-[3px]" style={{ color: '#6366f1' }}>Capítulo 2 · Matemática</span>
                 <h2 className="text-2xl font-black text-stone-900 mt-1 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
@@ -348,7 +348,7 @@ export function BetsNarrative({ onRestart }: { onRestart: () => void }) {
 
           {/* ── CAPÍTULO 2: CUSTO REAL ── */}
           {chapter === 2 && (
-            <div className="p-6 space-y-5">
+            <div className="p-4 sm:p-6 space-y-5">
               <div>
                 <span className="text-[9px] font-extrabold uppercase tracking-[3px]" style={{ color: '#f59e0b' }}>Capítulo 3 · Custo Real</span>
                 <h2 className="text-2xl font-black text-stone-900 mt-1 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
@@ -441,7 +441,7 @@ export function BetsNarrative({ onRestart }: { onRestart: () => void }) {
 
           {/* ── CAPÍTULO 3: BRASIL ── */}
           {chapter === 3 && (
-            <div className="p-6 space-y-5">
+            <div className="p-4 sm:p-6 space-y-5">
               <div>
                 <span className="text-[9px] font-extrabold uppercase tracking-[3px]" style={{ color: '#10b981' }}>Capítulo 4 · Impacto Nacional</span>
                 <h2 className="text-2xl font-black text-stone-900 mt-1 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
@@ -495,7 +495,7 @@ export function BetsNarrative({ onRestart }: { onRestart: () => void }) {
 
           {/* ── CAPÍTULO 4: SAÍDA ── */}
           {chapter === 4 && (
-            <div className="p-6 space-y-5">
+            <div className="p-4 sm:p-6 space-y-5">
               <div>
                 <span className="text-[9px] font-extrabold uppercase tracking-[3px]" style={{ color: '#059669' }}>Capítulo 5 · Saída</span>
                 <h2 className="text-2xl font-black text-stone-900 mt-1 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Trash2, Pencil } from 'lucide-react'
 import { formatBRLDecimal } from '@/lib/formatters'
 import { SectionDivider } from '@/components/ui/SectionDivider'
@@ -14,6 +14,7 @@ interface BillItem {
   id: number
   description: string
   price: number
+  quantity: number
   payers: number[] // empty = all people
 }
 
@@ -73,6 +74,32 @@ export function SplitBillCalculator() {
   const [editDesc, setEditDesc] = useState('')
   const [editPrice, setEditPrice] = useState('')
 
+  // Guide box & sharing states
+  const [guideOpen, setGuideOpen] = useState(false)
+  const [canShare, setCanShare] = useState(false)
+
+  useEffect(() => {
+    if (typeof navigator !== 'undefined' && !!navigator.share) {
+      setCanShare(true)
+    }
+  }, [])
+
+  const handleMouseEnter = () => {
+    if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
+      setGuideOpen(true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
+      setGuideOpen(false)
+    }
+  }
+
+  const handleToggle = () => {
+    setGuideOpen((prev) => !prev)
+  }
+
   // ── Derived ─────────────────────────────────────────────────────
 
   const allIds = people.map((p) => p.id)
@@ -91,7 +118,8 @@ export function SplitBillCalculator() {
     for (const item of items) {
       const payers = item.payers.length === 0 ? ids : item.payers.filter((id) => ids.includes(id))
       if (payers.length === 0) continue
-      const share = item.price / payers.length
+      const itemTotal = item.price * (item.quantity || 1)
+      const share = itemTotal / payers.length
       for (const pid of payers) {
         if (subs[pid] !== undefined) subs[pid] += share
       }
@@ -141,9 +169,15 @@ export function SplitBillCalculator() {
     const desc = newDesc.trim()
     const price = parseFloat(newPrice.replace(',', '.'))
     if (!desc || isNaN(price) || price <= 0) return
-    setItems((prev) => [...prev, { id: Date.now(), description: desc, price, payers: [] }])
+    setItems((prev) => [...prev, { id: Date.now(), description: desc, price, quantity: 1, payers: [] }])
     setNewDesc('')
     setNewPrice('')
+  }
+
+  function updateQuantity(id: number, quantity: number) {
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item))
+    )
   }
 
   function removeItem(id: number) {
@@ -181,10 +215,13 @@ export function SplitBillCalculator() {
     )
   }
 
-  function copyMarkdown() {
-    const lines: string[] = ['**Divisão de conta — A Ponta do Lápis**', '']
+  function getShareText(isMarkdown = false) {
+    const boldChar = isMarkdown ? '**' : '*'
+    const bulletChar = isMarkdown ? '-' : '•'
+    const lines: string[] = [`${boldChar}Divisão de conta — A Ponta do Lápis${boldChar}`, '']
+    
     if (mode === 'itemized') {
-      lines.push('**Itens:**', '')
+      lines.push(`${boldChar}Itens:${boldChar}`, '')
       for (const item of items) {
         const payers = resolvePayers(item)
         const names = payers.map((id) => {
@@ -192,24 +229,32 @@ export function SplitBillCalculator() {
           const p = people[idx]
           return p ? displayName(p, idx) : '?'
         })
-        lines.push(`- ${item.description}: ${formatBRLDecimal(item.price)} (${names.join(', ')})`)
+        const qtyStr = item.quantity && item.quantity > 1 ? `${item.quantity}x ` : ''
+        const totalItemPrice = item.price * (item.quantity || 1)
+        lines.push(`${bulletChar} ${qtyStr}${item.description}: ${formatBRLDecimal(totalItemPrice)} (${names.join(', ')})`)
       }
-      lines.push('', '**Por pessoa:**', '', '| Quem | Itens | Gorjeta | Total |', '|------|-------|---------|-------|')
+      
+      lines.push('', `${boldChar}Por pessoa:${boldChar}`, '')
       for (const { person, index, sub, tip: t, total } of calc.breakdown) {
-        lines.push(`| ${displayName(person, index)} | ${formatBRLDecimal(sub)} | ${formatBRLDecimal(t)} | ${formatBRLDecimal(total)} |`)
+        lines.push(`${bulletChar} ${boldChar}${displayName(person, index)}${boldChar}: ${formatBRLDecimal(total)} (Itens: ${formatBRLDecimal(sub)}${tip > 0 ? ` + Gorjeta: ${formatBRLDecimal(t)}` : ''})`)
       }
     } else {
       lines.push(`Total: ${formatBRLDecimal(equalNum)}`)
       if (tip > 0) {
         lines.push(`Gorjeta (${tip}%): ${formatBRLDecimal(equalWithTip - equalNum)}`, `Total com gorjeta: ${formatBRLDecimal(equalWithTip)}`)
       }
-      lines.push(`Por pessoa: ${formatBRLDecimal(perPersonEqual)}`, '', '| Quem | Valor |', '|------|-------|')
+      lines.push(`Por pessoa: ${formatBRLDecimal(perPersonEqual)}`, '', `${boldChar}Integrantes:${boldChar}`)
       for (const [i, p] of people.entries()) {
-        lines.push(`| ${displayName(p, i)} | ${formatBRLDecimal(perPersonEqual)} |`)
+        lines.push(`${bulletChar} ${boldChar}${displayName(p, i)}${boldChar}: ${formatBRLDecimal(perPersonEqual)}`)
       }
     }
-    lines.push('', '_apontadolapis.com.br_')
-    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+    lines.push('', '_apontadolapis.com.br/dividir_')
+    return lines.join('\n')
+  }
+
+  function copyMarkdown() {
+    const text = getShareText(true)
+    navigator.clipboard.writeText(text).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     })
@@ -241,68 +286,85 @@ export function SplitBillCalculator() {
   // ── Render ───────────────────────────────────────────────────────
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:items-start">
-      
-      {/* ── COLUMN 1: CONFIG & PARTICIPANTS (lg:col-span-5) ── */}
-      <div className="lg:col-span-5 space-y-4">
-        <div 
-          className="rounded-2xl border p-5 sm:p-6 space-y-5"
-          style={{ backgroundColor: 'var(--c-card-calm)', borderColor: 'var(--c-line)' }}
+    <div className="space-y-4">
+      {/* Guide box (Como usar) - Fora da calculadora, colapsado por padrão e estritamente clique-to-open */}
+      <div 
+        className="rounded-xl border transition-all duration-200"
+        style={{ backgroundColor: 'var(--c-card-calm)', borderColor: 'var(--c-line)' }}
+      >
+        <button
+          type="button"
+          onClick={handleToggle}
+          className="w-full flex items-center justify-between px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-left focus:outline-none cursor-pointer"
+          style={{ color: 'var(--c-muted)' }}
         >
-          <div>
-            <h2 className="text-xl font-bold font-serif" style={{ color: 'var(--c-ink)' }}>Configuração da Conta</h2>
-            <p className="text-xs italic mt-0.5" style={{ color: 'var(--c-muted)' }}>Defina quem participa e o tipo de rateio.</p>
-          </div>
-
-          {/* Mode toggle */}
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { key: 'itemized', label: 'Por item', sub: 'cada um paga o que pediu' },
-              { key: 'equal', label: 'Igualmente', sub: 'divide o total igualmente' },
-            ].map((opt) => {
-              const isActive = mode === opt.key
-              return (
-                <button
-                  key={opt.key}
-                  type="button"
-                  onClick={() => setMode(opt.key as typeof mode)}
-                  className="p-3 rounded-xl border text-left transition-all cursor-pointer"
-                  style={
-                    isActive
-                      ? { backgroundColor: 'var(--c-emerald)', borderColor: 'transparent' }
-                      : { backgroundColor: 'var(--c-bg)', borderColor: 'var(--c-line)' }
-                  }
-                >
-                  <p className="text-sm font-bold" style={{ color: isActive ? '#ffffff' : 'var(--c-ink)' }}>{opt.label}</p>
-                  <p className="text-[10px] mt-0.5" style={{ color: isActive ? 'rgba(255,255,255,0.7)' : 'var(--c-muted)' }}>{opt.sub}</p>
-                </button>
-              )
-            })}
-          </div>
-
-          {/* Guide box */}
-          <div 
-            className="rounded-xl border px-4 py-3 space-y-1.5"
-            style={{ backgroundColor: 'var(--c-surface)', borderColor: 'var(--c-line)' }}
-          >
-            <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>Como usar</p>
-            {mode === 'itemized' ? (
-              <div className="space-y-1 text-xs" style={{ color: 'var(--c-muted)' }}>
-                <p>1. Adicione os nomes e clique neles para personalizar se quiser.</p>
-                <p>2. Adicione os itens (bebida, prato, etc.) e seu preço em BRL.</p>
-                <p>3. Selecione quem divide cada item — o rateio é feito na hora.</p>
+          <span className="flex items-center gap-1">📚 Como usar esta calculadora</span>
+          <span className="text-[8px] transition-transform duration-200" style={{ transform: guideOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+            ▼
+          </span>
+        </button>
+        {guideOpen && (
+          <div className="px-4 pb-3.5 space-y-3 transition-all duration-200 border-t pt-3" style={{ borderColor: 'var(--c-line)' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs leading-relaxed" style={{ color: 'var(--c-muted)' }}>
+              <div>
+                <p className="font-bold text-stone-700 dark:text-stone-300 mb-1">Modo: Por Item (cada um paga o que pediu)</p>
+                <p>1. Adicione os nomes dos participantes na conta.</p>
+                <p>2. Adicione os itens consumidos com seus respectivos preços em BRL.</p>
+                <p>3. Clique nos nomes de quem consome cada item — o rateio é feito na hora de forma proporcional.</p>
               </div>
-            ) : (
-              <div className="space-y-1 text-xs" style={{ color: 'var(--c-muted)' }}>
+              <div>
+                <p className="font-bold text-stone-700 dark:text-stone-300 mb-1">Modo: Igualmente (divisão idêntica)</p>
                 <p>1. Adicione os participantes da mesa.</p>
-                <p>2. Digite o valor total da nota fiscal.</p>
-                <p>3. A divisão igualitária é computada instantaneamente.</p>
+                <p>2. Digite o valor total da conta.</p>
+                <p>3. A divisão matemática simples com gorjeta proporcional é feita instantaneamente.</p>
               </div>
-            )}
+            </div>
           </div>
+        )}
+      </div>
 
-          {/* People list manager */}
-          <div className="space-y-3">
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:items-start">
+        
+        {/* ── COLUMN 1: CONFIG & PARTICIPANTS (lg:col-span-5) ── */}
+        <div className="lg:col-span-5 space-y-4">
+          <div 
+            className="rounded-2xl border p-5 sm:p-6 space-y-5"
+            style={{ backgroundColor: 'var(--c-card-calm)', borderColor: 'var(--c-line)' }}
+          >
+            <div>
+              <h2 className="text-xl font-bold font-serif" style={{ color: 'var(--c-ink)' }}>Configuração da Conta</h2>
+              <p className="text-xs italic mt-0.5" style={{ color: 'var(--c-muted)' }}>Defina quem participa e o tipo de rateio.</p>
+            </div>
+
+            {/* Mode toggle */}
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { key: 'itemized', label: 'Por item', sub: 'cada um paga o que pediu' },
+                { key: 'equal', label: 'Igualmente', sub: 'divide o total igualmente' },
+              ].map((opt) => {
+                const isActive = mode === opt.key
+                return (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    onClick={() => setMode(opt.key as typeof mode)}
+                    className="p-3 rounded-xl border text-left transition-all cursor-pointer"
+                    style={
+                      isActive
+                        ? { backgroundColor: 'var(--c-emerald)', borderColor: 'transparent' }
+                        : { backgroundColor: 'var(--c-bg)', borderColor: 'var(--c-line)' }
+                    }
+                  >
+                    <p className="text-sm font-bold" style={{ color: isActive ? '#ffffff' : 'var(--c-ink)' }}>{opt.label}</p>
+                    <p className="text-[10px] mt-0.5" style={{ color: isActive ? 'rgba(255,255,255,0.7)' : 'var(--c-muted)' }}>{opt.sub}</p>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* People list manager */}
+            <div className="space-y-3">
             <label className="text-base font-semibold flex items-center justify-between" style={{ color: 'var(--c-muted)' }}>
               <span>Quem está na conta? <span className="font-normal text-xs">({people.length} pessoas)</span></span>
               <Tip text="Clique direto na caixa com o nome para renomear. Mínimo de 2 participantes. Adicione mais abaixo." />
@@ -506,14 +568,47 @@ export function SplitBillCalculator() {
                       ) : (
                         /* Normal view */
                         <>
-                          {/* Info and price */}
+                          {/* Info, quantity, and price */}
                           <div className="flex items-center gap-2">
                             <span className="flex-1 text-sm font-bold min-w-0 truncate" style={{ color: 'var(--c-ink)' }}>
                               {item.description}
                             </span>
-                            <span className="text-sm font-bold tabular-nums shrink-0" style={{ color: 'var(--c-ink)' }}>
-                              {formatBRLDecimal(item.price)}
-                            </span>
+                            
+                            {/* Quantity selector */}
+                            <div className="flex items-center gap-1 bg-black/[0.03] dark:bg-white/[0.03] rounded-lg p-0.5 border shrink-0" style={{ borderColor: 'var(--c-line)' }}>
+                              <button
+                                type="button"
+                                onClick={() => updateQuantity(item.id, (item.quantity || 1) - 1)}
+                                disabled={(item.quantity || 1) <= 1}
+                                className="w-5 h-5 flex items-center justify-center rounded-md hover:bg-black/[0.08] dark:hover:bg-white/[0.08] disabled:opacity-30 disabled:pointer-events-none text-xs font-bold transition-colors cursor-pointer"
+                                style={{ color: 'var(--c-ink)' }}
+                              >
+                                -
+                              </button>
+                              <span className="text-xs font-bold min-w-[14px] text-center tabular-nums" style={{ color: 'var(--c-ink)' }}>
+                                {item.quantity || 1}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => updateQuantity(item.id, (item.quantity || 1) + 1)}
+                                className="w-5 h-5 flex items-center justify-center rounded-md hover:bg-black/[0.08] dark:hover:bg-white/[0.08] text-xs font-bold transition-colors cursor-pointer"
+                                style={{ color: 'var(--c-ink)' }}
+                              >
+                                +
+                              </button>
+                            </div>
+
+                            <div className="text-right shrink-0 flex flex-col items-end min-w-[70px]">
+                              <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--c-ink)' }}>
+                                {formatBRLDecimal(item.price * (item.quantity || 1))}
+                              </span>
+                              {item.quantity && item.quantity > 1 && (
+                                <span className="text-[10px] leading-none mt-0.5" style={{ color: 'var(--c-muted)' }}>
+                                  {item.quantity}x {formatBRLDecimal(item.price)}
+                                </span>
+                              )}
+                            </div>
+
                             <button
                               type="button"
                               onClick={() => startEdit(item)}
@@ -556,7 +651,7 @@ export function SplitBillCalculator() {
                           {/* Price per person split summary */}
                           {payers.length > 1 && (
                             <p className="text-[10px] italic font-semibold" style={{ color: 'var(--c-muted)' }}>
-                              ({formatBRLDecimal(item.price / payers.length)} por pessoa)
+                              ({formatBRLDecimal((item.price * (item.quantity || 1)) / payers.length)} por pessoa)
                             </p>
                           )}
                         </>
@@ -698,11 +793,14 @@ export function SplitBillCalculator() {
                         {items.map((item) => {
                           const payers = resolvePayers(item)
                           if (!payers.includes(person.id)) return null
-                          const share = item.price / payers.length
+                          const share = (item.price * (item.quantity || 1)) / payers.length
                           return (
                             <div key={item.id} className="flex justify-between items-baseline gap-2 text-xs">
                               <span className="min-w-0 truncate" style={{ color: 'var(--c-muted)' }}>
                                 {item.description}
+                                {(item.quantity || 1) > 1 && (
+                                  <span className="text-[10px] font-semibold text-emerald-500 ml-1">({item.quantity}x)</span>
+                                )}
                                 {payers.length > 1 && (
                                   <span className="text-[9px] font-bold ml-1" style={{ color: 'var(--c-muted-2)' }}>÷{payers.length}</span>
                                 )}
@@ -738,19 +836,61 @@ export function SplitBillCalculator() {
               </div>
             )}
 
-            {/* Action buttons */}
-            <button
-              type="button"
-              onClick={copyMarkdown}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 font-bold rounded-xl transition-colors text-sm cursor-pointer border"
-              style={{
-                backgroundColor: 'var(--c-surface)',
-                color: 'var(--c-ink)',
-                borderColor: 'var(--c-line)'
-              }}
-            >
-              {copied ? '✓ Tabela Copiada!' : '⎘ Copiar Tabela (Markdown)'}
-            </button>
+            {/* Action & Sharing buttons */}
+            <div className="space-y-3.5">
+              <button
+                type="button"
+                onClick={copyMarkdown}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 font-bold rounded-xl transition-colors text-sm cursor-pointer border"
+                style={{
+                  backgroundColor: 'var(--c-surface)',
+                  color: 'var(--c-ink)',
+                  borderColor: 'var(--c-line)'
+                }}
+              >
+                {copied ? '✓ Copiado para Área de Transferência!' : '⎘ Copiar Resumo da Conta'}
+              </button>
+
+              <div className="grid grid-cols-2 gap-2">
+                <a
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(getShareText(false))}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 py-2.5 px-4 font-bold rounded-xl transition-colors text-xs text-white hover:opacity-90 cursor-pointer no-underline"
+                  style={{ backgroundColor: '#25C366' }}
+                >
+                  <span>💬 WhatsApp</span>
+                </a>
+                
+                <a
+                  href={`mailto:?subject=Divisão%20de%20Conta%20-%20A%20Ponta%20do%20Lápis&body=${encodeURIComponent(getShareText(false))}`}
+                  className="flex items-center justify-center gap-2 py-2.5 px-4 font-bold rounded-xl transition-colors text-xs text-white hover:opacity-90 cursor-pointer no-underline"
+                  style={{ backgroundColor: '#0072C6' }}
+                >
+                  <span>✉ E-mail</span>
+                </a>
+              </div>
+              
+              {canShare && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.share({
+                      title: 'Divisão de Conta — A Ponta do Lápis',
+                      text: getShareText(false),
+                    }).catch(() => {})
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 font-bold rounded-xl transition-colors text-xs border cursor-pointer"
+                  style={{
+                    backgroundColor: 'var(--c-bg)',
+                    color: 'var(--c-ink)',
+                    borderColor: 'var(--c-line)'
+                  }}
+                >
+                  <span>📱 Compartilhar com outro app...</span>
+                </button>
+              )}
+            </div>
 
             {/* Promoting Card */}
             <div
@@ -767,5 +907,6 @@ export function SplitBillCalculator() {
         )}
       </div>
     </div>
-  )
+  </div>
+)
 }

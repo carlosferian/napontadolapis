@@ -549,7 +549,7 @@ export function UnemploymentCalculator() {
 
           {/* Detalhes Mês a Mês */}
           {runwayResult.timeline.length > 0 && (
-            <div className="max-h-52 overflow-y-auto rounded-xl border scrollbar-thin" style={{ borderColor: 'var(--c-line)', backgroundColor: 'var(--c-bg)' }}>
+            <div className="max-h-52 overflow-y-auto overflow-x-auto rounded-xl border scrollbar-thin" style={{ borderColor: 'var(--c-line)', backgroundColor: 'var(--c-bg)' }}>
               <table className="w-full text-[11px] text-left border-collapse tabular-nums">
                 <thead>
                   <tr style={{ backgroundColor: 'var(--c-surface)', borderBottom: '1px solid var(--c-line)' }}>
