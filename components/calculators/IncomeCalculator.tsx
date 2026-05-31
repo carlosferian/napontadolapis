@@ -10,6 +10,7 @@ import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { formatBRL, formatPct } from '@/lib/formatters'
 import { calculateIncome } from '@/lib/calculations/income'
+import { IR_TABLE, calculateIR } from '@/config/tax'
 import {
   AreaChart, Area, LineChart, Line,
   BarChart, Bar, Cell,
@@ -33,9 +34,11 @@ export function IncomeCalculator() {
   const [I, setI] = useState<number>(9.5)
   const [T, setT] = useState<number>(25)
   const [inflation, setInflation]         = useState<number>(5)
-  const [includeAge, setIncludeAge]       = useState(false)
-  const [age, setAge]                     = useState<number>(40)
+  const [includeAge, setIncludeAge]         = useState(false)
+  const [age, setAge]                       = useState<number>(40)
   const [lifeExpectancy, setLifeExpectancy] = useState<number>(80)
+  const [applyIR, setApplyIR]               = useState(false)
+  const [rIsNet, setRIsNet]                 = useState(true)   // true = usuário informa líquido desejado
 
   const [history, setHistory] = useState<('C' | 'R' | 'I' | 'T')[]>(['C', 'R', 'I'])
 
@@ -46,10 +49,10 @@ export function IncomeCalculator() {
 
   const results = useMemo(
     () => calculateIncome(
-      { C, R, I, inflation, T, age: includeAge ? age : 0, lifeExpectancy },
+      { C, R, I, inflation, T, age: includeAge ? age : 0, lifeExpectancy, applyIR, rIsNet },
       target
     ),
-    [C, R, I, inflation, T, includeAge, age, lifeExpectancy, target]
+    [C, R, I, inflation, T, includeAge, age, lifeExpectancy, applyIR, rIsNet, target]
   )
 
   const updateField = (field: 'C' | 'R' | 'I' | 'T', val: number) => {
@@ -244,6 +247,78 @@ export function IncomeCalculator() {
             </div>
           </div>
 
+          {/* Imposto de Renda */}
+          <div className="space-y-3 pt-2 border-t-2 border-dashed" style={{ borderColor: 'rgba(220,38,38,0.2)' }}>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={applyIR}
+                onChange={e => setApplyIR(e.target.checked)}
+                className="rounded"
+              />
+              <span className="text-sm font-semibold" style={{ color: 'var(--c-muted)' }}>
+                Considerar Imposto de Renda Progressivo
+              </span>
+            </label>
+
+            {applyIR && (
+              <div className="space-y-3 pl-2">
+                {/* Net vs Gross toggle */}
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[
+                    { value: true,  label: 'Quero R$ X líquido', desc: 'Calcula o bruto necessário' },
+                    { value: false, label: 'Informo o bruto',     desc: 'Mostra o líquido resultante' },
+                  ].map(opt => (
+                    <button
+                      key={String(opt.value)}
+                      onClick={() => setRIsNet(opt.value)}
+                      className="p-2 rounded-xl border text-left cursor-pointer transition-all"
+                      style={rIsNet === opt.value
+                        ? { background: 'rgba(220,38,38,0.06)', borderColor: 'rgba(220,38,38,0.3)', color: 'var(--c-ink)' }
+                        : { background: 'var(--c-surface)', borderColor: 'var(--c-line)', color: 'var(--c-muted)' }
+                      }
+                    >
+                      <div className="text-[10px] font-extrabold">{opt.label}</div>
+                      <div className="text-[9px] mt-0.5" style={{ color: 'var(--c-muted)' }}>{opt.desc}</div>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Label dinâmica do campo R */}
+                <div className="rounded-lg px-3 py-2 text-[10px] leading-relaxed" style={{ background: 'rgba(220,38,38,0.04)', border: '1px solid rgba(220,38,38,0.15)' }}>
+                  <p style={{ color: '#dc2626' }}>
+                    <strong>Campo "Retirada Mensal"</strong> acima representa{' '}
+                    {rIsNet
+                      ? <><strong>a renda LÍQUIDA desejada</strong> — o sistema calcula automaticamente o bruto necessário e o IR devido.</>
+                      : <><strong>a renda BRUTA</strong> antes do IR — o sistema mostra quanto você realmente recebe no bolso.</>
+                    }
+                  </p>
+                </div>
+
+                {/* Resumo do IR calculado */}
+                {results.irApplied && results.rGross > 0 && (
+                  <div className="rounded-lg border p-3 space-y-1.5" style={{ background: 'var(--c-surface)', borderColor: 'var(--c-line)' }}>
+                    <div className="flex justify-between text-xs font-bold" style={{ color: 'var(--c-ink)' }}>
+                      <span>Bruto sacado:</span>
+                      <span className="tabular-nums">{formatBRL(results.rGross)}/mês</span>
+                    </div>
+                    <div className="flex justify-between text-xs" style={{ color: '#dc2626' }}>
+                      <span>IR (alíq. efetiva {formatPct(results.irEffectiveRate * 100)}):</span>
+                      <span className="tabular-nums font-bold">− {formatBRL(results.irMonthly)}/mês</span>
+                    </div>
+                    <div className="flex justify-between text-xs font-extrabold border-t pt-1.5" style={{ color: 'var(--c-emerald)', borderColor: 'var(--c-line)' }}>
+                      <span>Líquido no bolso:</span>
+                      <span className="tabular-nums">{formatBRL(results.rNet)}/mês</span>
+                    </div>
+                    <div className="text-[9px] pt-0.5" style={{ color: 'var(--c-muted)' }}>
+                      Alíquota marginal atingida: {formatPct(results.irMarginalRate * 100)}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* Idade e expectativa de vida — opcional */}
           <div className="space-y-3 pt-2 border-t-2 border-dashed" style={{ borderColor: 'rgba(99,102,241,0.25)' }}>
             <label className="flex items-center gap-2 cursor-pointer">
@@ -420,6 +495,115 @@ export function IncomeCalculator() {
             </div>
           </div>
         )}
+
+        {/* ── Detalhamento pedagógico do IR ──────────────────────────────────── */}
+        {results.irApplied && results.rGross > 0 && (() => {
+          const irDetail = calculateIR(results.rGross)
+          const colors   = ['#d1d5db', '#f59e0b', '#f97316', '#ef4444', '#dc2626']
+
+          return (
+            <div className="rounded-2xl border p-5 space-y-4" style={{ backgroundColor: 'var(--c-card-calm)', borderColor: 'var(--c-line)' }}>
+              <div>
+                <p className="text-base font-bold" style={{ color: 'var(--c-ink)' }}>
+                  Imposto de Renda — como é calculado
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>
+                  Tabela progressiva IRPF 2024/2025 · Receita Federal
+                </p>
+              </div>
+
+              {/* Explicação pedagógica */}
+              <div className="rounded-xl p-4 text-xs leading-relaxed space-y-2" style={{ background: 'rgba(220,38,38,0.03)', border: '1px solid rgba(220,38,38,0.12)' }}>
+                <p style={{ color: 'var(--c-ink)' }}>
+                  <strong>Como funciona a tabela progressiva:</strong> você NÃO paga a alíquota mais alta sobre tudo.
+                  Cada faixa da renda é tributada com sua própria alíquota. Quem ganha {formatBRL(results.rGross)}/mês
+                  paga 0% sobre os primeiros {formatBRL(IR_TABLE[0].limit)}, depois 7,5% sobre a faixa seguinte, e assim por diante —
+                  chegando à alíquota máxima de 27,5% somente no valor que excede {formatBRL(IR_TABLE[3].limit)}.
+                </p>
+                <p style={{ color: 'var(--c-muted)' }}>
+                  A <strong>alíquota efetiva</strong> ({formatPct(irDetail.effectiveRate * 100)}) é sempre menor
+                  que a alíquota marginal ({formatPct(irDetail.marginalRate * 100)}) — ela representa o percentual
+                  médio pago sobre a renda total.
+                </p>
+              </div>
+
+              {/* Tabela de faixas */}
+              <div className="space-y-1.5">
+                <p className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>
+                  Faixas da tabela progressiva
+                </p>
+                {IR_TABLE.map((bracket, idx) => {
+                  const isActive = results.rGross > (idx === 0 ? 0 : IR_TABLE[idx - 1].limit)
+                  const prevLimit = idx === 0 ? 0 : IR_TABLE[idx - 1].limit
+                  const labelFrom = formatBRL(prevLimit)
+                  const labelTo   = bracket.limit === Infinity ? 'Acima' : `até ${formatBRL(bracket.limit)}`
+                  const detail    = irDetail.brackets.find(b => b.rate === bracket.rate && b.incomeInRange > 0)
+
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-3 rounded-lg px-3 py-2"
+                      style={{
+                        background: isActive ? `${colors[idx]}18` : 'transparent',
+                        border: `1px solid ${isActive ? colors[idx] + '40' : 'transparent'}`,
+                        opacity: isActive ? 1 : 0.45,
+                      }}
+                    >
+                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: colors[idx] }} />
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[10px] font-bold" style={{ color: 'var(--c-ink)' }}>
+                          {bracket.rate === 0 ? 'Isento' : `${formatPct(bracket.rate * 100)}`}
+                        </span>
+                        <span className="text-[9px] ml-1.5" style={{ color: 'var(--c-muted)' }}>
+                          {idx === 0 ? `até ${formatBRL(bracket.limit)}` : `${labelFrom} a ${labelTo}`}
+                        </span>
+                      </div>
+                      {detail && (
+                        <div className="text-right flex-shrink-0">
+                          <span className="text-[10px] font-extrabold tabular-nums" style={{ color: colors[idx] }}>
+                            {formatBRL(detail.taxInRange)}
+                          </span>
+                          <span className="text-[9px] ml-0.5" style={{ color: 'var(--c-muted)' }}>IR</span>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+
+                {/* Total */}
+                <div className="flex justify-between items-center rounded-lg px-3 py-2 border-t" style={{ borderColor: 'var(--c-line)' }}>
+                  <span className="text-xs font-extrabold" style={{ color: 'var(--c-ink)' }}>
+                    Total de IR mensal
+                  </span>
+                  <div className="text-right">
+                    <span className="text-sm font-black tabular-nums text-red-600">{formatBRL(irDetail.irDue)}</span>
+                    <span className="text-[9px] ml-1" style={{ color: 'var(--c-muted)' }}>
+                      ({formatPct(irDetail.effectiveRate * 100)} efetivo)
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bruto necessário para este líquido */}
+              {!rIsNet && (
+                <div className="rounded-xl p-3 text-xs" style={{ background: 'rgba(99,102,241,0.05)', border: '1px solid rgba(99,102,241,0.15)' }}>
+                  <p style={{ color: '#6366f1' }}>
+                    <strong>Dica:</strong> Para receber {formatBRL(irDetail.net)}/mês líquido,
+                    você precisará sacar <strong>{formatBRL(results.grossNeededForNet)}/mês bruto</strong> do patrimônio —
+                    pagando {formatBRL(results.grossNeededForNet - irDetail.net)} de IR.
+                    Isso requer um capital ainda maior do que o calculado acima.
+                  </p>
+                </div>
+              )}
+
+              <p className="text-[9px] leading-relaxed" style={{ color: 'var(--c-muted-2)' }}>
+                ⚠️ Este cálculo aplica a tabela progressiva IRPF sobre a retirada total como estimativa conservadora.
+                Na prática, rendimentos de renda fixa (CDB, Tesouro) usam a tabela regressiva (22,5% → 15% após 2 anos);
+                LCI/LCA e dividends de FII são isentos. Consulte um contador para sua situação específica.
+              </p>
+            </div>
+          )
+        })()}
 
         {/* Metrics */}
         <MetricGrid metrics={[

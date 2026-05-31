@@ -1,13 +1,16 @@
 // lib/calculations/income.ts
+import { calculateIR, grossFromNet } from '@/config/tax'
 
 export interface IncomeParams {
-  C:              number  // Capital Inicial
-  R:              number  // Retirada Mensal (em valores de HOJE — poder de compra constante)
-  I:              number  // Rentabilidade Anual % a.a. (nominal, bruta de inflação)
-  inflation:      number  // Inflação Anual % a.a. (IPCA/meta)
-  T:              number  // Tempo de Retirada em anos
-  age?:           number  // Idade atual (opcional — habilita análise vitalícia)
-  lifeExpectancy?: number // Expectativa de vida (default 80, IBGE)
+  C:               number  // Capital Inicial
+  R:               number  // Retirada Mensal (em valores de HOJE — poder de compra constante)
+  I:               number  // Rentabilidade Anual % a.a. (nominal, bruta de inflação)
+  inflation:       number  // Inflação Anual % a.a. (IPCA/meta)
+  T:               number  // Tempo de Retirada em anos
+  age?:            number  // Idade atual (opcional — habilita análise vitalícia)
+  lifeExpectancy?: number  // Expectativa de vida (default 80, IBGE)
+  applyIR?:        boolean // Aplicar tabela progressiva do IRPF sobre a retirada
+  rIsNet?:         boolean // true = R é a renda líquida desejada; false/undefined = R é a bruta
 }
 
 export interface IncomeResult {
@@ -29,6 +32,14 @@ export interface IncomeResult {
   maxWithdrawalLifetime:      number  // R máximo para durar até a expectativa de vida (0 se sem idade)
   remainingYears:             number  // lifeExpectancy - age (0 se sem idade)
   isEffectivelyPerpetual:     boolean // T >= remainingYears (dura mais que a vida estimada)
+  // ── Imposto de Renda ──
+  irApplied:          boolean  // se o cálculo considerou IR
+  rGross:             number   // retirada bruta (= R se !applyIR, ou computada se applyIR)
+  rNet:               number   // retirada líquida após IR
+  irMonthly:          number   // IR mensal sobre rGross
+  irEffectiveRate:    number   // alíquota efetiva (irMonthly / rGross)
+  irMarginalRate:     number   // alíquota da faixa mais alta atingida
+  grossNeededForNet:  number   // bruto necessário para receber rNet — só útil quando rIsNet=true
   timeline: {
     year:              number
     balance:           number  // saldo real (poder de compra em valores de hoje)
@@ -84,11 +95,31 @@ export function calculateIncome(
   params: IncomeParams,
   target: 'C' | 'R' | 'I' | 'T'
 ): IncomeResult {
-  let { C, R, I, T } = params
+  let { C, I, T } = params
   const inflation       = Math.max(0, params.inflation ?? 5)
   const age             = params.age && params.age > 0 ? params.age : 0
   const lifeExpectancy  = params.lifeExpectancy && params.lifeExpectancy > 0 ? params.lifeExpectancy : 80
   const remainingYears  = age > 0 && lifeExpectancy > age ? lifeExpectancy - age : 0
+  const applyIR         = params.applyIR === true
+  const rIsNet          = params.rIsNet  === true
+
+  // ── Resolução do bruto/líquido com IR ─────────────────────────────────
+  // O solver financeiro sempre opera com o valor BRUTO (o que sai do patrimônio).
+  // Se o usuário informou o líquido desejado, calculamos o bruto equivalente.
+  let R: number
+  let rGrossInput: number   // bruto de entrada (antes do solver)
+  if (!applyIR) {
+    R          = params.R
+    rGrossInput = params.R
+  } else if (rIsNet) {
+    // Usuário quer R líquido → descobrir bruto necessário
+    rGrossInput = grossFromNet(params.R)
+    R           = rGrossInput
+  } else {
+    // Usuário informou bruto
+    rGrossInput = params.R
+    R           = params.R
+  }
 
   // Taxa real: é aqui que mora o problema que a calculadora antiga ignorava
   const realI    = realAnnualRate(I, inflation)
@@ -196,6 +227,19 @@ export function calculateIncome(
     if (realBal <= 0 && !isPerpetual) break
   }
 
+  // ── Imposto de Renda sobre a retirada ────────────────────────────────────
+  // O IR incide sobre o valor BRUTO sacado mensalmente.
+  // Nota: em renda fixa o IR é retido na fonte (regressivo 15-22,5%);
+  // aqui modelamos o IR progressivo sobre o total da renda — útil para
+  // quem declara no modelo completo ou deseja uma estimativa conservadora.
+  const irResult          = applyIR ? calculateIR(R) : null
+  const irMonthly         = irResult ? irResult.irDue         : 0
+  const rNet              = irResult ? irResult.net           : R
+  const irEffectiveRate   = irResult ? irResult.effectiveRate : 0
+  const irMarginalRate    = irResult ? irResult.marginalRate  : 0
+  // Se não usou IR ou já informou bruto, mostrar quanto bruto seria necessário para ter este líquido
+  const grossNeededForNet = applyIR && !rIsNet ? grossFromNet(rNet) : rGrossInput
+
   // ── Teto 1: perpétuo real — a carteira nunca diminui em termos reais ──────
   // R_max = C × i_real_mensal  (perpetuidade de anuidade)
   const maxWithdrawalRealPerpetual = i > 0 ? Number((C * i).toFixed(2)) : 0
@@ -229,6 +273,13 @@ export function calculateIncome(
     maxWithdrawalLifetime,
     remainingYears,
     isEffectivelyPerpetual,
+    irApplied:       applyIR,
+    rGross:          R,
+    rNet,
+    irMonthly,
+    irEffectiveRate,
+    irMarginalRate,
+    grossNeededForNet,
     timeline,
   }
 }
