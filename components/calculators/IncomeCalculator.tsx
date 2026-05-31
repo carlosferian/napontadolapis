@@ -508,18 +508,37 @@ export function IncomeCalculator() {
                   Imposto de Renda — como é calculado
                 </p>
                 <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>
-                  Tabela progressiva IRPF 2024/2025 · Receita Federal
+                  Tabela progressiva IRPF 2026 · Lei nº 15.270/2025 (Lei dos 5 Mil)
                 </p>
               </div>
 
               {/* Explicação pedagógica */}
-              <div className="rounded-xl p-4 text-xs leading-relaxed space-y-2" style={{ background: 'rgba(220,38,38,0.03)', border: '1px solid rgba(220,38,38,0.12)' }}>
+              <div className="rounded-xl p-4 text-xs leading-relaxed space-y-2.5" style={{ background: 'rgba(220,38,38,0.03)', border: '1px solid rgba(220,38,38,0.12)' }}>
+                {/* Badge de isenção/redução */}
+                {irDetail.inFullExemption ? (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold" style={{ background: 'rgba(16,185,129,0.1)', color: 'var(--c-emerald)' }}>
+                    ✓ Isento total — Lei dos 5 Mil (Lei 15.270/2025): renda ≤ R$5.000
+                  </div>
+                ) : irDetail.inTransitionZone ? (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold" style={{ background: 'rgba(245,158,11,0.1)', color: '#d97706' }}>
+                    ↓ Redução parcial — Lei dos 5 Mil: renda entre R$5.000 e R$7.350
+                  </div>
+                ) : null}
+
                 <p style={{ color: 'var(--c-ink)' }}>
-                  <strong>Como funciona a tabela progressiva:</strong> você NÃO paga a alíquota mais alta sobre tudo.
-                  Cada faixa da renda é tributada com sua própria alíquota. Quem ganha {formatBRL(results.rGross)}/mês
-                  paga 0% sobre os primeiros {formatBRL(IR_TABLE[0].limit)}, depois 7,5% sobre a faixa seguinte, e assim por diante —
-                  chegando à alíquota máxima de 27,5% somente no valor que excede {formatBRL(IR_TABLE[3].limit)}.
+                  <strong>Tabela progressiva 2026:</strong> você NÃO paga a alíquota mais alta sobre tudo.
+                  Cada faixa tem sua própria alíquota. A partir de R$5.000 a tabela é aplicada normalmente,
+                  mas a <strong>Lei dos 5 Mil</strong> aplica um redutor que zera o IR para quem recebe
+                  até R$5.000 e reduz progressivamente até R$7.350.
                 </p>
+                {!irDetail.inFullExemption && (
+                  <p style={{ color: 'var(--c-muted)' }}>
+                    Redutor da Lei 15.270/2025:{' '}
+                    {irDetail.inTransitionZone
+                      ? <>R$ 978,62 − (0,133145 × {formatBRL(irDetail.gross)}) = <strong style={{ color: '#dc2626' }}>−{formatBRL(irDetail.redutor)}</strong> sobre o IR calculado.</>
+                      : <strong>sem redução</strong>}
+                  </p>
+                )}
                 <p style={{ color: 'var(--c-muted)' }}>
                   A <strong>alíquota efetiva</strong> ({formatPct(irDetail.effectiveRate * 100)}) é sempre menor
                   que a alíquota marginal ({formatPct(irDetail.marginalRate * 100)}) — ela representa o percentual
@@ -570,16 +589,43 @@ export function IncomeCalculator() {
                   )
                 })}
 
-                {/* Total */}
-                <div className="flex justify-between items-center rounded-lg px-3 py-2 border-t" style={{ borderColor: 'var(--c-line)' }}>
+                {/* Subtotal progressivo */}
+                <div className="flex justify-between items-center px-3 py-1.5 border-t" style={{ borderColor: 'var(--c-line)' }}>
+                  <span className="text-[10px]" style={{ color: 'var(--c-muted)' }}>Subtotal (tabela progressiva)</span>
+                  <span className="text-[10px] font-bold tabular-nums" style={{ color: 'var(--c-muted)' }}>{formatBRL(irDetail.progressiveIR)}</span>
+                </div>
+
+                {/* Redutor Lei dos 5 Mil (quando aplicável) */}
+                {irDetail.redutor > 0 && (
+                  <div className="flex justify-between items-center px-3 py-1.5" style={{ background: 'rgba(16,185,129,0.04)', borderRadius: 6 }}>
+                    <div>
+                      <span className="text-[10px] font-bold" style={{ color: 'var(--c-emerald)' }}>
+                        − Redutor Lei 15.270/2025
+                      </span>
+                      <span className="text-[9px] ml-1" style={{ color: 'var(--c-muted)' }}>
+                        {irDetail.inFullExemption ? '(isenção total)' : '(isenção parcial)'}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-extrabold tabular-nums" style={{ color: 'var(--c-emerald)' }}>
+                      − {formatBRL(irDetail.redutor)}
+                    </span>
+                  </div>
+                )}
+
+                {/* Total final */}
+                <div className="flex justify-between items-center rounded-lg px-3 py-2 border-t" style={{ borderColor: 'var(--c-line)', background: irDetail.irDue === 0 ? 'rgba(16,185,129,0.05)' : undefined }}>
                   <span className="text-xs font-extrabold" style={{ color: 'var(--c-ink)' }}>
-                    Total de IR mensal
+                    IR final mensal
                   </span>
                   <div className="text-right">
-                    <span className="text-sm font-black tabular-nums text-red-600">{formatBRL(irDetail.irDue)}</span>
-                    <span className="text-[9px] ml-1" style={{ color: 'var(--c-muted)' }}>
-                      ({formatPct(irDetail.effectiveRate * 100)} efetivo)
+                    <span className={`text-sm font-black tabular-nums ${irDetail.irDue === 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                      {irDetail.irDue === 0 ? 'R$ 0,00 ✓' : formatBRL(irDetail.irDue)}
                     </span>
+                    {irDetail.irDue > 0 && (
+                      <span className="text-[9px] ml-1" style={{ color: 'var(--c-muted)' }}>
+                        ({formatPct(irDetail.effectiveRate * 100)} efetivo)
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -597,9 +643,11 @@ export function IncomeCalculator() {
               )}
 
               <p className="text-[9px] leading-relaxed" style={{ color: 'var(--c-muted-2)' }}>
-                ⚠️ Este cálculo aplica a tabela progressiva IRPF sobre a retirada total como estimativa conservadora.
-                Na prática, rendimentos de renda fixa (CDB, Tesouro) usam a tabela regressiva (22,5% → 15% após 2 anos);
-                LCI/LCA e dividends de FII são isentos. Consulte um contador para sua situação específica.
+                ⚠️ Este cálculo aplica a tabela progressiva IRPF 2026 (Lei 15.270/2025) sobre a retirada total.
+                Na prática, rendimentos de <strong>renda fixa</strong> (CDB, Tesouro Direto) usam a tabela regressiva
+                retida na fonte (22,5% → 15% após 2 anos); <strong>LCI/LCA, dividendos de FII e Poupança</strong> são isentos.
+                Esta calculadora serve como estimativa conservadora — consulte um contador para seu portfólio específico.
+                Fonte: Receita Federal · gov.br/receitafederal · Lei nº 15.270/2025.
               </p>
             </div>
           )
