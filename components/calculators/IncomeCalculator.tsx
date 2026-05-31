@@ -382,14 +382,18 @@ export function IncomeCalculator() {
                 O que aparece no extrato vs. o que vale de verdade
               </p>
             </div>
-            <div className="flex gap-3 text-[10px] font-bold flex-shrink-0">
+            <div className="flex gap-3 text-[10px] font-bold flex-shrink-0 flex-wrap">
               <span className="flex items-center gap-1">
-                <span className="inline-block w-3 h-0.5 rounded bg-blue-500" />
-                Nominal
+                <span className="inline-block w-3 h-0.5 rounded bg-blue-500" style={{ borderTop: '2px dashed #3b82f6', background: 'none' }} />
+                Saldo nominal
               </span>
               <span className="flex items-center gap-1">
                 <span className="inline-block w-3 h-0.5 rounded bg-emerald-500" />
-                Real (hoje)
+                Saldo real
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-3 h-0.5 rounded bg-amber-500" style={{ borderTop: '2px dashed #f59e0b', background: 'none' }} />
+                Saque nominal
               </span>
             </div>
           </div>
@@ -405,7 +409,9 @@ export function IncomeCalculator() {
               <Tooltip
                 formatter={(v, name) => [
                   formatBRL(Number(v)),
-                  name === 'nominalBalance' ? 'Saldo nominal (extrato)' : 'Poder de compra real',
+                  name === 'nominalBalance'    ? 'Saldo nominal (extrato)'
+                  : name === 'nominalWithdrawal' ? 'Retirada mensal nominal'
+                  : 'Saldo real (poder de compra)',
                 ]}
                 labelFormatter={label => `Período: Ano ${label}`}
                 contentStyle={{
@@ -422,12 +428,17 @@ export function IncomeCalculator() {
               {/* Linha real — a verdade corrigida pela inflação */}
               <Line type="monotone" dataKey="balance"
                 stroke="#10b981" strokeWidth={2.5} dot={false} />
+              {/* Linha da retirada nominal — quanto o saque vai custar em cada ano para manter o poder de compra */}
+              <Line type="monotone" dataKey="nominalWithdrawal"
+                stroke="#f59e0b" strokeWidth={2} dot={false}
+                strokeDasharray="3 2" />
             </LineChart>
           </ResponsiveContainer>
 
           <p className="text-[10px] text-stone-500 dark:text-stone-400 leading-relaxed">
-            <strong>Linha verde (real):</strong> poder de compra em valores de hoje — o que importa para seu padrão de vida.{' '}
-            <strong>Linha azul tracejada (nominal):</strong> saldo do extrato bancário — ilusoriamente maior por incluir a inflação acumulada.
+            <strong style={{ color: '#10b981' }}>Verde:</strong> saldo real — o que vale em poder de compra de hoje.{' '}
+            <strong style={{ color: '#3b82f6' }}>Azul tracejado:</strong> saldo nominal — o que aparece no extrato.{' '}
+            <strong style={{ color: '#f59e0b' }}>Âmbar tracejado:</strong> quanto você precisará sacar nominalmente a cada ano para manter os mesmos {formatBRL(results.R)}/mês em poder de compra (a linha sobe com a inflação).
           </p>
         </div>
 

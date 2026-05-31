@@ -23,11 +23,12 @@ export interface IncomeResult {
   totalInterestEarned: number
   nominalDuration:     number   // duração sem inflação (comparação)
   timeline: {
-    year:           number
-    balance:        number  // saldo real (poder de compra em valores de hoje)
-    nominalBalance: number  // saldo nominal (o que aparece no extrato)
-    interest:       number
-    withdrawn:      number
+    year:              number
+    balance:           number  // saldo real (poder de compra em valores de hoje)
+    nominalBalance:    number  // saldo nominal (o que aparece no extrato)
+    nominalWithdrawal: number  // quanto R vale em termos nominais neste ano (R × inflação acumulada)
+    interest:          number
+    withdrawn:         number
   }[]
 }
 
@@ -144,11 +145,12 @@ export function calculateIncome(
   let   totalInterestEarned = 0
 
   timeline.push({
-    year:           0,
-    balance:        C,
-    nominalBalance: C,   // no ano 0, nominal = real
-    interest:       0,
-    withdrawn:      0,
+    year:              0,
+    balance:           C,
+    nominalBalance:    C,
+    nominalWithdrawal: R,  // ano 0: retirada = R em valores de hoje
+    interest:          0,
+    withdrawn:         0,
   })
 
   for (let year = 1; year <= maxYears; year++) {
@@ -174,10 +176,11 @@ export function calculateIncome(
 
     timeline.push({
       year,
-      balance:        Number(realBal.toFixed(2)),
-      nominalBalance: Number(nominalBal.toFixed(2)),
-      interest:       Number(yearInterest.toFixed(2)),
-      withdrawn:      Number(yearWithdrawn.toFixed(2)),
+      balance:           Number(realBal.toFixed(2)),
+      nominalBalance:    Number(nominalBal.toFixed(2)),
+      nominalWithdrawal: Number((R * infFactor).toFixed(2)),  // R em valores nominais do ano Y
+      interest:          Number(yearInterest.toFixed(2)),
+      withdrawn:         Number(yearWithdrawn.toFixed(2)),
     })
 
     if (realBal <= 0 && !isPerpetual) break
