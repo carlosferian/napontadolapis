@@ -10,7 +10,7 @@ import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { formatBRL } from '@/lib/formatters'
 import { calculateUberVsCar } from '@/lib/calculations/uber-car'
-import { getSegment, SEGMENT_LABELS } from '@/config/uber-car'
+import { getSegment, SEGMENT_LABELS, SEGMENT_DEFAULTS } from '@/config/uber-car'
 import type { CitySize, FuelType, CommuteMode } from '@/config/uber-car'
 import { RATES } from '@/config/rates'
 import {
@@ -207,13 +207,13 @@ export function UberCarCalculator() {
                 color: mode === m ? '#fff' : 'var(--c-muted)',
               }}
             >
-              {m === 'buying' ? 'Estou avaliando COMPRAR' : 'Ja TENHO um carro'}
+              {m === 'buying' ? 'Estou avaliando COMPRAR' : 'Já TENHO um carro'}
             </button>
           ))}
         </div>
 
         {/* Card 1: Sobre o Carro */}
-        <CalculatorCard title="Sobre o Carro" subtitle="Configure o veiculo que voce esta avaliando.">
+        <CalculatorCard title="Sobre o Carro" subtitle="Configure o veículo que você está avaliando.">
           <div className="space-y-6">
 
             {/* Valor do carro */}
@@ -282,7 +282,7 @@ export function UberCarCalculator() {
 
             {/* Fuel type */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold" style={{ color: 'var(--c-muted)' }}>Combustivel</label>
+              <label className="text-sm font-semibold" style={{ color: 'var(--c-muted)' }}>Combustível</label>
               <div className="grid grid-cols-3 gap-1.5">
                 {([
                   ['gasolina', 'Gasolina'],
@@ -318,8 +318,8 @@ export function UberCarCalculator() {
               {showAdvanced && (
                 <div className="px-4 pb-4 space-y-4 pt-2" style={{ backgroundColor: 'var(--c-card-calm)' }}>
                   <SliderRow
-                    label="Depreciacao anual (%)"
-                    value={customDepr ?? 15}
+                    label="Depreciação anual (%)"
+                    value={customDepr ?? SEGMENT_DEFAULTS[segment].depreciationPct}
                     min={5} max={40} step={0.5}
                     onChange={v => setCustomDepr(v)}
                     format={v => `${v.toFixed(1)}% a.a.`}
@@ -333,7 +333,7 @@ export function UberCarCalculator() {
                   />
                   <SliderRow
                     label="Seguro anual (R$)"
-                    value={customInsurance ?? 2400}
+                    value={customInsurance ?? SEGMENT_DEFAULTS[segment].insuranceAnnual[citySize]}
                     min={500} max={15_000} step={100}
                     onChange={v => setCustomInsurance(v)}
                     format={v => formatBRL(v)}
@@ -341,28 +341,28 @@ export function UberCarCalculator() {
                   {fuelType !== 'eletrico' && (
                     <SliderRow
                       label="Consumo (km/l)"
-                      value={customFuelEff ?? 11}
+                      value={customFuelEff ?? SEGMENT_DEFAULTS[segment].fuelEfficiency}
                       min={5} max={20} step={0.5}
                       onChange={v => setCustomFuelEff(v)}
                       format={v => `${v.toFixed(1)} km/l`}
                     />
                   )}
                   <SliderRow
-                    label="Manutencao (R$/km)"
-                    value={customMaintKm ?? 0.12}
+                    label="Manutenção (R$/km)"
+                    value={customMaintKm ?? SEGMENT_DEFAULTS[segment].maintenancePerKm}
                     min={0.05} max={0.50} step={0.01}
                     onChange={v => setCustomMaintKm(v)}
                     format={v => `R$ ${v.toFixed(2)}/km`}
                   />
                   <SliderRow
-                    label="Estacionamento (R$/mes)"
+                    label="Estacionamento (R$/mês)"
                     value={parkingMonthly}
                     min={0} max={800} step={50}
                     onChange={setParkingMonthly}
                     format={v => formatBRL(v)}
                   />
                   <SliderRow
-                    label="Lavagem (R$/mes)"
+                    label="Lavagem (R$/mês)"
                     value={washingMonthly}
                     min={0} max={400} step={20}
                     onChange={setWashingMonthly}
@@ -377,7 +377,7 @@ export function UberCarCalculator() {
                     className="text-[10px] font-bold cursor-pointer"
                     style={{ color: 'var(--c-muted)' }}
                   >
-                    Restaurar padroes do segmento
+                    Restaurar padrões do segmento
                   </button>
                 </div>
               )}
@@ -423,16 +423,16 @@ export function UberCarCalculator() {
         </CalculatorCard>
 
         {/* Card 2: Deslocamentos */}
-        <CalculatorCard title="Seus Deslocamentos" subtitle="Como voce usa o transporte no dia a dia.">
+        <CalculatorCard title="Seus Deslocamentos" subtitle="Como você usa o transporte no dia a dia.">
           <div className="space-y-6">
 
             <SliderRow
-              label="Distancia casa-trabalho (ida, km)"
+              label="Distância casa-trabalho (ida, km)"
               value={commuteDistKm}
               min={1} max={60} step={1}
               onChange={setCommuteDistKm}
               format={v => `${v} km`}
-              hint="Apenas a distancia de ida. O calculo considera ida e volta."
+              hint="Apenas a distância de ida. O cálculo considera ida e volta."
             />
 
             <SliderRow
@@ -480,11 +480,20 @@ export function UberCarCalculator() {
             )}
 
             <SliderRow
-              label="Preco Uber por km (R$/km)"
+              label="Preço Uber por km (R$/km)"
               value={uberPricePerKm}
               min={0.80} max={4} step={0.10}
               onChange={setUberPricePerKm}
               format={v => `R$ ${v.toFixed(2)}/km`}
+            />
+
+            <SliderRow
+              label="Tarifa base Uber (por corrida)"
+              value={uberBaseFare}
+              min={0} max={8} step={0.50}
+              onChange={setUberBaseFare}
+              format={v => `R$ ${v.toFixed(2)}`}
+              hint="Valor fixo cobrado por corrida além do preço/km. UberX ~R$3,00"
             />
 
             {/* Extra trips */}
@@ -528,10 +537,10 @@ export function UberCarCalculator() {
           value={heroValue}
           comment={
             results.winner === 'tie'
-              ? 'As opcoes custam praticamente o mesmo.'
+              ? 'As opções custam praticamente o mesmo.'
               : results.winner === 'car'
-              ? `Carro total: ${formatBRL(results.carMonthly.total)}/mes vs. Uber+TP: ${formatBRL(results.uberTpMonthly.total)}/mes`
-              : `Uber+TP total: ${formatBRL(results.uberTpMonthly.total)}/mes vs. Carro: ${formatBRL(results.carMonthly.total)}/mes`
+              ? `Carro total: ${formatBRL(results.carMonthly.total)}/mês vs. Uber+TP: ${formatBRL(results.uberTpMonthly.total)}/mês`
+              : `Uber+TP total: ${formatBRL(results.uberTpMonthly.total)}/mês vs. Carro: ${formatBRL(results.carMonthly.total)}/mês`
           }
           colorClass={heroColor}
         />
@@ -573,7 +582,7 @@ export function UberCarCalculator() {
             ))}
           </div>
           <p className="text-[10px] leading-relaxed" style={{ color: 'var(--c-muted-2)' }}>
-            O custo de oportunidade (em ambar) e o rendimento que o capital investido no carro geraria na Selic ({(RATES.selic * 100).toFixed(1)}% a.a.). Nao e dinheiro que sai do bolso — e dinheiro que deixa de entrar.
+            O custo de oportunidade (em âmbar) é o rendimento que o capital investido no carro geraria na Selic ({(RATES.selic * 100).toFixed(1)}% a.a.). Não é dinheiro que sai do bolso — é dinheiro que deixa de entrar.
           </p>
         </div>
 
@@ -588,13 +597,13 @@ export function UberCarCalculator() {
             </p>
             <p className="text-4xl font-black tabular-nums" style={{ color: 'var(--c-emerald)' }}>
               {breakEvenFinite
-                ? `${Math.round(results.breakEvenKm).toLocaleString('pt-BR')} km/mes`
+                ? `${Math.round(results.breakEvenKm).toLocaleString('pt-BR')} km/mês`
                 : 'Uber sempre mais caro'}
             </p>
             <p className="text-xs" style={{ color: 'var(--c-muted)' }}>
               {breakEvenFinite
-                ? `Abaixo desse volume, Uber+TP e mais barato. Voce roda ${kmPerMonth.toLocaleString('pt-BR')} km/mes.`
-                : 'Neste cenario, o carro e sempre mais economico para qualquer volume de km.'}
+                ? `Abaixo desse volume, Uber+TP é mais barato. Você roda ${kmPerMonth.toLocaleString('pt-BR')} km/mês.`
+                : 'Neste cenário, o carro é sempre mais econômico para qualquer volume de km.'}
             </p>
           </div>
 
@@ -612,7 +621,7 @@ export function UberCarCalculator() {
                   formatBRL(Number(v)),
                   name === 'carCost' ? 'Carro' : 'Uber+TP',
                 ]}
-                labelFormatter={label => `${label} km/mes`}
+                labelFormatter={label => `${label} km/mês`}
                 contentStyle={{
                   backgroundColor: 'var(--c-card-calm)',
                   color: 'var(--c-ink)',
@@ -626,7 +635,7 @@ export function UberCarCalculator() {
                 stroke="#10b981" strokeWidth={2.5} dot={false} />
               {/* User position */}
               <ReferenceLine x={kmPerMonth} stroke="#6366f1" strokeDasharray="4 3"
-                label={{ value: 'Voce', fontSize: 9, fill: '#6366f1', position: 'top' }} />
+                label={{ value: 'Você', fontSize: 9, fill: '#6366f1', position: 'top' }} />
               {/* Break-even */}
               {breakEvenFinite && results.breakEvenKm <= 5000 && (
                 <ReferenceLine x={Math.round(results.breakEvenKm)} stroke="#ef4444" strokeDasharray="4 3"
@@ -688,10 +697,10 @@ export function UberCarCalculator() {
           <TrendingDown className="shrink-0 text-amber-500" size={20} />
           <div className="text-xs leading-relaxed" style={{ color: 'var(--c-ink)' }}>
             <p className="font-extrabold text-amber-700 dark:text-amber-300 text-sm mb-1">
-              E se voce investisse o valor do carro?
+              E se você investisse o valor do carro?
             </p>
             <p>
-              Aplicando {formatBRL(carValue)} na Selic a {(RATES.selic * 100).toFixed(1)}% a.a., voce acumularia{' '}
+              Aplicando {formatBRL(carValue)} na Selic a {(RATES.selic * 100).toFixed(1)}% a.a., você acumularia{' '}
               <strong>{formatBRL(results.fiveYear.selicGainTotal)}</strong> em juros nos proximos 5 anos —
               suficiente para pagar {formatBRL(results.fiveYear.totalUberTP)} de Uber+TP
               {results.fiveYear.selicGainTotal > results.fiveYear.totalUberTP
@@ -703,8 +712,8 @@ export function UberCarCalculator() {
 
         {/* Disclaimer */}
         <p className="text-[10px] leading-relaxed text-center" style={{ color: 'var(--c-muted-2)' }}>
-          Calculo nao inclui multas de transito, gastos com viagens longas ou custos extras de Uber em horarios de pico.
-          Valores de referencia — consulte cotacoes reais para decisoes de compra.
+          Cálculo não inclui multas de trânsito, gastos com viagens longas ou custos extras de Uber em horários de pico.
+          Valores de referência — consulte cotações reais para decisões de compra.
         </p>
 
         {/* Share card */}
@@ -723,14 +732,14 @@ export function UberCarCalculator() {
                   ? `CARRO -${formatBRL(diff)}`
                   : `UBER+TP -${formatBRL(diff)}`
               }
-              mainLabel={`por mes com ${kmPerMonth.toLocaleString('pt-BR')} km rodados`}
+              mainLabel={`por mês com ${kmPerMonth.toLocaleString('pt-BR')} km rodados`}
               metrics={[
-                { label: 'Custo carro/mes',  value: formatBRL(results.carMonthly.total) },
-                { label: 'Custo Uber+TP/mes', value: formatBRL(results.uberTpMonthly.total) },
+                { label: 'Custo carro/mês',  value: formatBRL(results.carMonthly.total) },
+                { label: 'Custo Uber+TP/mês', value: formatBRL(results.uberTpMonthly.total) },
                 { label: 'Ponto de equilibrio', value: breakEvenFinite ? `${Math.round(results.breakEvenKm).toLocaleString('pt-BR')} km` : 'Uber sempre +' },
                 { label: 'Oportunidade 5a', value: formatBRL(results.fiveYear.selicGainTotal) },
               ]}
-              footer="Voce sabe o custo real do seu carro?"
+              footer="Você sabe o custo real do seu carro?"
               accentColor={results.winner === 'car' ? '#10b981' : '#f59e0b'}
             />
           </ScaledPreview>
