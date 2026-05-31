@@ -34,8 +34,8 @@ export function IncomeCalculator() {
   const [I, setI] = useState<number>(9.5)
   const [T, setT] = useState<number>(25)
   const [inflation, setInflation]         = useState<number>(5)
-  const [includeAge, setIncludeAge]         = useState(false)
-  const [age, setAge]                       = useState<number>(40)
+  const [includeAge, setIncludeAge]           = useState(false)
+  const [retirementAge, setRetirementAge]     = useState<number>(60)
   const [lifeExpectancy, setLifeExpectancy] = useState<number>(80)
   const [applyIR, setApplyIR]               = useState(false)
   const [rIsNet, setRIsNet]                 = useState(true)   // true = usuário informa líquido desejado
@@ -49,10 +49,10 @@ export function IncomeCalculator() {
 
   const results = useMemo(
     () => calculateIncome(
-      { C, R, I, inflation, T, age: includeAge ? age : 0, lifeExpectancy, applyIR, rIsNet },
+      { C, R, I, inflation, T, retirementAge: includeAge ? retirementAge : 0, lifeExpectancy, applyIR, rIsNet },
       target
     ),
-    [C, R, I, inflation, T, includeAge, age, lifeExpectancy, applyIR, rIsNet, target]
+    [C, R, I, inflation, T, includeAge, retirementAge, lifeExpectancy, applyIR, rIsNet, target]
   )
 
   const updateField = (field: 'C' | 'R' | 'I' | 'T', val: number) => {
@@ -319,7 +319,7 @@ export function IncomeCalculator() {
             )}
           </div>
 
-          {/* Idade e expectativa de vida — opcional */}
+          {/* Idade da aposentadoria e expectativa de vida — opcional */}
           <div className="space-y-3 pt-2 border-t-2 border-dashed" style={{ borderColor: 'rgba(99,102,241,0.25)' }}>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -335,21 +335,24 @@ export function IncomeCalculator() {
 
             {includeAge && (
               <div className="space-y-3 pl-2">
-                {/* Idade atual */}
+                {/* Idade da aposentadoria */}
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>Sua idade atual</label>
-                    <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--c-ink)' }}>{age} anos</span>
+                    <label className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>Idade da aposentadoria</label>
+                    <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--c-ink)' }}>{retirementAge} anos</span>
                   </div>
-                  <input type="range" min={18} max={85} step={1}
-                    value={age}
-                    onChange={e => setAge(Number(e.target.value))}
+                  <input type="range" min={40} max={80} step={1}
+                    value={retirementAge}
+                    onChange={e => setRetirementAge(Number(e.target.value))}
                     className="w-full h-2 rounded-lg appearance-none cursor-pointer"
                     style={{ accentColor: '#6366f1', backgroundColor: 'var(--c-line)' } as React.CSSProperties}
                   />
                   <div className="flex justify-between text-[10px] font-semibold" style={{ color: 'var(--c-muted)' }}>
-                    <span>18 anos</span><span>85 anos</span>
+                    <span>40 anos</span><span>80 anos</span>
                   </div>
+                  <p className="text-[9px]" style={{ color: 'var(--c-muted-2)' }}>
+                    A renda precisa durar desta idade até a expectativa de vida — não desde hoje.
+                  </p>
                 </div>
 
                 {/* Expectativa de vida */}
@@ -373,7 +376,7 @@ export function IncomeCalculator() {
                 {results.remainingYears > 0 && (
                   <div className="rounded-lg px-3 py-2 flex items-center justify-between" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
                     <span className="text-[11px] font-bold" style={{ color: '#6366f1' }}>
-                      Anos de renda necessários:
+                      Renda necessária: {retirementAge} → {lifeExpectancy} anos
                     </span>
                     <span className="text-sm font-black" style={{ color: '#6366f1' }}>
                       {results.remainingYears} anos
@@ -791,7 +794,7 @@ export function IncomeCalculator() {
                     {formatBRL(results.maxWithdrawalLifetime)}/mês
                   </div>
                   <p className="text-[10px] leading-relaxed" style={{ color: 'var(--c-muted)' }}>
-                    Com esta retirada o capital dura exatamente <strong>{results.remainingYears} anos</strong> (até os {includeAge ? age + results.remainingYears : results.remainingYears} anos).
+                    Com esta retirada o capital dura exatamente <strong>{results.remainingYears} anos</strong> (dos {includeAge ? retirementAge : '—'} aos {includeAge ? lifeExpectancy : results.remainingYears} anos).
                     {results.isEffectivelyPerpetual && (
                       <span style={{ color: '#6366f1' }}> ✓ Sua retirada atual já é efetivamente perpétua para sua vida estimada.</span>
                     )}

@@ -7,7 +7,7 @@ export interface IncomeParams {
   I:               number  // Rentabilidade Anual % a.a. (nominal, bruta de inflação)
   inflation:       number  // Inflação Anual % a.a. (IPCA/meta)
   T:               number  // Tempo de Retirada em anos
-  age?:            number  // Idade atual (opcional — habilita análise vitalícia)
+  retirementAge?:  number  // Idade na aposentadoria (opcional — habilita análise vitalícia)
   lifeExpectancy?: number  // Expectativa de vida (default 80, IBGE)
   applyIR?:        boolean // Aplicar tabela progressiva do IRPF sobre a retirada
   rIsNet?:         boolean // true = R é a renda líquida desejada; false/undefined = R é a bruta
@@ -97,9 +97,10 @@ export function calculateIncome(
 ): IncomeResult {
   let { C, I, T } = params
   const inflation       = Math.max(0, params.inflation ?? 5)
-  const age             = params.age && params.age > 0 ? params.age : 0
+  const retirementAge   = params.retirementAge && params.retirementAge > 0 ? params.retirementAge : 0
   const lifeExpectancy  = params.lifeExpectancy && params.lifeExpectancy > 0 ? params.lifeExpectancy : 80
-  const remainingYears  = age > 0 && lifeExpectancy > age ? lifeExpectancy - age : 0
+  // Anos de renda necessários = da aposentadoria até a expectativa de vida
+  const remainingYears  = retirementAge > 0 && lifeExpectancy > retirementAge ? lifeExpectancy - retirementAge : 0
   const applyIR         = params.applyIR === true
   const rIsNet          = params.rIsNet  === true
 
