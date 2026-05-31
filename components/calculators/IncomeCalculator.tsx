@@ -8,7 +8,7 @@ import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
-import { formatBRL, formatPct } from '@/lib/formatters'
+import { formatBRL, formatPct, formatBRLInput, parseBRLInput } from '@/lib/formatters'
 import { calculateIncome } from '@/lib/calculations/income'
 import { IR_TABLE, calculateIR } from '@/config/tax'
 import {
@@ -21,11 +21,7 @@ import { HelpCircle, Sparkles, AlertTriangle, ShieldCheck, Flame, RefreshCw, Tre
 
 const getBRLDisplayValue = (num: number, isTarget: boolean, computedVal: number) => {
   const v = isTarget ? computedVal : num
-  return v === 0 ? '' : Math.round(v).toLocaleString('pt-BR')
-}
-const parseBRLInput = (v: string): number => {
-  const c = v.replace(/\D/g, '')
-  return c === '' ? 0 : parseInt(c, 10)
+  return formatBRLInput(Math.round(v))
 }
 
 export function IncomeCalculator() {
@@ -72,7 +68,7 @@ export function IncomeCalculator() {
     prepareForEdit(field); updateField(field, val)
   }
   const handleBRLChange = (field: 'C' | 'R', raw: string) => {
-    handleInputChange(field, parseBRLInput(raw))
+    handleInputChange(field, Math.round(parseBRLInput(raw)))
   }
   const handleReset = () => {
     setC(0); setR(0); setI(0); setT(0)

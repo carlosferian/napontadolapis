@@ -7,7 +7,7 @@ import { MetricGrid } from '@/components/ui/MetricGrid'
 import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
-import { formatBRL } from '@/lib/formatters'
+import { formatBRL, formatBRLInput, parseBRLInput } from '@/lib/formatters'
 import { calculateRotativo, ROTATIVO_DEFAULTS } from '@/config/rotativo'
 import {
   AreaChart,
@@ -22,16 +22,7 @@ import {
 import { Sparkles, HelpCircle, AlertTriangle, ShieldAlert, BadgePercent, GraduationCap, Coins } from 'lucide-react'
 
 // Funções auxiliares para formatação de BRL em inputs de texto
-const getBRLDisplayValue = (num: number) => {
-  if (num === 0) return ''
-  return Math.round(num).toLocaleString('pt-BR')
-}
-
-const parseBRLInputValue = (value: string): number => {
-  const cleanValue = value.replace(/\D/g, '')
-  if (cleanValue === '') return 0
-  return parseInt(cleanValue, 10)
-}
+const getBRLDisplayValue = (num: number) => formatBRLInput(Math.round(num))
 
 export function RotativoCalculator() {
   const [debtValue, setDebtValue] = useState<number>(5000)
@@ -49,7 +40,7 @@ export function RotativoCalculator() {
   }, [debtValue, cardRate, monthlyPayment, loanRate])
 
   const handleBRLInputChange = (field: 'debt' | 'payment', rawValue: string) => {
-    const numericValue = parseBRLInputValue(rawValue)
+    const numericValue = Math.round(parseBRLInput(rawValue))
     if (field === 'debt') {
       setDebtValue(numericValue)
     } else {

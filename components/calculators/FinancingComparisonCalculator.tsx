@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { formatBRL, formatPct } from '@/lib/formatters'
+import { formatBRL, formatPct, formatBRLInput, parseBRLInput } from '@/lib/formatters'
 import { calcSAC, calcPrice, calcEmprestimo, calcConsorcio } from '@/lib/calculations/financing'
 import { RATES } from '@/config/rates'
 import {
@@ -26,7 +26,6 @@ const DEFAULTS = {
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
-function parseBRL(v: string) { const c = v.replace(/\D/g, ''); return c ? parseInt(c, 10) : 0 }
 function SliderInput({ label, value, unit, min, max, step, onChange, tip }: {
   label: string; value: number; unit: string; min: number; max: number; step: number
   onChange: (v: number) => void; tip?: string
@@ -138,8 +137,8 @@ export function FinancingComparisonCalculator() {
               <div className="relative w-44">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium" style={{ color: 'var(--c-muted)' }}>R$</span>
                 <input type="text" inputMode="numeric"
-                  value={bemValue === 0 ? '' : bemValue.toLocaleString('pt-BR')}
-                  onChange={e => setBemValue(Math.min(10_000_000, parseBRL(e.target.value)))}
+                  value={bemValue === 0 ? '' : formatBRLInput(bemValue)}
+                  onChange={e => setBemValue(Math.min(10_000_000, Math.round(parseBRLInput(e.target.value))))}
                   className="w-full text-right border rounded-xl pr-3 pl-8 py-1.5 text-sm font-bold tabular-nums bg-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }} />
               </div>

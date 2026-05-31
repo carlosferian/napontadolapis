@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react'
 import { calculateIncome } from '@/lib/calculations/income'
-import { formatBRL } from '@/lib/formatters'
+import { formatBRL, formatBRLInput, parseBRLInput } from '@/lib/formatters'
 import { RATES } from '@/config/rates'
 import { TrendingDown, AlertTriangle, CheckCircle, RefreshCw, Calendar } from 'lucide-react'
 
@@ -11,8 +11,6 @@ const FIXED_INFLATION = 5            // IPCA % a.a.
 const FIXED_RATE      = RATES.selic * 100  // Selic nominal % a.a.
 
 // ── Helpers ───────────────────────────────────────────────────────────────
-
-function parseBRL(v: string) { const c = v.replace(/\D/g, ''); return c ? parseInt(c, 10) : 0 }
 
 function DurationBadge({ years, isPerpetual }: { years: number; isPerpetual: boolean }) {
   if (isPerpetual) return (
@@ -151,8 +149,8 @@ export function SimpleIncomeCalculator() {
               <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg font-extrabold" style={{ color: 'var(--c-muted)' }}>R$</span>
               <input
                 type="text" inputMode="numeric"
-                value={capital === 0 ? '' : capital.toLocaleString('pt-BR')}
-                onChange={e => setCapital(Math.min(100_000_000, parseBRL(e.target.value)))}
+                value={capital === 0 ? '' : formatBRLInput(capital)}
+                onChange={e => setCapital(Math.min(100_000_000, Math.round(parseBRLInput(e.target.value))))}
                 className="w-full border-2 rounded-2xl py-4 pr-5 pl-14 text-2xl font-black tabular-nums focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-transparent"
                 style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }}
                 placeholder="0"
@@ -245,8 +243,8 @@ export function SimpleIncomeCalculator() {
               <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg font-extrabold" style={{ color: 'var(--c-muted)' }}>R$</span>
               <input
                 type="text" inputMode="numeric"
-                value={withdrawal === 0 ? '' : withdrawal.toLocaleString('pt-BR')}
-                onChange={e => setWithdrawal(Math.min(1_000_000, parseBRL(e.target.value)))}
+                value={withdrawal === 0 ? '' : formatBRLInput(withdrawal)}
+                onChange={e => setWithdrawal(Math.min(1_000_000, Math.round(parseBRLInput(e.target.value))))}
                 className="w-full border-2 rounded-2xl py-4 pr-5 pl-14 text-2xl font-black tabular-nums focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-transparent"
                 style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }}
                 placeholder="0"

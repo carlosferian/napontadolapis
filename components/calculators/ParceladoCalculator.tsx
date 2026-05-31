@@ -7,21 +7,12 @@ import { MetricGrid } from '@/components/ui/MetricGrid'
 import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
-import { formatBRL } from '@/lib/formatters'
+import { formatBRL, formatBRLInput, parseBRLInput } from '@/lib/formatters'
 import { calculateParcelado } from '@/config/parcelado'
 import { HelpCircle, Sparkles, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react'
 
 // Funções auxiliares para formatação de BRL em inputs de texto
-const getBRLDisplayValue = (num: number) => {
-  if (num === 0) return ''
-  return Math.round(num).toLocaleString('pt-BR')
-}
-
-const parseBRLInputValue = (value: string): number => {
-  const cleanValue = value.replace(/\D/g, '')
-  if (cleanValue === '') return 0
-  return parseInt(cleanValue, 10)
-}
+const getBRLDisplayValue = (num: number) => formatBRLInput(Math.round(num))
 
 export function ParceladoCalculator() {
   const [priceParcelado, setPriceParcelado] = useState<number>(1000)
@@ -37,7 +28,7 @@ export function ParceladoCalculator() {
   }, [priceVista, priceParcelado, installments])
 
   const handleBRLInputChange = (field: 'vista' | 'parcelado', rawValue: string) => {
-    const numericValue = parseBRLInputValue(rawValue)
+    const numericValue = Math.round(parseBRLInput(rawValue))
     if (field === 'vista') {
       setPriceVista(numericValue)
     } else {

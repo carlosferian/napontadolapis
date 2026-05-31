@@ -8,7 +8,7 @@ import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
-import { formatBRL } from '@/lib/formatters'
+import { formatBRL, formatBRLInput, parseBRLInput } from '@/lib/formatters'
 import { calculateUberVsCar } from '@/lib/calculations/uber-car'
 import { getSegment, SEGMENT_LABELS, SEGMENT_DEFAULTS } from '@/config/uber-car'
 import type { CitySize, FuelType, CommuteMode } from '@/config/uber-car'
@@ -232,10 +232,10 @@ export function UberCarCalculator() {
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium" style={{ color: 'var(--c-muted)' }}>R$</span>
                     <input
                       type="text" inputMode="numeric"
-                      value={carValueRaw === '0' ? '' : Number(carValueRaw.replace(/\D/g, '') || 0).toLocaleString('pt-BR')}
+                      value={carValueRaw === '0' ? '' : formatBRLInput(Number(carValueRaw.replace(/\D/g, '') || 0))}
                       placeholder="90.000"
                       onChange={e => {
-                        const digits = e.target.value.replace(/\D/g, '')
+                        const digits = String(Math.round(parseBRLInput(e.target.value)))
                         setCarValueRaw(digits || '0')
                       }}
                       className="w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"

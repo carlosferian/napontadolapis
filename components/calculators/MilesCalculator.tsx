@@ -8,7 +8,7 @@ import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
-import { formatBRL } from '@/lib/formatters'
+import { formatBRL, formatBRLInput, parseBRLInput } from '@/lib/formatters'
 import { LOYALTY_PROGRAMS, calculateEmissionComparison, calculatePurchaseComparison, EmissionCalculationInput, PurchaseCalculationInput } from '@/config/miles'
 import { Info, Sparkles, Plane, Coins, Award, Flame, AlertCircle } from 'lucide-react'
 
@@ -106,10 +106,9 @@ export function MilesCalculator() {
                       id="price-cash-input"
                       type="text"
                       inputMode="numeric"
-                      value={priceInCash === 0 ? '' : priceInCash.toLocaleString('pt-BR')}
+                      value={priceInCash === 0 ? '' : formatBRLInput(priceInCash)}
                       onChange={(e) => {
-                        const raw = e.target.value.replace(/\D/g, '');
-                        const val = raw ? parseInt(raw, 10) : 0;
+                        const val = Math.round(parseBRLInput(e.target.value));
                         setPriceInCash(Math.min(150000, val));
                       }}
                       className="w-full text-right border rounded-xl pr-3 pl-8 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
@@ -191,10 +190,9 @@ export function MilesCalculator() {
                       id="boarding-tax-input"
                       type="text"
                       inputMode="numeric"
-                      value={boardingTax === 0 ? '' : boardingTax.toLocaleString('pt-BR')}
+                      value={boardingTax === 0 ? '' : formatBRLInput(boardingTax)}
                       onChange={(e) => {
-                        const raw = e.target.value.replace(/\D/g, '');
-                        const val = raw ? parseInt(raw, 10) : 0;
+                        const val = Math.round(parseBRLInput(e.target.value));
                         setBoardingTax(Math.min(10000, val));
                       }}
                       className="w-full text-right border rounded-xl pr-3 pl-8 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
@@ -312,10 +310,9 @@ export function MilesCalculator() {
                       id="cost-promo-input"
                       type="text"
                       inputMode="numeric"
-                      value={costOfPromotion === 0 ? '' : costOfPromotion.toLocaleString('pt-BR')}
+                      value={costOfPromotion === 0 ? '' : formatBRLInput(costOfPromotion)}
                       onChange={(e) => {
-                        const raw = e.target.value.replace(/\D/g, '');
-                        const val = raw ? parseInt(raw, 10) : 0;
+                        const val = Math.round(parseBRLInput(e.target.value));
                         setCostOfPromotion(Math.min(150000, val));
                       }}
                       className="w-full text-right border rounded-xl pr-3 pl-8 py-1 text-xs font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"

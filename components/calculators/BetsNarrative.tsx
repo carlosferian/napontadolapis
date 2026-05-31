@@ -11,7 +11,7 @@ import { ShareCardBase }  from '@/components/share/ShareCard'
 import { ScaledPreview }  from '@/components/ui/ScaledPreview'
 import { compoundMonthly } from '@/lib/calculations/compound'
 import { calcHouseEdge, expectedValuePerBet, probProfit } from '@/lib/calculations/probability'
-import { formatBRL, formatPct } from '@/lib/formatters'
+import { formatBRL, formatPct, formatBRLInput, parseBRLInput } from '@/lib/formatters'
 import { RATES } from '@/config/rates'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -366,8 +366,8 @@ export function BetsNarrative({ onRestart }: { onRestart: () => void }) {
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold text-stone-400">R$</span>
                       <input
                         type="text" inputMode="numeric"
-                        value={monthly === 0 ? '' : monthly.toLocaleString('pt-BR')}
-                        onChange={e => { const v = parseInt(e.target.value.replace(/\D/g,''),10); setMonthly(isNaN(v) ? 0 : Math.min(50000, v)) }}
+                        value={monthly === 0 ? '' : formatBRLInput(monthly)}
+                        onChange={e => { const v = Math.round(parseBRLInput(e.target.value)); setMonthly(isNaN(v) ? 0 : Math.min(50000, v)) }}
                         className="w-full border rounded-xl pr-3 pl-8 py-1.5 text-sm font-extrabold text-right tabular-nums"
                         style={{ borderColor: '#e5e7eb', color: '#111827' }}
                       />
