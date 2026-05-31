@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { FinancingComparisonCalculator } from '@/components/calculators/FinancingComparisonCalculator'
+import { FinancingPageTabs } from '@/components/FinancingPageTabs'
 import { AppCTA }        from '@/components/AppCTA'
 import { SourcesFooter } from '@/components/ui/SourcesFooter'
 
@@ -39,7 +39,7 @@ export default function FinanciamentoOuConsorcioPage() {
         </p>
       </div>
 
-      <FinancingComparisonCalculator />
+      <FinancingPageTabs />
 
       <SourcesFooter sources={[
         { label: 'Banco Central do Brasil — Nota sobre Consórcios (Lei nº 11.795/2008)', url: 'https://www.bcb.gov.br/estabilidadefinanceira/consorcio' },

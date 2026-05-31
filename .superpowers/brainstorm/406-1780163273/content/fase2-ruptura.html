@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fase 2 — A Ruptura</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0a14; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; padding: 24px 20px; }
+
+  h1 { text-align: center; font-size: 14px; color: #94a3b8; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+  .sub { text-align: center; font-size: 12px; color: #64748b; margin-bottom: 28px; }
+
+  /* ────────── MOCKUP PRINCIPAL: SPLIT SCREEN ────────── */
+  .split-mockup {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1.5px solid rgba(220,38,38,0.4);
+    box-shadow: 0 0 40px rgba(220,38,38,0.08);
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  /* Sequência de animação - 4 frames */
+  .frame { display: none; }
+  .frame.active { display: flex; }
+
+  /* Frame 0: SALDO ZERO - tela morta do cassino */
+  .frame-0 {
+    background: #0d0000;
+    background-image: radial-gradient(ellipse at 50% 50%, rgba(127,29,29,0.2) 0%, transparent 70%);
+    height: 200px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .frame-0::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(220,38,38,0.02) 2px, rgba(220,38,38,0.02) 4px);
+  }
+  /* Rachaduras SVG */
+  .crack {
+    position: absolute; top: 0; right: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  /* Frame 1: TREMOR */
+  .frame-1 {
+    background: #0d0000;
+    height: 200px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: shake 0.15s infinite;
+    position: relative;
+  }
+
+  /* Frame 2: FLASH VERMELHO */
+  .frame-2 {
+    background: #dc2626;
+    height: 200px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Frame 3: O SPLIT FINAL */
+  .frame-3 {
+    height: 260px;
+    position: relative;
+    overflow: hidden;
+  }
+  .split-left {
+    flex: 1;
+    background: #0d0000;
+    background-image: radial-gradient(ellipse at 50% 50%, rgba(80,0,0,0.4) 0%, transparent 70%);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    filter: grayscale(0.6);
+    position: relative;
+  }
+  .split-right {
+    flex: 1;
+    background: #f8f7f5;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+  .lightning {
+    position: absolute;
+    left: 50%;
+    top: 0; bottom: 0;
+    width: 4px;
+    transform: translateX(-50%);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  @keyframes shake {
+    0%  { transform: translateX(0); }
+    25% { transform: translateX(-4px) rotate(-0.3deg); }
+    75% { transform: translateX(4px) rotate(0.3deg); }
+    100%{ transform: translateX(0); }
+  }
+  @keyframes flickerText { 0%,100%{opacity:1} 45%{opacity:0.2} 50%{opacity:1} 90%{opacity:0.5} }
+  @keyframes slideInRight { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Controles do simulador */
+  .controls {
+    display: flex; gap: 10px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .ctrl-btn {
+    padding: 8px 18px; border-radius: 8px; font-size: 11px; font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+    color: #94a3b8; cursor: pointer; letter-spacing: 1px; transition: all 0.15s;
+  }
+  .ctrl-btn:hover { background: rgba(255,255,255,0.08); color: #e2e8f0; }
+  .ctrl-btn.active { background: rgba(220,38,38,0.15); border-color: rgba(220,38,38,0.4); color: #f87171; }
+  .ctrl-btn.go { background: rgba(220,38,38,0.2); border-color: #dc2626; color: #fca5a5; }
+
+  /* Sequência de eventos descrita */
+  .timeline {
+    display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;
+  }
+  .tl-step {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+    font-size: 11px;
+  }
+  .tl-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; flex-shrink: 0;
+  }
+  .tl-body { display: flex; flex-direction: column; gap: 2px; }
+  .tl-title { font-weight: 700; color: #e2e8f0; }
+  .tl-desc { color: #64748b; }
+
+  /* Botão final */
+  .validate-row { display: flex; gap: 10px; justify-content: center; }
+</style>
+</head>
+<body>
+
+<h1>Fase 2 — A Ruptura</h1>
+<p class="sub">O momento em que o cassino morre e a verdade aparece. Sequência animada de 4 eventos.</p>
+
+<!-- Controles para visualizar cada frame -->
+<div class="controls">
+  <button class="ctrl-btn active" onclick="showFrame(0)">Frame 1 — Cassino Morto</button>
+  <button class="ctrl-btn" onclick="showFrame(1)">Frame 2 — Tremor</button>
+  <button class="ctrl-btn" onclick="showFrame(2)">Frame 3 — Flash</button>
+  <button class="ctrl-btn go" onclick="showFrame(3)">Frame 4 — Split Final ★</button>
+</div>
+
+<!-- O mockup que muda com os botões -->
+<div class="split-mockup">
+
+  <!-- FRAME 0: Cassino morto / Saldo zero -->
+  <div class="frame frame-0 active" id="frame-0">
+    <svg class="crack" viewBox="0 0 400 200" preserveAspectRatio="none">
+      <path d="M380,0 L310,30 L340,70 L280,65 L310,130 L260,125 L280,200" stroke="#dc2626" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+      <path d="M340,70 L370,85" stroke="#dc2626" stroke-width="1.5" fill="none" opacity="0.4"/>
+      <path d="M20,0 L60,25 L40,55 L70,50" stroke="#dc2626" stroke-width="1.5" fill="none" opacity="0.3"/>
+    </svg>
+    <div style="font-size:32px;filter:grayscale(1) brightness(0.4);animation:flickerText 0.5s infinite;">💀💀💀</div>
+    <div style="font-family:monospace;font-size:28px;font-weight:900;color:#450a0a;animation:flickerText 0.4s infinite;letter-spacing:2px;">R$ 0,00</div>
+    <div style="font-size:10px;font-weight:800;letter-spacing:3px;color:#7f1d1d;text-transform:uppercase;animation:flickerText 0.6s infinite;">✕ SALDO ESGOTADO</div>
+    <div style="position:absolute;bottom:10px;font-size:9px;color:#4b1414;letter-spacing:1px;">A BANCA AGRADECE</div>
+  </div>
+
+  <!-- FRAME 1: Tremor -->
+  <div class="frame frame-1" id="frame-1">
+    <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 400 200">
+      <path d="M380,0 L310,30 L340,70 L280,65 L310,130 L260,125 L280,200" stroke="#dc2626" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
+    </svg>
+    <div style="font-size:28px;filter:grayscale(1);">💀</div>
+    <div style="font-family:monospace;font-size:26px;font-weight:900;color:#dc2626;letter-spacing:2px;">R$ 0,00</div>
+    <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:#ef4444;text-transform:uppercase;">⚠ TELA TREMENDO</div>
+    <div style="position:absolute;bottom:12px;font-size:9px;color:#7f1d1d;font-style:italic;">animação de shake 300ms</div>
+  </div>
+
+  <!-- FRAME 2: Flash vermelho -->
+  <div class="frame" id="frame-2" style="background:#dc2626;height:200px;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+    <div style="font-size:40px;">⚡</div>
+    <div style="color:white;font-size:11px;font-weight:900;letter-spacing:4px;text-transform:uppercase;opacity:0.9;">FLASH BRANCO → VERMELHO</div>
+    <div style="color:rgba(255,255,255,0.6);font-size:9px;letter-spacing:2px;">duração: 200ms</div>
+  </div>
+
+  <!-- FRAME 3: O GRANDE SPLIT -->
+  <div class="frame" id="frame-3" style="height:260px;display:none;position:relative;overflow:hidden;">
+    <!-- Lado esquerdo: cassino morto -->
+    <div class="split-left">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+        <div style="width:5px;height:5px;border-radius:50%;background:#450a0a;"></div>
+        <span style="color:#450a0a;font-size:8px;font-weight:800;letter-spacing:2px;">A ILUSÃO</span>
+      </div>
+      <div style="display:flex;gap:4px;">
+        <div style="width:34px;height:44px;border-radius:6px;background:#0a0000;border:1px solid #450a0a;display:flex;align-items:center;justify-content:center;font-size:14px;filter:grayscale(1) brightness(0.3);">💀</div>
+        <div style="width:34px;height:44px;border-radius:6px;background:#0a0000;border:1px solid #450a0a;display:flex;align-items:center;justify-content:center;font-size:14px;filter:grayscale(1) brightness(0.3);">💀</div>
+        <div style="width:34px;height:44px;border-radius:6px;background:#0a0000;border:1px solid #450a0a;display:flex;align-items:center;justify-content:center;font-size:14px;filter:grayscale(1) brightness(0.3);">💀</div>
+      </div>
+      <div style="background:rgba(80,0,0,0.4);border:1px solid #450a0a;border-radius:6px;padding:5px 8px;font-family:monospace;font-size:16px;font-weight:900;color:#450a0a;text-align:center;animation:flickerText 0.4s infinite;">R$ 0,00</div>
+      <!-- símbolos de ruína -->
+      <div style="font-size:13px;opacity:0.5;letter-spacing:3px;text-align:center;">🕷️ 💔 💸 💀</div>
+      <!-- crack no lado esquerdo -->
+      <svg style="position:absolute;top:0;right:0;width:60px;height:100%;pointer-events:none;" viewBox="0 0 60 260" preserveAspectRatio="none">
+        <path d="M60,0 L40,40 L52,80 L30,75 L44,140 L20,135 L34,200 L10,260" stroke="#dc2626" stroke-width="2" fill="none" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <!-- RAIO CENTRAL -->
+    <svg class="lightning" viewBox="0 0 4 260" preserveAspectRatio="none" style="width:4px;height:100%;position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:10;">
+      <defs>
+        <linearGradient id="lg" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+          <stop offset="30%" stop-color="#ef4444" stop-opacity="1"/>
+          <stop offset="70%" stop-color="#dc2626" stop-opacity="1"/>
+          <stop offset="100%" stop-color="#991b1b" stop-opacity="0.5"/>
+        </linearGradient>
+      </defs>
+      <rect width="4" height="260" fill="url(#lg)"/>
+      <!-- glow effect via wider semi-transparent rect -->
+    </svg>
+    <div style="position:absolute;left:50%;top:0;bottom:0;width:20px;transform:translateX(-50%);background:linear-gradient(to bottom,rgba(255,255,255,0.15),rgba(220,38,38,0.3),rgba(220,38,38,0.2));z-index:9;pointer-events:none;"></div>
+
+    <!-- Lado direito: revelação -->
+    <div class="split-right" style="animation:slideInRight 0.4s ease-out;">
+      <div style="display:flex;align-items:center;gap:5px;position:absolute;top:14px;left:14px;">
+        <div style="width:5px;height:5px;border-radius:50%;background:#059669;"></div>
+        <span style="color:#059669;font-size:8px;font-weight:800;letter-spacing:2px;">A REALIDADE</span>
+      </div>
+      <div style="animation:fadeUp 0.5s 0.2s both;">
+        <div style="font-size:28px;font-weight:900;color:#111827;line-height:1.1;margin-bottom:6px;">A ilusão<br/>acabou.</div>
+        <div style="font-size:11px;color:#dc2626;font-weight:700;margin-bottom:10px;">R$ 100 perdidos em 15 cliques.</div>
+        <div style="font-size:10px;color:#6b7280;line-height:1.5;max-width:140px;margin:0 auto;">É assim que funciona<br/>toda vez. A matemática<br/>é implacável.</div>
+      </div>
+      <div style="animation:fadeUp 0.5s 0.5s both;">
+        <button data-choice="ver-verdade" style="background:#111827;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:1px;margin-top:10px;">Ver a verdade completa →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Linha do tempo textual da sequência -->
+<div class="timeline">
+  <div class="tl-step">
+    <div class="tl-num" style="background:rgba(220,38,38,0.15);color:#f87171;border:1px solid rgba(220,38,38,0.3);">1</div>
+    <div class="tl-body">
+      <span class="tl-title">Saldo chega a R$ 0,00</span>
+      <span class="tl-desc">Rodada 15 completada. Botão de apostar desaparece. Tela exibe cassino morto (grayscale, 💀, rachaduras).</span>
+    </div>
+  </div>
+  <div class="tl-step">
+    <div class="tl-num" style="background:rgba(220,38,38,0.2);color:#f87171;border:1px solid rgba(220,38,38,0.4);">2</div>
+    <div class="tl-body">
+      <span class="tl-title">Tela treme por 300ms</span>
+      <span class="tl-desc">CSS animation shake. Usuário percebe que algo está acontecendo. Tensão máxima.</span>
+    </div>
+  </div>
+  <div class="tl-step">
+    <div class="tl-num" style="background:rgba(220,38,38,0.25);color:#f87171;border:1px solid rgba(220,38,38,0.5);">3</div>
+    <div class="tl-body">
+      <span class="tl-title">Flash vermelho 200ms</span>
+      <span class="tl-desc">Fundo vai a vermelho puro e volta. Ruptura psicológica. O cérebro registra o choque.</span>
+    </div>
+  </div>
+  <div class="tl-step">
+    <div class="tl-num" style="background:rgba(220,38,38,0.3);color:#fca5a5;border:1px solid #dc2626;">4</div>
+    <div class="tl-body">
+      <span class="tl-title">Split screen com raio vermelho</span>
+      <span class="tl-desc">A tela se divide: esquerda = cassino morto com símbolos de ruína. Direita = fundo branco com "A ilusão acabou." + botão "Ver a verdade →".</span>
+    </div>
+  </div>
+  <div class="tl-step">
+    <div class="tl-num" style="background:rgba(5,150,105,0.15);color:#34d399;border:1px solid rgba(5,150,105,0.3);">5</div>
+    <div class="tl-body">
+      <span class="tl-title">Transição para Fase 3</span>
+      <span class="tl-desc">Ao clicar "Ver a verdade →", a página faz scroll suave para a seção narrativa que fica abaixo (ou fade-in do conteúdo educativo).</span>
+    </div>
+  </div>
+</div>
+
+<!-- Validação -->
+<div class="validate-row">
+  <button data-choice="aprovado" style="background:#16a34a;color:white;border:none;border-radius:10px;padding:12px 28px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;">✓ Aprovado — Ver Fase 3</button>
+  <button data-choice="ajustar" style="background:rgba(255,255,255,0.05);color:#94a3b8;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 28px;font-size:13px;font-weight:700;cursor:pointer;">✎ Ajustar</button>
+</div>
+
+<script>
+const frames = [0,1,2,3];
+function showFrame(n) {
+  frames.forEach(i => {
+    const f = document.getElementById('frame-'+i);
+    if (f) f.style.display = 'none';
+  });
+  const target = document.getElementById('frame-'+n);
+  if (target) {
+    target.style.display = 'flex';
+    if (n === 3) target.style.display = 'flex';
+  }
+  document.querySelectorAll('.ctrl-btn').forEach((b,i) => {
+    b.classList.toggle('active', i === n);
+  });
+}
+</script>
+</body>
+</html>

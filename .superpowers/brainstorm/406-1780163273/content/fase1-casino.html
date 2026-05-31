@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fase 1 — O Cassino (5 Estágios de Decadência)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0a14; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+
+  h1 { text-align: center; font-size: 15px; color: #94a3b8; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+  .sub { text-align: center; font-size: 12px; color: #64748b; margin-bottom: 24px; }
+
+  .stages { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 28px; }
+
+  /* ESTÁGIO BASE */
+  .stage {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1.5px solid;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .stage:hover { transform: translateY(-2px); }
+  .stage-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 6px 8px; font-size: 9px; font-weight: 800;
+    letter-spacing: 1.5px; text-align: center; text-transform: uppercase;
+    backdrop-filter: blur(8px);
+  }
+
+  /* ── ESTÁGIO 0: PRISTINE ── */
+  .s0 { border-color: #e0b35a; background: #14102a; box-shadow: 0 0 20px rgba(224,179,90,0.15); }
+  .s0 .casino-bg {
+    background: #14102a;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgba(224,179,90,0.45) 0%, transparent 55%),
+      radial-gradient(ellipse at 10% 80%, rgba(100,50,220,0.25) 0%, transparent 45%),
+      radial-gradient(ellipse at 90% 70%, rgba(30,120,220,0.2) 0%, transparent 40%);
+    padding: 12px 10px 32px;
+    min-height: 260px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .s0 .stage-label { background: rgba(224,179,90,0.25); color: #e0b35a; }
+
+  /* ── ESTÁGIO 1: PRIMEIROS SINAIS ── */
+  .s1 { border-color: #b45309; background: #080810; }
+  .s1 .casino-bg {
+    background: #080810;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgba(180,83,9,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(239,68,68,0.08) 0%, transparent 50%);
+    padding: 12px 10px 32px;
+    min-height: 260px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .s1 .stage-label { background: rgba(180,83,9,0.25); color: #fb923c; }
+
+  /* ── ESTÁGIO 2: ALERTA ── */
+  .s2 { border-color: #dc2626; background: #080810; }
+  .s2 .casino-bg {
+    background: #0d0508;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgba(220,38,38,0.2) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(239,68,68,0.12) 0%, transparent 50%);
+    padding: 12px 10px 32px;
+    min-height: 260px;
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative;
+  }
+  .s2 .stage-label { background: rgba(220,38,38,0.25); color: #f87171; }
+
+  /* ── ESTÁGIO 3: CRÍTICO ── */
+  .s3 { border-color: #7f1d1d; background: #080810; }
+  .s3 .casino-bg {
+    background: #110303;
+    background-image:
+      radial-gradient(ellipse at 50% 50%, rgba(127,29,29,0.3) 0%, transparent 70%);
+    padding: 12px 10px 32px;
+    min-height: 260px;
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative;
+  }
+  .s3 .stage-label { background: rgba(127,29,29,0.4); color: #fca5a5; }
+
+  /* ── ESTÁGIO 4: COLAPSO ── */
+  .s4 { border-color: #450a0a; background: #080810; animation: borderPulse 0.6s infinite; }
+  .s4 .casino-bg {
+    background: #0d0000;
+    background-image:
+      radial-gradient(ellipse at 50% 50%, rgba(200,20,20,0.15) 0%, transparent 70%);
+    padding: 12px 10px 32px;
+    min-height: 260px;
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative;
+  }
+  .s4 .stage-label { background: rgba(200,20,20,0.3); color: #ef4444; animation: textFlicker 0.3s infinite; }
+
+  @keyframes borderPulse {
+    0%, 100% { border-color: #450a0a; box-shadow: none; }
+    50% { border-color: #dc2626; box-shadow: 0 0 12px rgba(220,38,38,0.3); }
+  }
+  @keyframes textFlicker {
+    0%, 100% { opacity: 1; } 45% { opacity: 0.3; } 50% { opacity: 1; } 85% { opacity: 0.5; }
+  }
+  @keyframes glow { 0%,100%{text-shadow:0 0 8px rgba(224,179,90,0.6)} 50%{text-shadow:0 0 16px rgba(224,179,90,0.9)} }
+  @keyframes flicker { 0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:0.3} 94%{opacity:1} 97%{opacity:0.6} 98%{opacity:1} }
+  @keyframes fastFlicker { 0%,100%{opacity:1} 30%{opacity:0.4} 60%{opacity:0.8} 80%{opacity:0.2} }
+  @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+  @keyframes moneyFly { 0%{opacity:0;transform:translateY(0) rotate(0deg)} 50%{opacity:1} 100%{opacity:0;transform:translateY(-28px) rotate(20deg)} }
+
+  /* Shared inner elements */
+  .live-bar { display:flex; align-items:center; gap:5px; padding:4px 8px; border-radius:20px; font-size:8px; font-weight:800; letter-spacing:1px; margin-bottom:2px; width:fit-content; }
+  .live-dot { width:5px;height:5px;border-radius:50%; }
+  .slot-row { display:flex; gap:4px; justify-content:center; }
+  .slot { width:38px;height:50px;border-radius:7px;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;overflow:hidden; }
+  .saldo-bar { border-radius:8px;padding:5px 8px;display:flex;justify-content:space-between;align-items:center;border:1px solid; }
+  .bet-btn { border-radius:8px;padding:7px;text-align:center;font-size:10px;font-weight:900;letter-spacing:1.5px; }
+  .decay-symbols { position:absolute;pointer-events:none; }
+  .crack-overlay { position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;opacity:0.6; }
+</style>
+</head>
+<body>
+
+<h1>Fase 1 — O Cassino: 5 Estágios de Decadência</h1>
+<p class="sub">O cassino começa como um app real de bet. À medida que o usuário perde, a interface se deteriora visualmente.</p>
+
+<div class="stages">
+
+  <!-- ── ESTÁGIO 0: PRISTINE (0-20% de perda) ── -->
+  <div class="stage s0">
+    <div class="casino-bg">
+      <div class="live-bar" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);">
+        <div class="live-dot" style="background:#ef4444;box-shadow:0 0 8px #ef4444;animation:glow 1s infinite;"></div>
+        <span style="color:#ff6b6b;font-weight:900;">148.320 AO VIVO</span>
+      </div>
+      <div style="text-align:center;font-size:9px;font-weight:900;letter-spacing:3px;color:#fcd34d;text-shadow:0 0 12px rgba(252,211,77,0.8),0 0 24px rgba(252,211,77,0.4);animation:glow 1.5s infinite;margin-bottom:2px;">⚡ FORTUNE TIGER ⚡</div>
+      <div class="slot-row">
+        <div class="slot" style="background:linear-gradient(160deg,#2d1a04,#4a2510);border-color:#d97706;box-shadow:0 0 12px rgba(217,119,6,0.6),inset 0 1px 0 rgba(255,255,255,0.1);">🐯</div>
+        <div class="slot" style="background:linear-gradient(160deg,#040d2a,#081840);border-color:#3b82f6;box-shadow:0 0 12px rgba(59,130,246,0.5),inset 0 1px 0 rgba(255,255,255,0.1);">💎</div>
+        <div class="slot" style="background:linear-gradient(160deg,#0d2a04,#143808);border-color:#22c55e;box-shadow:0 0 12px rgba(34,197,94,0.5),inset 0 1px 0 rgba(255,255,255,0.1);">🍀</div>
+      </div>
+      <div class="saldo-bar" style="background:rgba(0,0,0,0.4);border-color:rgba(252,211,77,0.5);box-shadow:0 0 8px rgba(252,211,77,0.1);">
+        <span style="color:#a8a29e;font-size:8px;font-weight:700;">SALDO</span>
+        <span style="color:#fcd34d;font-size:14px;font-weight:900;font-family:monospace;text-shadow:0 0 10px rgba(252,211,77,0.6);animation:glow 1.5s infinite;">R$ 100,00</span>
+      </div>
+      <div class="bet-btn" style="background:linear-gradient(135deg,#fcd34d,#f59e0b,#d97706);color:#000;box-shadow:0 4px 16px rgba(245,158,11,0.5),0 2px 4px rgba(0,0,0,0.4);font-size:11px;">▶ GIRAR R$ 10,00</div>
+    </div>
+    <div class="stage-label">Estágio 0 — Pristine</div>
+  </div>
+
+  <!-- ── ESTÁGIO 1: PRIMEIROS SINAIS (20-40% de perda) ── -->
+  <div class="stage s1">
+    <div class="casino-bg">
+      <!-- Luzinha piscando numa das slots -->
+      <div class="live-bar" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);">
+        <div class="live-dot" style="background:#ef4444;animation:flicker 3s infinite;"></div>
+        <span style="color:#ef4444;animation:flicker 3s infinite;">148.320 AO VIVO</span>
+      </div>
+      <div style="text-align:center;font-size:9px;font-weight:900;letter-spacing:3px;color:#fb923c;animation:flicker 4s infinite;margin-bottom:2px;">⚡ FORTUNE TIGER ⚡</div>
+      <div class="slot-row">
+        <div class="slot" style="background:linear-gradient(160deg,#1a0a02,#2d1508);border-color:#92400e;box-shadow:0 0 5px rgba(146,64,14,0.3);animation:flicker 4s infinite;">🐯</div>
+        <div class="slot" style="background:linear-gradient(160deg,#020618,#060e1f);border-color:#1e3a6e;box-shadow:none;opacity:0.85;">💎</div>
+        <div class="slot" style="background:linear-gradient(160deg,#0a1a02,#0d2408);border-color:#166534;box-shadow:0 0 6px rgba(22,100,52,0.3);">🍀</div>
+      </div>
+      <!-- Símbolo dinheiro voando — 1o sinal -->
+      <div style="position:relative;">
+        <div style="position:absolute;right:4px;top:-10px;font-size:12px;animation:moneyFly 2s infinite;opacity:0;">💸</div>
+      </div>
+      <div class="saldo-bar" style="background:rgba(0,0,0,0.5);border-color:rgba(180,83,9,0.3);">
+        <span style="color:#78716c;font-size:8px;font-weight:700;">SALDO</span>
+        <span style="color:#fb923c;font-size:14px;font-weight:900;font-family:monospace;">R$ 72,00</span>
+      </div>
+      <div class="bet-btn" style="background:linear-gradient(135deg,#d97706,#b45309);color:#000;box-shadow:0 3px 8px rgba(180,83,9,0.3);">▶ GIRAR R$ 10,00</div>
+    </div>
+    <div class="stage-label">Estágio 1 — Primeiros Sinais</div>
+  </div>
+
+  <!-- ── ESTÁGIO 2: ALERTA (40-60% de perda) ── -->
+  <div class="stage s2">
+    <div class="casino-bg">
+      <!-- Teia de aranha no canto -->
+      <div style="position:absolute;top:6px;right:6px;font-size:14px;opacity:0.6;">🕷️</div>
+      <div class="live-bar" style="background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.2);">
+        <div class="live-dot" style="background:#dc2626;animation:fastFlicker 1.5s infinite;"></div>
+        <span style="color:#f87171;animation:fastFlicker 2s infinite;font-size:7.5px;">91.240 AO VIVO</span>
+      </div>
+      <div style="text-align:center;font-size:9px;font-weight:900;letter-spacing:3px;color:#f87171;animation:fastFlicker 2.5s infinite;margin-bottom:2px;">⚡ FORTUNE TIGER ⚡</div>
+      <div class="slot-row">
+        <div class="slot" style="background:#120202;border-color:#7f1d1d;animation:fastFlicker 3s infinite;opacity:0.7;">🐯</div>
+        <div class="slot" style="background:#100104;border-color:#991b1b;filter:saturate(0.3);">😵</div>
+        <div class="slot" style="background:#120202;border-color:#7f1d1d;animation:fastFlicker 2s infinite;">🍀</div>
+      </div>
+      <!-- Mais dinheiro voando -->
+      <div style="position:absolute;left:10px;top:100px;font-size:10px;animation:moneyFly 1.5s infinite;opacity:0;">💸</div>
+      <div style="position:absolute;right:14px;top:90px;font-size:11px;animation:moneyFly 1.8s 0.4s infinite;opacity:0;">💸</div>
+      <div class="saldo-bar" style="background:rgba(80,0,0,0.3);border-color:rgba(220,38,38,0.3);">
+        <span style="color:#6b7280;font-size:8px;font-weight:700;">SALDO</span>
+        <span style="color:#f87171;font-size:14px;font-weight:900;font-family:monospace;animation:fastFlicker 3s infinite;">R$ 44,00</span>
+      </div>
+      <div class="bet-btn" style="background:#7f1d1d;color:#fca5a5;border:1px solid #dc2626;">▶ GIRAR R$ 10,00</div>
+    </div>
+    <div class="stage-label">Estágio 2 — Alerta</div>
+  </div>
+
+  <!-- ── ESTÁGIO 3: CRÍTICO (60-80% de perda) ── -->
+  <div class="stage s3">
+    <div class="casino-bg">
+      <!-- Múltiplos símbolos de decadência -->
+      <div style="position:absolute;top:6px;right:6px;font-size:13px;opacity:0.7;">🕷️</div>
+      <div style="position:absolute;top:6px;left:6px;font-size:11px;opacity:0.6;animation:fastFlicker 1s infinite;">🚨</div>
+      <div style="position:absolute;bottom:50px;right:8px;font-size:10px;opacity:0.5;">💔</div>
+      <!-- Crack visual no canto superior direito -->
+      <svg style="position:absolute;top:0;right:0;width:50px;height:50px;opacity:0.4;" viewBox="0 0 50 50">
+        <path d="M50,0 L30,8 L38,20 L20,18 L28,35 L10,50" stroke="#ef4444" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:#ef4444;animation:textFlicker 0.8s infinite;text-align:center;">⚠️ QUASE SEM SALDO</div>
+      <div class="slot-row">
+        <div class="slot" style="background:#0a0000;border-color:#450a0a;animation:fastFlicker 0.8s infinite;filter:saturate(0.2);opacity:0.6;">💀</div>
+        <div class="slot" style="background:#0a0000;border-color:#450a0a;animation:fastFlicker 1.1s 0.2s infinite;filter:grayscale(0.6);">🐯</div>
+        <div class="slot" style="background:#0a0000;border-color:#450a0a;filter:saturate(0) brightness(0.4);">🍒</div>
+      </div>
+      <div style="position:absolute;left:8px;top:110px;font-size:9px;animation:moneyFly 1s infinite;opacity:0;">💸</div>
+      <div style="position:absolute;right:12px;top:95px;font-size:9px;animation:moneyFly 1.2s 0.3s infinite;opacity:0;">💸</div>
+      <div style="position:absolute;left:20px;top:130px;font-size:9px;animation:moneyFly 0.9s 0.6s infinite;opacity:0;">💸</div>
+      <div class="saldo-bar" style="background:rgba(100,0,0,0.3);border-color:rgba(239,68,68,0.4);">
+        <span style="color:#6b7280;font-size:8px;font-weight:700;">SALDO</span>
+        <span style="color:#ef4444;font-size:14px;font-weight:900;font-family:monospace;animation:fastFlicker 0.9s infinite;">R$ 18,00</span>
+      </div>
+      <div class="bet-btn" style="background:#3f0000;color:#ef4444;border:1px solid #7f1d1d;animation:fastFlicker 1.5s infinite;">▶ APOSTAR R$ 10,00</div>
+    </div>
+    <div class="stage-label">Estágio 3 — Crítico</div>
+  </div>
+
+  <!-- ── ESTÁGIO 4: COLAPSO (80-100% de perda) ── -->
+  <div class="stage s4">
+    <div class="casino-bg">
+      <!-- Todos os símbolos de decadência -->
+      <div style="position:absolute;top:5px;right:5px;font-size:12px;">🕷️</div>
+      <div style="position:absolute;top:5px;left:5px;font-size:10px;animation:fastFlicker 0.4s infinite;">🚨</div>
+      <div style="position:absolute;bottom:55px;right:6px;font-size:10px;">💔</div>
+      <div style="position:absolute;bottom:55px;left:6px;font-size:10px;animation:moneyFly 0.7s infinite;opacity:0;">💸</div>
+      <!-- Crack maior cobrindo mais da tela -->
+      <svg style="position:absolute;top:0;right:0;width:80px;height:80px;opacity:0.6;" viewBox="0 0 80 80">
+        <path d="M80,0 L55,12 L64,28 L40,25 L50,50 L25,48 L30,80" stroke="#dc2626" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M64,28 L75,35" stroke="#dc2626" stroke-width="1.5" fill="none" opacity="0.5"/>
+      </svg>
+      <svg style="position:absolute;top:0;left:0;width:50px;height:40px;opacity:0.4;" viewBox="0 0 50 40">
+        <path d="M0,0 L15,10 L8,25 L22,22" stroke="#dc2626" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div style="text-align:center;font-size:9px;font-weight:900;color:#dc2626;animation:textFlicker 0.3s infinite;letter-spacing:2px;">💀 FORTUNE TIGER 💀</div>
+      <div class="slot-row">
+        <div class="slot" style="background:#050000;border-color:#1c0000;filter:grayscale(1) brightness(0.3);font-size:14px;">💀</div>
+        <div class="slot" style="background:#050000;border-color:#1c0000;filter:grayscale(1) brightness(0.3);font-size:14px;">💀</div>
+        <div class="slot" style="background:#050000;border-color:#1c0000;filter:grayscale(1) brightness(0.3);font-size:14px;">💀</div>
+      </div>
+      <!-- Chuva de dinheiro voando -->
+      <div style="position:absolute;left:8px;top:100px;font-size:8px;animation:moneyFly 0.6s infinite;opacity:0;">💸</div>
+      <div style="position:absolute;left:25px;top:108px;font-size:8px;animation:moneyFly 0.7s 0.1s infinite;opacity:0;">💸</div>
+      <div style="position:absolute;left:42px;top:95px;font-size:8px;animation:moneyFly 0.5s 0.2s infinite;opacity:0;">💸</div>
+      <div style="position:absolute;right:10px;top:112px;font-size:8px;animation:moneyFly 0.65s 0.15s infinite;opacity:0;">💸</div>
+      <div class="saldo-bar" style="background:#200000;border-color:#450a0a;">
+        <span style="color:#4b5563;font-size:8px;font-weight:700;">SALDO</span>
+        <span style="color:#dc2626;font-size:14px;font-weight:900;font-family:monospace;animation:textFlicker 0.3s infinite;">R$ 0,00</span>
+      </div>
+      <div class="bet-btn" style="background:#0a0000;color:#450a0a;border:1px solid #1c0000;cursor:not-allowed;">✕ SEM SALDO</div>
+    </div>
+    <div class="stage-label">Estágio 4 — Colapso</div>
+  </div>
+
+</div>
+
+<!-- Legenda dos símbolos -->
+<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px;margin-bottom:20px;">
+  <p style="font-size:10px;font-weight:800;letter-spacing:2px;color:#64748b;text-transform:uppercase;margin-bottom:10px;">Sistema de Decadência — O que muda em cada estágio:</p>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font-size:9px;color:#94a3b8;">
+    <div><strong style="color:#e0b35a;">0% — 20%</strong><br/>Neon dourado, slots vibrantes, saldo brilhando, contador ao vivo pulsante</div>
+    <div><strong style="color:#fb923c;">20% — 40%</strong><br/>Uma slot treme, contador pisca, moeda começa a voar, dourado vira âmbar</div>
+    <div><strong style="color:#f87171;">40% — 60%</strong><br/>Teia de aranha aparece, slots deformadas, 💸 voam, emoji 😵 substitui uma slot</div>
+    <div><strong style="color:#fca5a5;">60% — 80%</strong><br/>Rachadura no canto, 🚨💔 aparecem, tela quase cinza, saldo piscando em vermelho</div>
+    <div><strong style="color:#ef4444;">80% — 100%</strong><br/>💀 domina, rachadura cobre metade da tela, chuva de 💸, slots apagadas, SALDO ZERO</div>
+  </div>
+</div>
+
+<!-- Botão de validação -->
+<div style="display:flex;gap:10px;justify-content:center;">
+  <button data-choice="aprovado" style="background:#16a34a;color:white;border:none;border-radius:10px;padding:12px 28px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;">✓ Aprovado — Prosseguir para Fase 2</button>
+  <button data-choice="ajustar" style="background:rgba(255,255,255,0.05);color:#94a3b8;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 28px;font-size:13px;font-weight:700;cursor:pointer;">✎ Quero ajustar algo</button>
+</div>
+</body>
+</html>

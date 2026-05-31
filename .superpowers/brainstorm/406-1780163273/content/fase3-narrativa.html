@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fase 3 — A Narrativa</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f8f7f5; color: #1a1a2e; font-family: 'Segoe UI', sans-serif; }
+
+  /* ── HEADER DA FASE 3 ── */
+  .phase-header {
+    background: #111827;
+    padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .phase-header .left { display: flex; align-items: center; gap: 12px; }
+  .phase-dot { width: 10px; height: 10px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+  .phase-title { color: white; font-size: 12px; font-weight: 800; letter-spacing: 2px; }
+  .phase-sub { color: #4b5563; font-size: 10px; }
+  .progress-bar { display: flex; gap: 4px; }
+  .prog-seg { height: 3px; width: 28px; border-radius: 2px; }
+
+  /* ── LAYOUT PRINCIPAL ── */
+  .narrative-layout {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    min-height: 500px;
+  }
+
+  /* ── SIDEBAR DE CAPÍTULOS ── */
+  .chapter-sidebar {
+    background: #111827;
+    padding: 16px 0;
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    position: relative;
+  }
+  .chapter-sidebar::after {
+    content: '';
+    position: absolute; left: 50%; top: 20px; bottom: 20px; width: 1px;
+    background: rgba(255,255,255,0.06);
+    transform: translateX(-50%);
+  }
+  .ch-node {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 800; cursor: pointer;
+    transition: all 0.2s; position: relative; z-index: 1;
+    margin: 6px 0;
+    border: 1.5px solid;
+    flex-shrink: 0;
+  }
+  .ch-node.active { transform: scale(1.15); }
+  .ch-connector { width: 1px; height: 14px; }
+
+  /* ── CONTENT AREA ── */
+  .content-area { background: #f8f7f5; overflow: hidden; }
+  .chapter { display: none; padding: 24px 22px; }
+  .chapter.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .ch-eyebrow {
+    font-size: 9px; font-weight: 800; letter-spacing: 2.5px;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .ch-headline {
+    font-size: 18px; font-weight: 900; line-height: 1.2; margin-bottom: 10px;
+    color: #111827;
+  }
+  .ch-body { font-size: 11px; line-height: 1.65; color: #4b5563; margin-bottom: 14px; }
+
+  /* Componentes interativos inline */
+  .inline-card {
+    border-radius: 10px; padding: 12px 14px;
+    border: 1px solid; margin-bottom: 10px;
+  }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .stat-block { border-radius: 8px; padding: 10px; text-align: center; }
+  .stat-num { font-size: 16px; font-weight: 900; display: block; }
+  .stat-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+  .prob-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .prob-label { font-size: 9px; color: #6b7280; width: 80px; flex-shrink: 0; }
+  .prob-track { flex: 1; background: #e5e7eb; border-radius: 4px; height: 6px; }
+  .prob-fill { height: 6px; border-radius: 4px; }
+  .prob-val { font-size: 9px; font-weight: 700; width: 32px; text-align: right; flex-shrink: 0; }
+
+  .resource-link {
+    display: flex; align-items: center; justify-content: space-between;
+    background: white; border-radius: 8px; padding: 8px 12px;
+    border: 1px solid #e5e7eb; margin-bottom: 6px;
+    font-size: 10px;
+  }
+  .resource-link .arrow { color: #9ca3af; font-size: 13px; }
+
+  .mock-slider {
+    height: 4px; background: #e5e7eb; border-radius: 4px; margin: 6px 0; position: relative;
+  }
+  .mock-slider-thumb {
+    position: absolute; width: 14px; height: 14px; border-radius: 50%;
+    top: 50%; transform: translateY(-50%);
+    border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .mock-slider-fill { height: 4px; border-radius: 4px; }
+
+  /* Timeline da dopamina */
+  .dopamine-timeline { display: flex; gap: 3px; align-items: flex-end; height: 50px; margin: 12px 0; }
+  .d-bar { flex: 1; border-radius: 2px 2px 0 0; transition: height 0.3s; }
+
+  /* Animação de entrada */
+  @keyframes growBar { from { transform: scaleY(0); transform-origin: bottom; } to { transform: scaleY(1); } }
+
+  /* Nav entre capítulos */
+  .ch-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid #e5e7eb; }
+  .ch-nav-btn { font-size: 10px; font-weight: 700; cursor: pointer; padding: 6px 12px; border-radius: 6px; border: 1px solid #e5e7eb; background: white; color: #374151; }
+  .ch-nav-btn.next { background: #111827; color: white; border-color: #111827; }
+
+  /* Botão validar no final */
+  .validate-row { display: flex; gap: 10px; justify-content: center; padding: 16px; background: #f8f7f5; border-top: 1px solid #e5e7eb; }
+</style>
+</head>
+<body>
+
+<!-- Header da Fase 3 -->
+<div class="phase-header">
+  <div class="left">
+    <div class="phase-dot"></div>
+    <div>
+      <div class="phase-title">FASE 3 — A NARRATIVA</div>
+      <div class="phase-sub">Editorial · 5 capítulos · Contraste total com o cassino</div>
+    </div>
+  </div>
+  <div class="progress-bar" id="prog">
+    <div class="prog-seg" style="background:#ef4444;" id="p0"></div>
+    <div class="prog-seg" style="background:rgba(255,255,255,0.15);" id="p1"></div>
+    <div class="prog-seg" style="background:rgba(255,255,255,0.15);" id="p2"></div>
+    <div class="prog-seg" style="background:rgba(255,255,255,0.15);" id="p3"></div>
+    <div class="prog-seg" style="background:rgba(255,255,255,0.15);" id="p4"></div>
+  </div>
+</div>
+
+<div class="narrative-layout">
+
+  <!-- SIDEBAR DE CAPÍTULOS -->
+  <div class="chapter-sidebar">
+    <div class="ch-node active" id="n0" onclick="showChapter(0)" style="background:rgba(239,68,68,0.2);border-color:#ef4444;color:#f87171;" title="Cap.1 Psicologia">🧠</div>
+    <div class="ch-connector" style="background:rgba(255,255,255,0.06);"></div>
+    <div class="ch-node" id="n1" onclick="showChapter(1)" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#4b5563;" title="Cap.2 Matemática">📐</div>
+    <div class="ch-connector" style="background:rgba(255,255,255,0.06);"></div>
+    <div class="ch-node" id="n2" onclick="showChapter(2)" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#4b5563;" title="Cap.3 Custo Real">💸</div>
+    <div class="ch-connector" style="background:rgba(255,255,255,0.06);"></div>
+    <div class="ch-node" id="n3" onclick="showChapter(3)" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#4b5563;" title="Cap.4 Brasil">🇧🇷</div>
+    <div class="ch-connector" style="background:rgba(255,255,255,0.06);"></div>
+    <div class="ch-node" id="n4" onclick="showChapter(4)" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#4b5563;" title="Cap.5 Saída">🚪</div>
+  </div>
+
+  <!-- ÁREA DE CONTEÚDO -->
+  <div class="content-area">
+
+    <!-- ── CAPÍTULO 1: PSICOLOGIA ── -->
+    <div class="chapter active" id="ch0">
+      <div class="ch-eyebrow" style="color:#ef4444;">Capítulo 1 · Psicologia</div>
+      <div class="ch-headline">Seu cérebro foi<br/>manipulado por design.</div>
+      <div class="ch-body">Aquelas vitórias nos giros 1, 2 e 5? Não foi sorte. É um algoritmo de reforço intermitente — a mesma mecânica que cria dependência de redes sociais.</div>
+
+      <!-- Timeline de dopamina -->
+      <div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Seu nível de dopamina durante os 15 giros:</div>
+      <div class="dopamine-timeline">
+        <div class="d-bar" style="height:55%;background:#22c55e;animation:growBar 0.3s 0.1s both;" title="Giro 1 — BIG WIN"></div>
+        <div class="d-bar" style="height:45%;background:#22c55e;animation:growBar 0.3s 0.15s both;" title="Giro 2 — Vitória"></div>
+        <div class="d-bar" style="height:20%;background:#f59e0b;animation:growBar 0.3s 0.2s both;" title="Giro 3 — Derrota"></div>
+        <div class="d-bar" style="height:18%;background:#f59e0b;animation:growBar 0.3s 0.25s both;"></div>
+        <div class="d-bar" style="height:100%;background:#ef4444;animation:growBar 0.3s 0.3s both;" title="Giro 5 — BIG WIN 4x ← pico"></div>
+        <div class="d-bar" style="height:15%;background:#f59e0b;animation:growBar 0.3s 0.35s both;"></div>
+        <div class="d-bar" style="height:12%;background:#f59e0b;animation:growBar 0.3s 0.4s both;"></div>
+        <div class="d-bar" style="height:10%;background:#6b7280;animation:growBar 0.3s 0.45s both;"></div>
+        <div class="d-bar" style="height:22%;background:#f59e0b;animation:growBar 0.3s 0.5s both;"></div>
+        <div class="d-bar" style="height:8%;background:#6b7280;animation:growBar 0.3s 0.55s both;"></div>
+        <div class="d-bar" style="height:6%;background:#6b7280;animation:growBar 0.3s 0.6s both;"></div>
+        <div class="d-bar" style="height:5%;background:#6b7280;animation:growBar 0.3s 0.65s both;"></div>
+        <div class="d-bar" style="height:4%;background:#dc2626;animation:growBar 0.3s 0.7s both;"></div>
+        <div class="d-bar" style="height:3%;background:#dc2626;animation:growBar 0.3s 0.75s both;"></div>
+        <div class="d-bar" style="height:2%;background:#1f2937;animation:growBar 0.3s 0.8s both;" title="Giro 15 — Falência"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:8px;color:#9ca3af;margin-bottom:12px;">
+        <span>← Giro 1</span><span style="color:#ef4444;font-weight:700;">Pico: Giro 5 (BIG WIN 4×)</span><span>Giro 15 →</span>
+      </div>
+
+      <div class="inline-card" style="background:#fef2f2;border-color:#fecaca;">
+        <div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:4px;">🧪 O nome técnico: Reforço Intermitente</div>
+        <div style="font-size:10px;color:#6b7280;line-height:1.5;">Vitórias aleatórias e imprevisíveis criam vínculos mais fortes do que recompensas garantidas. É exatamente o que B.F. Skinner descobriu com pombos em 1950 — e que as bets aplicam em escala industrial.</div>
+      </div>
+
+      <div class="ch-nav">
+        <span style="font-size:9px;color:#9ca3af;">1 de 5</span>
+        <button class="ch-nav-btn next" onclick="showChapter(1)">Próximo: A Matemática →</button>
+      </div>
+    </div>
+
+    <!-- ── CAPÍTULO 2: MATEMÁTICA ── -->
+    <div class="chapter" id="ch1">
+      <div class="ch-eyebrow" style="color:#6366f1;">Capítulo 2 · Matemática</div>
+      <div class="ch-headline">A casa nunca<br/>joga para perder.</div>
+      <div class="ch-body">Para cada R$ 100 apostados, a plataforma garante matematicamente ficar com entre R$ 3 e R$ 25. Sempre. Não importa quantas vezes você ganhe.</div>
+
+      <!-- Calculadora de odds inline compacta -->
+      <div class="inline-card" style="background:white;border-color:#e5e7eb;">
+        <div style="font-size:9px;font-weight:800;color:#374151;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Simulador de Odds · Odd 1.90</div>
+        <div style="font-size:10px;color:#6b7280;margin-bottom:6px;">Perda esperada por aposta de <strong style="color:#111827;">R$ 50</strong>:</div>
+        <div style="font-size:22px;font-weight:900;color:#ef4444;margin-bottom:6px;">−R$ 2,63</div>
+        <div style="font-size:9px;color:#9ca3af;margin-bottom:10px;">A casa retém 5.26% de cada real apostado, garantido pela matemática.</div>
+
+        <div style="font-size:9px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Chance de lucro após N apostas:</div>
+        <div class="prob-bar-row">
+          <span class="prob-label">10 apostas</span>
+          <div class="prob-track"><div class="prob-fill" style="width:38%;background:#f59e0b;"></div></div>
+          <span class="prob-val" style="color:#f59e0b;">38%</span>
+        </div>
+        <div class="prob-bar-row">
+          <span class="prob-label">100 apostas</span>
+          <div class="prob-track"><div class="prob-fill" style="width:18%;background:#f59e0b;"></div></div>
+          <span class="prob-val" style="color:#f59e0b;">18%</span>
+        </div>
+        <div class="prob-bar-row">
+          <span class="prob-label">500 apostas</span>
+          <div class="prob-track"><div class="prob-fill" style="width:4%;background:#ef4444;"></div></div>
+          <span class="prob-val" style="color:#ef4444;">4%</span>
+        </div>
+        <div class="prob-bar-row">
+          <span class="prob-label">1.000 apostas</span>
+          <div class="prob-track"><div class="prob-fill" style="width:1%;background:#dc2626;"></div></div>
+          <span class="prob-val" style="color:#dc2626;">0.3%</span>
+        </div>
+        <div style="font-size:9px;color:#9ca3af;margin-top:6px;font-style:italic;">→ Calculadora completa disponível abaixo ↓</div>
+      </div>
+
+      <div class="ch-nav">
+        <button class="ch-nav-btn" onclick="showChapter(0)">← Anterior</button>
+        <button class="ch-nav-btn next" onclick="showChapter(2)">Próximo: Custo Real →</button>
+      </div>
+    </div>
+
+    <!-- ── CAPÍTULO 3: CUSTO REAL ── -->
+    <div class="chapter" id="ch2">
+      <div class="ch-eyebrow" style="color:#f59e0b;">Capítulo 3 · Custo Real</div>
+      <div class="ch-headline">Quanto você<br/>realmente perdeu?</div>
+      <div class="ch-body">Coloque o quanto você gasta por mês e há quanto tempo. A calculadora mostra o custo total — e o que esse dinheiro geraria investido na Selic.</div>
+
+      <!-- Calculadora de perda inline compacta -->
+      <div class="inline-card" style="background:white;border-color:#e5e7eb;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:9px;font-weight:800;color:#374151;letter-spacing:1px;text-transform:uppercase;">Por mês</span>
+          <span style="font-size:16px;font-weight:900;color:#111827;">R$ 300</span>
+        </div>
+        <div class="mock-slider"><div class="mock-slider-fill" style="width:40%;background:#ef4444;"></div><div class="mock-slider-thumb" style="left:calc(40% - 7px);background:#ef4444;"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:4px;">
+          <span style="font-size:9px;font-weight:800;color:#374151;letter-spacing:1px;text-transform:uppercase;">Meses apostando</span>
+          <span style="font-size:16px;font-weight:900;color:#111827;">12</span>
+        </div>
+        <div class="mock-slider"><div class="mock-slider-fill" style="width:20%;background:#ef4444;"></div><div class="mock-slider-thumb" style="left:calc(20% - 7px);background:#ef4444;"></div></div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-block" style="background:#fef2f2;border:1px solid #fecaca;">
+          <span class="stat-num" style="color:#dc2626;">R$ 3.600</span>
+          <span class="stat-label" style="color:#ef4444;">saiu do bolso</span>
+        </div>
+        <div class="stat-block" style="background:#f0fdf4;border:1px solid #bbf7d0;">
+          <span class="stat-num" style="color:#16a34a;">R$ 23.180</span>
+          <span class="stat-label" style="color:#22c55e;">se investido · 5 anos</span>
+        </div>
+      </div>
+
+      <div class="inline-card" style="background:#fff7ed;border-color:#fed7aa;margin-top:8px;">
+        <div style="font-size:10px;color:#92400e;font-weight:600;">Com R$ 300/mês você poderia pagar: <strong>14 carrinhos de supermercado</strong>, <strong>5 meses de streaming</strong>, ou guardar para <strong>1 passagem de viagem a cada 3 meses</strong>.</div>
+      </div>
+
+      <div class="ch-nav">
+        <button class="ch-nav-btn" onclick="showChapter(1)">← Anterior</button>
+        <button class="ch-nav-btn next" onclick="showChapter(3)">Próximo: O Brasil Sangra →</button>
+      </div>
+    </div>
+
+    <!-- ── CAPÍTULO 4: BRASIL ── -->
+    <div class="chapter" id="ch3">
+      <div class="ch-eyebrow" style="color:#10b981;">Capítulo 4 · Impacto Nacional</div>
+      <div class="ch-headline">O Brasil sangra<br/>R$ 130 bilhões.</div>
+      <div class="ch-body">Em 2024, os brasileiros transferiram R$ 130 bilhões para plataformas de apostas. Para ter uma ideia: é mais do que o orçamento anual de saúde de vários estados somados.</div>
+
+      <div class="stat-grid" style="margin-bottom:10px;">
+        <div class="stat-block" style="background:#fef2f2;border:1px solid #fecaca;">
+          <span class="stat-num" style="color:#dc2626;">85–92%</span>
+          <span class="stat-label" style="color:#ef4444;">perdem a longo prazo</span>
+        </div>
+        <div class="stat-block" style="background:#fef2f2;border:1px solid #fecaca;">
+          <span class="stat-num" style="color:#dc2626;">5 mi</span>
+          <span class="stat-label" style="color:#ef4444;">do Bolsa Família apostaram</span>
+        </div>
+        <div class="stat-block" style="background:#fff7ed;border:1px solid #fed7aa;">
+          <span class="stat-num" style="color:#d97706;">63%</span>
+          <span class="stat-label" style="color:#f59e0b;">comprometeram renda principal</span>
+        </div>
+        <div class="stat-block" style="background:#fff7ed;border:1px solid #fed7aa;">
+          <span class="stat-num" style="color:#d97706;">+150%</span>
+          <span class="stat-label" style="color:#f59e0b;">diagnósticos de ludomania</span>
+        </div>
+      </div>
+
+      <div class="inline-card" style="background:white;border-color:#e5e7eb;">
+        <div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">🏛 Banco Central · Set/2024</div>
+        <div style="font-size:10px;color:#374151;line-height:1.5;">R$ 20,8 bilhões em Pix para casas de apostas <strong>em um único mês</strong>. Beneficiários do Bolsa Família transferiram R$ 3 bilhões nesse período — média de R$ 100 por pessoa.</div>
+      </div>
+
+      <div class="ch-nav">
+        <button class="ch-nav-btn" onclick="showChapter(2)">← Anterior</button>
+        <button class="ch-nav-btn next" onclick="showChapter(4)">Próximo: Como Sair →</button>
+      </div>
+    </div>
+
+    <!-- ── CAPÍTULO 5: SAÍDA ── -->
+    <div class="chapter" id="ch4">
+      <div class="ch-eyebrow" style="color:#059669;">Capítulo 5 · Saída</div>
+      <div class="ch-headline">Você pode<br/>parar agora.</div>
+      <div class="ch-body">O vício em apostas é uma condição médica tratável. Apoio gratuito, confidencial e imediato existe. Veja abaixo.</div>
+
+      <div style="margin-bottom:10px;">
+        <a class="resource-link" href="#" style="text-decoration:none;color:inherit;">
+          <div>
+            <div style="font-weight:700;color:#111827;font-size:11px;">👥 Jogadores Anônimos Brasil</div>
+            <div style="color:#9ca3af;font-size:9px;">ja.org.br · Reuniões diárias gratuitas</div>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+        <a class="resource-link" href="#" style="text-decoration:none;color:inherit;">
+          <div>
+            <div style="font-weight:700;color:#111827;font-size:11px;">🏥 CAPS AD — SUS</div>
+            <div style="color:#9ca3af;font-size:9px;">Disque 136 · Atendimento gratuito</div>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+        <a class="resource-link" href="#" style="text-decoration:none;color:inherit;">
+          <div>
+            <div style="font-weight:700;color:#111827;font-size:11px;">🔒 Autoexclusão de CPF</div>
+            <div style="color:#9ca3af;font-size:9px;">Bloqueie seu CPF em todas as plataformas</div>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+        <a class="resource-link" href="#" style="text-decoration:none;color:inherit;">
+          <div>
+            <div style="font-weight:700;color:#111827;font-size:11px;">💙 CVV — Centro de Valorização da Vida</div>
+            <div style="color:#9ca3af;font-size:9px;">188 · 24h, gratuito e sigiloso</div>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+
+      <!-- Compartilhamento -->
+      <div style="background:#111827;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:10px;color:#4b5563;margin-bottom:8px;">Compartilhe essa experiência com quem precisa ver</div>
+        <div style="display:flex;gap:6px;justify-content:center;">
+          <button style="background:#1d4ed8;color:white;border:none;border-radius:6px;padding:6px 12px;font-size:9px;font-weight:700;cursor:pointer;">Compartilhar</button>
+          <button style="background:rgba(255,255,255,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 12px;font-size:9px;font-weight:700;cursor:pointer;">Salvar imagem</button>
+          <button style="background:rgba(255,255,255,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 12px;font-size:9px;font-weight:700;cursor:pointer;">&lt;/&gt; Embed</button>
+        </div>
+      </div>
+
+      <div class="ch-nav">
+        <button class="ch-nav-btn" onclick="showChapter(3)">← Anterior</button>
+        <span style="font-size:9px;color:#9ca3af;">Fim da jornada ✓</span>
+      </div>
+    </div>
+
+  </div><!-- end content-area -->
+</div><!-- end narrative-layout -->
+
+<!-- Validação -->
+<div class="validate-row">
+  <button data-choice="aprovado" style="background:#16a34a;color:white;border:none;border-radius:10px;padding:12px 28px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;">✓ Aprovado — Escrever o spec</button>
+  <button data-choice="ajustar" style="background:rgba(0,0,0,0.04);color:#374151;border:1px solid #e5e7eb;border-radius:10px;padding:12px 28px;font-size:13px;font-weight:700;cursor:pointer;">✎ Ajustar</button>
+</div>
+
+<script>
+const COLORS = ['#ef4444','#6366f1','#f59e0b','#10b981','#059669'];
+const BG = ['rgba(239,68,68,0.15)','rgba(99,102,241,0.15)','rgba(245,158,11,0.15)','rgba(16,185,129,0.15)','rgba(5,150,105,0.15)'];
+
+function showChapter(n) {
+  for (let i = 0; i < 5; i++) {
+    document.getElementById('ch'+i).classList.toggle('active', i === n);
+    const node = document.getElementById('n'+i);
+    node.style.background = i === n ? BG[i] : 'rgba(255,255,255,0.04)';
+    node.style.borderColor = i === n ? COLORS[i] : 'rgba(255,255,255,0.1)';
+    node.style.color = i === n ? COLORS[i] : '#4b5563';
+    node.classList.toggle('active', i === n);
+    const seg = document.getElementById('p'+i);
+    if (seg) seg.style.background = i <= n ? COLORS[i] : 'rgba(255,255,255,0.15)';
+  }
+}
+</script>
+</body>
+</html>

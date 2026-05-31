@@ -1,6 +1,6 @@
 # Handoff — A Ponta do Lápis
 
-**Última atualização:** 2026-05-30  
+**Última atualização:** 2026-05-31  
 **Branch de desenvolvimento:** `claude/friendly-hypatia-HwfUk`  
 **Stack:** Next.js 16.2.6 · React 19 · TypeScript · Tailwind CSS v4 · Netlify (deploy contínuo ativo)  
 **Domínio registrado:** `apontadolapis.com.br`
@@ -9,194 +9,199 @@
 
 ## Estado atual
 
-O projeto está completo, compilando com **sucesso absoluto** (45 páginas estáticas geradas sem avisos ou erros) e **100% monetizado e integrado** com as campanhas oficiais do proprietário (Google AdSense e Programa de Afiliados da Wise).
+O projeto está completo, compilando com **sucesso absoluto** (47 páginas estáticas geradas sem avisos ou erros) e 100% monetizado (Google AdSense + Programa de Afiliados Wise).
 
-Toda a infraestrutura do site roda de forma **100% independente, autônoma e com custo zero vitalício**, eliminando qualquer dependência de chaves de API externas instáveis.
+Toda a infraestrutura roda de forma **100% independente, autônoma e com custo zero vitalício**.
 
 ---
 
-## O que foi feito — Sessão Atual (2026-05-30)
+## O que foi feito — Sessão Atual (2026-05-30 / 2026-05-31)
 
 ### 1. Redesign Completo da Seção de Apostas — Jornada Imersiva em 3 Fases
 
-A calculadora de apostas foi completamente reimaginada como uma **jornada educativa linear** com três fases sequenciais e sem abas. O spec completo vive em `docs/superpowers/specs/2026-05-30-apostas-redesign-design.md`.
+**`/apostas`** — Jornada linear completa em overlay fullscreen:
 
-#### Fase 1 — O Cassino (`components/calculators/BetsCasino.tsx`)
+**Fase 1 — O Cassino (`BetsCasino.tsx`):**
+- Saldo inicial **R$0** — jogador deve depositar um bem real para entrar
+- Sistema de decadência progressiva de 5 estágios (visual deteriora conforme saldo cai)
+- 6 bens reais single-use: 🎬 Cinema / 👟 Tênis / 📱 Celular / 💰 Poupança filhos / 📚 Livros / 🍕 Jantar família
+- 15 rodadas pré-roteirizadas com arco dramático (hook dopaminérgico → colapso)
+- **Sessões sortudas (12%)**: ocasionalmente o jogador GANHA, mas a tela educativa explica que ele está nos 12% — e que 9 em cada 10 ganhadores voltam e perdem
+- Sons sintetizados via Web Audio API (zero arquivos de áudio)
+- GameLauncher: overlay fullscreen com botão "← Voltar" sempre acessível
 
-Lobby de cassino hiper-realista com sistema de **decadência progressiva de 5 estágios** que deteriora a interface conforme o saldo cai:
+**Fase 2 — A Ruptura (`BetsRupture.tsx`):** Tremor → flash vermelho → split screen com raio
 
-| Estágio | Decay | Visual |
-|---------|-------|--------|
-| 0 — Pristine | 0–20% | Fundo `#14102a`, neon dourado, slots com glow colorido |
-| 1 — Primeiros Sinais | 20–40% | Âmbar, 💸 voando, uma slot pisca |
-| 2 — Alerta | 40–60% | Vermelho, 🕷️ no canto, emoji 😵 em slot |
-| 3 — Crítico | 60–80% | Rachadura SVG, 🚨💔, quase grayscale |
-| 4 — Colapso | 80–100% | 💀 domina tudo, chuva de 💸, tela praticamente morta |
-
-**Sistema de créditos reais (single-use):** o jogador pode depositar bens reais no cassino — cada um apenas UMA vez:
-- 🎬 Ingressos de cinema — R$ 70
-- 👟 Tênis novo — R$ 280
-- 📱 Entrada do celular — R$ 500
-- 💰 Poupança dos filhos — R$ 200
-- 📚 Livros novos — R$ 90
-- 🍕 Jantar da família — R$ 150
-
-Quando um bem é usado, vira ✓ acinzentado e fica indisponível. Contador "X restantes" visível.
-
-**Regras do jogo (finito):**
-- 15 rodadas pré-roteirizadas com arco dramático de dopamina (vitórias nos giros 1, 2 e 5 para viciar, drenagem inevitável depois)
-- Aposta padrão: R$ 40 (slider 5-50 + chips rápidos R$5/10/20/50 + All-in)
-- Após as 15 rodadas: **perda garantida** (sem RNG) — cada clique drena o saldo deterministicamente
-- Máximo possível: R$ 200 inicial + R$ 1.290 em bens = R$ 1.490, que com R$ 40/rodada esgota em ~47 cliques
-- Botão 🔊/🔇 de mute no header
-
-**Sons (Web Audio API — zero arquivos, 100% sintetizados):**
-- `playSpin()` — blips aleatórios durante o giro
-- `playWin()` — dois tons ascendentes
-- `playBigWin()` — fanfarra de 4 notas (apenas para mult 4×)
-- `playLose()` — sawtooth descendente
-- `playRupture()` — bass thud + burst de ruído branco na falência
-
-#### Fase 2 — A Ruptura (`components/calculators/BetsRupture.tsx`)
-
-Sequência de animação com 4 steps ao atingir saldo zero:
-1. Cassino morto (slots → 💀, rachaduras SVG, saldo piscando)
-2. Tremor (`casino-shake 80ms × 3`)
-3. Flash vermelho (`rupture-flash 250ms`)
-4. **Split screen com raio:** lado esquerdo = cassino cinza morto, raio vermelho central, lado direito = fundo branco + *"A ilusão acabou. R$ 200 perdidos em X cliques."* + CTA "Ver a verdade completa →" + "↺ Jogar novamente"
-
-#### Fase 3 — A Narrativa (`components/calculators/BetsNarrative.tsx`)
-
-5 capítulos educativos com sidebar de navegação e barra de progresso:
-
-- **Cap. 1 — Psicologia:** Gráfico de barras de dopamina dos 15 giros + explicação do Reforço Intermitente de Skinner
-- **Cap. 2 — Matemática:** Calculadora de odds interativa + barras de probabilidade de lucro para 10/100/500/1.000 apostas + simulador de 100 rodadas com gráfico sparkline
-- **Cap. 3 — Custo Real:** Calculadora de perda mensal vs. Selic + MetricGrid + ComparisonList + ShareCard
-- **Cap. 4 — Brasil Sangra:** Grid de 4 stats oficiais (BCB, SBVC, USP) + cards com fontes
-- **Cap. 5 — Saída:** Links JA Brasil, CVV 188, CAPS AD/SUS, Autoexclusão de CPF + botão "↺ Jogar novamente" proeminente
-
-**Botão de restart:** aparece em 3 pontos da jornada (split screen da ruptura, header da narrativa, capítulo 5) — reseta para a Fase 1 instantaneamente sem reload.
-
-#### Limpezas relacionadas
-- Rota `/apostas/probabilidades` removida (conteúdo absorvido pelo Cap. 2 da narrativa)
-- 9 `@keyframes` CSS adicionados ao `globals.css`
-- `OddsCalculator.tsx` mantido em disco (sem rota própria)
-- Arquivo `lib/casino-sounds.ts` criado (~80 linhas)
+**Fase 3 — A Narrativa (`BetsNarrative.tsx`):** 5 capítulos (Psicologia, Matemática, Custo Real, Brasil Sangra, Saída)
 
 ---
 
-### 2. Correção do Menu de Navegação (`components/Nav.tsx`)
+### 2. Calculadora Uber vs. Carro Próprio (`/trabalho/uber-vs-carro`)
 
-- **"Viagens"** convertido de link simples para **dropdown** com 4 itens:
-  - Hub de Viagens (`/viagens`)
-  - **Milhas ou Dinheiro?** (`/viagens/milhas-ou-dinheiro`) ← movido para o lugar correto
-  - Planejar Viagem (`/viagens/planejar`)
-  - Custo de Vida entre Cidades (`/viagens/custo-de-vida`)
-- "Milhas ou Dinheiro?" removida do dropdown Trabalho onde estava incorretamente
-- Link morto `/apostas/probabilidades` removido de Hábitos
-
----
-
-### 3. Restauração da Calculadora de Milhas (`app/viagens/milhas-ou-dinheiro/page.tsx`)
-
-O componente `MilesCalculator` estava importado na página mas **nunca renderizado** (bug silencioso). Reinserido `<MilesCalculator />` imediatamente após o header, antes da prosa explicativa. A calculadora completa (abas "Milhas vs. Dinheiro" e "Comprar Milhas na Promoção") voltou a aparecer.
+Motor de cálculo completo com **11 fatores de custo**:
+- Depreciação, IPVA, seguro, combustível, manutenção, pedágio, estacionamento, lavagem, licenciamento, financiamento e **custo de oportunidade (Selic)**
+- Modo "Estou avaliando COMPRAR" vs "Já TENHO" (depreciação extra do 1º ano)
+- Commute em 4 modos (só TP / só Uber / misto ×2)
+- Gráfico break-even (km/mês onde os custos se igualam) com modelo piecewise correto
+- Projeção 5 anos com IPCA + Selic
+- Correção do custo de oportunidade para carros financiados
 
 ---
 
-## Estrutura de arquivos atualizada
+### 3. Calculadora Financiamento vs. Consórcio (`/investimentos/financiamento-ou-consorcio`)
+
+**Aba "⚡ Quem Vence?" (nova — primária):**
+- Duelo visual: Financiamento SAC × Consórcio
+- Inputs duais sincronizados (slider + campo de texto manual)
+- Scorecard 3 critérios: Custo Total / Ter o Bem / Parcelas
+- Placar final com veredito: "3×0 — SAC VENCE" ou similar
+- ShareCard viral para redes sociais
+- Regra de ouro embutida
+
+**Aba "📊 Análise Completa" (existente — secundária):**
+- Tabela 4 modalidades × 8 critérios (SAC, Price, Empréstimo, Consórcio)
+- Gráficos de custo total e evolução das parcelas
+- Painel de antecipação (economy calculada)
+- Análise detalhada do consórcio
+
+---
+
+### 4. Viver de Renda — Calculadora Dupla (`/investimentos/viver-de-renda`)
+
+**Aba "⚡ Cálculo Rápido" (nova — primária):**
+- Modo A: "Tenho capital" → mostra retirada perpétua em destaque + explorador de duração
+- Modo B: "Quero renda mensal" → mostra capital necessário + explorador com capital menor
+- Premissas fixas: Selic atual − 5% IPCA (transparentes mas não editáveis)
+- Card de taxa viva com `npm run update-rates` e link GitHub Actions
+
+**Aba "📊 Planejador Completo" (existente — aprimorada):**
+- Solver 4 variáveis (C, R, I, T)
+- **IR Progressivo (Lei 15.270/2025)**: isenção total ≤ R$5k, redutor parcial até R$7.350
+  - Dois modos: "quero X líquido" (back-solves o bruto) / "informo o bruto"
+  - Card pedagógico com faixas detalhadas e o redutor linha a linha
+- **Inflação correta**: usa taxa real (Selic − IPCA) — o que a calculadora antiga ignorava
+- **Tetos de retirada**: máximo perpétuo real (C × i_real) + máximo vitalício (PMT para N anos)
+- **Gráfico 3 linhas**: saldo real + saldo nominal + saque nominal crescente
+- **Idade da aposentadoria** (não idade atual): anos de renda = aposentadoria → expectativa de vida
+- Gráfico comparativo BarChart: sua retirada vs. tetos máximos
+
+---
+
+### 5. Juros Compostos — Inflação adicionada
+
+- Slider de inflação (0–15%, default 5%)
+- Linha âmbar tracejada "Valor Real" no gráfico
+- Card de alerta: "inflação corrói X% do valor nominal"
+- `lib/calculations/compound.ts`: `compoundMonthlyReal()` + `deflateToToday()`
+
+---
+
+### 6. Custo do Fumo — Valores reais
+
+- `realInvested10y` / `realInvested30y` deflacionados pelo IPCA
+- Card explicativo sobre diferença nominal vs. real nos projetos de 30 anos
+
+---
+
+### 7. Calculadora de Savings — Meta corrigida por inflação
+
+- `inflationAdjustedTarget`: meta em termos nominais futuros
+- `monthlyWithSelicAdjusted`: aporte para atingir meta real
+
+---
+
+### 8. Tabela IRPF 2026 (`config/tax.ts`)
+
+- `calculateIR(gross)`: tabela progressiva 2026 + redutor Lei 15.270/2025
+- `grossFromNet(net)`: back-solver para 3 zonas (isento / transição / progressiva)
+- Matematicamente verificado: R$5.000 → IR R$0 ✓ | R$7.350 → sem redutor ✓
+
+---
+
+### 9. Padronização de Números pt-BR nos Formulários
+
+- `formatBRLInput(v)`: "1.234,00" (sem R$, com 2 decimais) para uso em inputs
+- `parseBRLInput(str)`: lê "1.234,56" → 1234.56 (remove pontos de milhar, converte vírgula)
+- Atualizado em 8 calculadoras: Income, SimpleIncome, Financing, UberCar, BetsNarrative, Miles, Rotativo, Parcelado
+
+---
+
+### 10. Menu + Nav + Sitemap
+
+- **Viagens**: virou dropdown com Milhas, Planejar, Custo de Vida
+- **Trabalho**: adicionado Uber vs. Carro + Financiamento vs. Consórcio
+- **Mobile**: hambúrguer menu para viewport < 768px
+- `overflow-x: hidden` no body como proteção geral
+
+---
+
+### 11. Política de Privacidade (`/privacidade`)
+
+- Cobre site + app Android/iOS "Dividir Conta — A Ponta do Lápis"
+- URL para Google Play / App Store: `apontadolapis.com.br/privacidade`
+
+---
+
+### 12. Automação de Taxas
+
+- `npm run update-rates` → `node scripts/update-market.mjs`
+- GitHub Actions roda diariamente às 9h UTC
+- Busca Selic (SGS 432), USD (SGS 1), IPCA (SGS 13522) via API BCB
+- Atualiza `config/rates.ts` e `config/market.ts` automaticamente
+
+---
+
+## Estrutura de arquivos relevantes
 
 ```
-napontadolapis/
-├── app/
-│   ├── apostas/
-│   │   └── page.tsx               ← Metadata + header atualizados
-│   ├── viagens/
-│   │   └── milhas-ou-dinheiro/
-│   │       └── page.tsx           ← MilesCalculator reinserido
-│   └── globals.css                ← 9 @keyframes de cassino adicionados
-├── components/
-│   ├── Nav.tsx                    ← Viagens dropdown + limpeza de links mortos
-│   └── calculators/
-│       ├── BetsCalculator.tsx     ← Orquestrador de fase (~40 linhas)
-│       ├── BetsCasino.tsx         ← Fase 1: cassino + decay + créditos + sons
-│       ├── BetsRupture.tsx        ← Fase 2: split screen animado
-│       └── BetsNarrative.tsx      ← Fase 3: 5 capítulos educativos
-├── lib/
-│   └── casino-sounds.ts           ← Sons sintetizados Web Audio API (novo)
-└── docs/superpowers/
-    ├── specs/
-    │   └── 2026-05-30-apostas-redesign-design.md
-    └── plans/
-        └── 2026-05-30-apostas-redesign.md
+config/
+  rates.ts               — Selic/CDI/poupança (auto-gerado via BCB)
+  tax.ts                 — IRPF 2026 + Lei dos 5 Mil
+  uber-car.ts            — Defaults veículos por segmento
+  financing.ts           — Defaults financiamento/consórcio
+
+lib/calculations/
+  income.ts              — Viver de Renda (solver + IR + idade aposentadoria)
+  compound.ts            — Juros compostos + helpers real
+  financing.ts           — SAC, Price, Empréstimo, Consórcio
+  uber-car.ts            — TCO do carro (11 fatores, break-even, 5 anos)
+  probability.ts         — Odds/apostas
+  savings.ts             — Meta de poupança corrigida
+
+components/
+  GameLauncher.tsx       — Overlay fullscreen do cassino
+  FinancingPageTabs.tsx  — Abas: Quem Vence? / Análise Completa
+  IncomePageTabs.tsx     — Abas: Cálculo Rápido / Planejador Completo
+
+scripts/
+  update-market.mjs      — Busca taxas do BCB e atualiza config/
 ```
-
----
-
-## Governança de Parcerias e Monetização (Awin / Redes de Afiliados)
-
-Para futuras parcerias de conversão na Calculadora de Milhas ou outras áreas (como *Livelo, Smiles, Decolar* etc.), a seguinte governança técnica **deve ser seguida sem exceção** para manter o portal rápido, seguro, independente e com SEO impecável:
-
-1. **Performance Absoluta (Sem Banners ou Scripts Externos) ⚡**:
-   * **Proibido**: Instalar pixels de rastreamento de afiliados, scripts globais de redes de CPA, iframes promocionais ou banners dinâmicos em Javascript fornecidos pelas redes. Esses scripts degradam severamente a velocidade de carregamento e atrasam a interatividade da página, destruindo as pontuações de Core Web Vitals e o SEO do Next.js.
-   * **Recomendado**: Utilizar estritamente **links de redirecionamento em HTML puro (`<a>`)**. O botão de chamada para o parceiro deve ser apenas um hiperlink padrão direcionando para a URL de afiliado gerada no portal da rede (ex: Awin/Lomadee). Isso consome **zero kilobytes** de processamento local, preservando o carregamento instantâneo.
-2. **Declaração de Transparência para o Google (SEO Técnico) 🔍**:
-   * Para evitar punições algorítmicas do Google (*Thin Affiliates* ou desconfiança de transferência artificial de força de link/PageRank), todo link de afiliado ou patrocinado no código deve carregar obrigatoriamente as tags de segurança:
-     ```typescript
-     <a href="URL_DE_AFILIADO" target="_blank" rel="noopener noreferrer sponsored">
-       Texto do Botão
-     </a>
-     ```
-   * A tag **`rel="sponsored"`** sinaliza honestidade técnica para os robôs de busca. O Google reconhece a intenção comercial legítima e protege a autoridade de busca do seu domínio.
-3. **Privacidade e Imparcialidade Radical (Cálculos 100% Locais) 🛡️**:
-   * O portal se posiciona como um simulador de utilidade pública independente e sem captação de dados/e-mails.
-   * **Arquitetura**: O processamento matemático e as simulações devem continuar rodando 100% client-side (no navegador do usuário), de forma anônima.
-   * **Monetização**: Os ganchos de comissão devem ser oferecidos exclusivamente de forma **passiva e contextual no final do funil de resultados** (como uma sugestão prática de ação para o cliente baseado no veredito matemático do cálculo), mantendo o julgamento analítico do sistema inabalável e imparcial.
 
 ---
 
 ## Próximas funcionalidades planejadas
 
-### Calculadora de Financiamento vs. Consórcio
+### Calculadora Financiamento vs. Consórcio — aprimoramento futuro
+- Já especificada e parcialmente implementada
+- Adicionar: Saldo devedor ao longo do tempo, comparação com "investir e comprar à vista"
 
-**Objetivo:** Comparar matematicamente se vale mais a pena financiar um bem (imóvel, veículo) ou entrar num consórcio.
+### Calculadora Custo de Oportunidade do Carro
+- Derivada do módulo Uber vs. Carro
+- Mostrar: "seu carro vale R$X hoje. Investido na Selic em 10 anos seria R$Y"
 
-**Contexto e cautelas importantes:**
-- **Consórcio é proibido em vários países** (EUA, Reino Unido, a maioria da Europa e Ásia) — é uma modalidade exclusivamente brasileira e de alguns países da América Latina. A calculadora deve deixar isso explícito com um aviso educativo.
-- **O consórcio raramente vence o financiamento** em termos de custo total se considerado o custo de oportunidade do dinheiro, especialmente se o bem cai de preço no tempo (veículos). Os casos em que pode vantajar: imóvel em valorização acelerada + taxa de administração baixa + contemplação rápida + o comprador NÃO precisa do bem imediatamente.
-- A calculadora deve ser honesta e pode concluir "nunca vale a pena" dependendo dos parâmetros — não deve forçar um veredito positivo para o consórcio.
+---
 
-**Variáveis a modelar:**
+## Governança de Parcerias e Monetização
 
-*Financiamento:*
-- Valor do bem
-- Entrada (%)
-- Taxa de juros mensal (ou CET)
-- Prazo em meses
-- Sistema de amortização (SAC ou Price)
-- Custo total pago (principal + juros)
-
-*Consórcio:*
-- Valor da carta de crédito
-- Taxa de administração total (%)
-- Prazo em meses
-- Fundo de reserva (%)
-- Estimativa de meses para contemplação (média ou simulação pessimista/otimista)
-- Custo de oportunidade do dinheiro preso no consórcio (CDI/Selic sobre parcelas)
-
-**Vereditos que a calculadora deve emitir:**
-- Custo total comparado (R$ X vs. R$ Y)
-- Custo de oportunidade do tempo sem o bem (consórcio)
-- Ponto de equilíbrio (quando o consórcio vence, se vencer)
-- Aviso obrigatório: "Consórcio é proibido em muitos países — verifique a legalidade na sua jurisdição"
-- Aviso: "Em bens depreciáveis (veículos, eletrônicos), o consórcio raramente vantaja"
-
-**Rota sugerida:** `/investimentos/financiamento-ou-consorcio`
+1. **Performance**: Apenas `<a>` simples para afiliados — proibido scripts externos
+2. **SEO**: Links patrocinados com `rel="noopener noreferrer sponsored"`
+3. **Privacidade**: Cálculos 100% client-side, sem captação de dados
+4. **Afiliados contextuais**: Apenas no final do funil de resultados
 
 ---
 
 ## Próximos passos gerais
 
-1. **Promover links de Embeds (Widgetização)**: Fazer contato com portais imobiliários/corretores (para os widgets de *Amortização* e *ITBI*) e blogs de viagem/milhas (para o widget de *Milhas ou Dinheiro*) oferecendo as ferramentas de graça para indexação de backlinks de alta autoridade.
-2. **Divulgação Orgânica em Fóruns**: Realizar publicações sobre "Privacidade Radical" no `r/investimentos` (Reddit) apresentando o projeto.
-3. **Monitorar a revisão do Google AdSense**: Aguardar o prazo padrão de aprovação do site.
-4. **Implementar Financiamento vs. Consórcio**: Ver seção acima com spec completo da intenção.
+1. **Promover Widgets**: Contato com portais imobiliários (ITBI, Amortização) e blogs de milhas para backlinks
+2. **Divulgação Reddit**: `r/investimentos` com foco em "Privacidade Radical"
+3. **Google AdSense**: Aguardar aprovação do site
