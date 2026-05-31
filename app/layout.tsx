@@ -95,6 +95,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <p className="c-eyebrow mt-6" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
               SEM CADASTRO · SEM CPF · SEM JULGAMENTO · OS CÁLCULOS RODAM NO SEU NAVEGADOR
             </p>
+            <div className="mt-3">
+              <Link href="/privacidade" className="c-eyebrow hover:opacity-70 transition-opacity" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
+                POLÍTICA DE PRIVACIDADE
+              </Link>
+            </div>
           </footer>
         </ThemeProvider>
       </body>
