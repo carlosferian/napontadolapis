@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "update-rates": "node scripts/update-market.mjs"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",

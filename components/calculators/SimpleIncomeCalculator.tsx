@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react'
 import { calculateIncome } from '@/lib/calculations/income'
 import { formatBRL } from '@/lib/formatters'
 import { RATES } from '@/config/rates'
-import { TrendingDown, Infinity as InfinityIcon, AlertTriangle, CheckCircle } from 'lucide-react'
+import { TrendingDown, AlertTriangle, CheckCircle, RefreshCw, Calendar } from 'lucide-react'
 
 // ── Premissas fixas — o usuário não precisa pensar nisso ──────────────────
 const FIXED_INFLATION = 5            // IPCA % a.a.
@@ -137,6 +137,11 @@ export function SimpleIncomeCalculator() {
       {mode === 'fromCapital' && (
         <div className="space-y-6">
 
+          {/* Contexto "hoje" */}
+          <div className="rounded-xl px-4 py-2.5 text-xs" style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.15)', color: 'var(--c-ink)' }}>
+            Você se <strong>aposenta hoje</strong> e começa a retirar imediatamente do seu patrimônio atual.
+          </div>
+
           {/* Input do capital */}
           <div className="space-y-3">
             <label className="block text-sm font-bold" style={{ color: 'var(--c-muted)' }}>
@@ -226,6 +231,11 @@ export function SimpleIncomeCalculator() {
       {mode === 'fromWithdrawal' && (
         <div className="space-y-6">
 
+          {/* Contexto "hoje" */}
+          <div className="rounded-xl px-4 py-2.5 text-xs" style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.15)', color: 'var(--c-ink)' }}>
+            Você se <strong>aposenta hoje</strong> e começa a retirar imediatamente. O capital necessário já precisa estar acumulado.
+          </div>
+
           {/* Input da retirada */}
           <div className="space-y-3">
             <label className="block text-sm font-bold" style={{ color: 'var(--c-muted)' }}>
@@ -311,10 +321,57 @@ export function SimpleIncomeCalculator() {
         </div>
       )}
 
-      {/* Premissas fixas — small, transparent */}
-      <div className="rounded-xl px-4 py-3 text-[10px] leading-relaxed" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-line)', color: 'var(--c-muted-2)' }}>
-        Cálculo com taxa real = Selic {(RATES.selic * 100).toFixed(1)}% − 5% IPCA = <strong style={{ color: 'var(--c-muted)' }}>{(((1 + RATES.selic) / 1.05 - 1) * 100).toFixed(1)}% real a.a.</strong>.
-        Todos os valores em poder de compra de hoje. Para configurar inflação, taxas, IR e expectativa de vida, use a aba <strong>Completo</strong>.
+      {/* Card de contexto: "aposentar hoje" + taxa viva */}
+      <div className="rounded-2xl border divide-y" style={{ borderColor: 'var(--c-line)' }}>
+
+        {/* Linha 1 — contexto "hoje" */}
+        <div className="flex items-start gap-3 px-4 py-3">
+          <Calendar size={16} className="flex-shrink-0 mt-0.5" style={{ color: 'var(--c-muted)' }} />
+          <div>
+            <p className="text-xs font-bold" style={{ color: 'var(--c-ink)' }}>
+              Este cálculo parte do princípio que você se aposenta hoje
+            </p>
+            <p className="text-[10px] mt-0.5 leading-relaxed" style={{ color: 'var(--c-muted)' }}>
+              O patrimônio informado é o que você já tem investido agora, e a retirada começa imediatamente.
+              Para planejar uma aposentadoria futura (com acúmulo de capital ao longo dos anos),
+              use a aba <strong>Planejador Completo</strong>.
+            </p>
+          </div>
+        </div>
+
+        {/* Linha 2 — taxa Selic live */}
+        <div className="flex items-center justify-between px-4 py-3 gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--c-emerald)' }} />
+            <div>
+              <p className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>
+                Taxa Selic · Banco Central do Brasil
+              </p>
+              <p className="text-[9px]" style={{ color: 'var(--c-muted-2)' }}>
+                Atualizada em {RATES.lastUpdated} via API BCB · Taxa real = Selic − 5% IPCA
+              </p>
+            </div>
+          </div>
+          <div className="text-right flex-shrink-0">
+            <div className="text-lg font-black tabular-nums" style={{ color: 'var(--c-emerald)' }}>
+              {(RATES.selic * 100).toFixed(2)}% a.a.
+            </div>
+            <div className="text-[9px] font-bold" style={{ color: 'var(--c-muted)' }}>
+              real: {(((1 + RATES.selic) / 1.05 - 1) * 100).toFixed(2)}% a.a.
+            </div>
+          </div>
+        </div>
+
+        {/* Linha 3 — como atualizar */}
+        <div className="flex items-center gap-2 px-4 py-2.5">
+          <RefreshCw size={12} style={{ color: 'var(--c-muted-2)' }} />
+          <p className="text-[9px]" style={{ color: 'var(--c-muted-2)' }}>
+            Atualização automática diária via GitHub Actions (BCB SGS 432).
+            Para forçar agora: <code className="font-mono font-bold">npm run update-rates</code> ou acione em{' '}
+            <a href="https://github.com/carlosferian/napontadolapis/actions" target="_blank" rel="noopener noreferrer"
+              className="underline hover:opacity-80">GitHub → Actions → Run workflow</a>.
+          </p>
+        </div>
       </div>
     </div>
   )
