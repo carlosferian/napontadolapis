@@ -12,6 +12,7 @@ import { formatBRL, formatPct } from '@/lib/formatters'
 import { calculateIncome } from '@/lib/calculations/income'
 import {
   AreaChart, Area, LineChart, Line,
+  BarChart, Bar, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer,
 } from 'recharts'
@@ -31,7 +32,10 @@ export function IncomeCalculator() {
   const [R, setR] = useState<number>(6_000)
   const [I, setI] = useState<number>(9.5)
   const [T, setT] = useState<number>(25)
-  const [inflation, setInflation] = useState<number>(5)
+  const [inflation, setInflation]         = useState<number>(5)
+  const [includeAge, setIncludeAge]       = useState(false)
+  const [age, setAge]                     = useState<number>(40)
+  const [lifeExpectancy, setLifeExpectancy] = useState<number>(80)
 
   const [history, setHistory] = useState<('C' | 'R' | 'I' | 'T')[]>(['C', 'R', 'I'])
 
@@ -41,8 +45,11 @@ export function IncomeCalculator() {
   }, [history])
 
   const results = useMemo(
-    () => calculateIncome({ C, R, I, inflation, T }, target),
-    [C, R, I, inflation, T, target]
+    () => calculateIncome(
+      { C, R, I, inflation, T, age: includeAge ? age : 0, lifeExpectancy },
+      target
+    ),
+    [C, R, I, inflation, T, includeAge, age, lifeExpectancy, target]
   )
 
   const updateField = (field: 'C' | 'R' | 'I' | 'T', val: number) => {
@@ -235,6 +242,72 @@ export function IncomeCalculator() {
                 {results.realI.toFixed(2)}% a.a.
               </span>
             </div>
+          </div>
+
+          {/* Idade e expectativa de vida — opcional */}
+          <div className="space-y-3 pt-2 border-t-2 border-dashed" style={{ borderColor: 'rgba(99,102,241,0.25)' }}>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={includeAge}
+                onChange={e => setIncludeAge(e.target.checked)}
+                className="rounded"
+              />
+              <span className="text-sm font-semibold" style={{ color: 'var(--c-muted)' }}>
+                Incluir análise por expectativa de vida
+              </span>
+            </label>
+
+            {includeAge && (
+              <div className="space-y-3 pl-2">
+                {/* Idade atual */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>Sua idade atual</label>
+                    <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--c-ink)' }}>{age} anos</span>
+                  </div>
+                  <input type="range" min={18} max={85} step={1}
+                    value={age}
+                    onChange={e => setAge(Number(e.target.value))}
+                    className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+                    style={{ accentColor: '#6366f1', backgroundColor: 'var(--c-line)' } as React.CSSProperties}
+                  />
+                  <div className="flex justify-between text-[10px] font-semibold" style={{ color: 'var(--c-muted)' }}>
+                    <span>18 anos</span><span>85 anos</span>
+                  </div>
+                </div>
+
+                {/* Expectativa de vida */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>Expectativa de vida</label>
+                    <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--c-ink)' }}>{lifeExpectancy} anos</span>
+                  </div>
+                  <input type="range" min={65} max={100} step={1}
+                    value={lifeExpectancy}
+                    onChange={e => setLifeExpectancy(Number(e.target.value))}
+                    className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+                    style={{ accentColor: '#6366f1', backgroundColor: 'var(--c-line)' } as React.CSSProperties}
+                  />
+                  <div className="flex justify-between text-[10px] font-semibold" style={{ color: 'var(--c-muted)' }}>
+                    <span>65 anos</span><span>100 anos</span>
+                  </div>
+                </div>
+
+                {/* Resumo */}
+                {results.remainingYears > 0 && (
+                  <div className="rounded-lg px-3 py-2 flex items-center justify-between" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
+                    <span className="text-[11px] font-bold" style={{ color: '#6366f1' }}>
+                      Anos de renda necessários:
+                    </span>
+                    <span className="text-sm font-black" style={{ color: '#6366f1' }}>
+                      {results.remainingYears} anos
+                      {results.isEffectivelyPerpetual && ' ✓'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Duração */}
@@ -441,6 +514,110 @@ export function IncomeCalculator() {
             <strong style={{ color: '#f59e0b' }}>Âmbar tracejado:</strong> quanto você precisará sacar nominalmente a cada ano para manter os mesmos {formatBRL(results.R)}/mês em poder de compra (a linha sobe com a inflação).
           </p>
         </div>
+
+        {/* ── Gráfico comparativo de rendas ──────────────────────────────────── */}
+        {results.maxWithdrawalRealPerpetual > 0 && (
+          <div className="rounded-2xl border p-5 space-y-4" style={{ backgroundColor: 'var(--c-card-calm)', borderColor: 'var(--c-line)' }}>
+            <div>
+              <p className="text-base font-bold" style={{ color: 'var(--c-ink)' }}>Comparativo de Rendas</p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>
+                Sua retirada escolhida vs. os tetos máximos sustentáveis
+              </p>
+            </div>
+
+            {/* Cards de teto */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Teto 1: perpétuo real */}
+              <div className="rounded-xl border p-4 space-y-1" style={{
+                background: results.R <= results.maxWithdrawalRealPerpetual ? 'rgba(16,185,129,0.05)' : 'rgba(220,38,38,0.05)',
+                borderColor: results.R <= results.maxWithdrawalRealPerpetual ? 'rgba(16,185,129,0.2)' : 'rgba(220,38,38,0.2)',
+              }}>
+                <div className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>
+                  Máximo — Perpétuo Real
+                </div>
+                <div className="text-xl font-black tabular-nums" style={{ color: results.R <= results.maxWithdrawalRealPerpetual ? 'var(--c-emerald)' : '#dc2626' }}>
+                  {formatBRL(results.maxWithdrawalRealPerpetual)}/mês
+                </div>
+                <p className="text-[10px] leading-relaxed" style={{ color: 'var(--c-muted)' }}>
+                  Com esta retirada o capital <strong>nunca se esgota</strong> em termos reais — os juros cobrem tudo.
+                  {results.R > results.maxWithdrawalRealPerpetual && (
+                    <span style={{ color: '#dc2626' }}> Sua retirada atual está {formatBRL(results.R - results.maxWithdrawalRealPerpetual)}/mês acima deste limite.</span>
+                  )}
+                </p>
+              </div>
+
+              {/* Teto 2: vitalício — só aparece se informou idade */}
+              {results.remainingYears > 0 && results.maxWithdrawalLifetime > 0 ? (
+                <div className="rounded-xl border p-4 space-y-1" style={{
+                  background: results.R <= results.maxWithdrawalLifetime ? 'rgba(99,102,241,0.05)' : 'rgba(245,158,11,0.05)',
+                  borderColor: results.R <= results.maxWithdrawalLifetime ? 'rgba(99,102,241,0.2)' : 'rgba(245,158,11,0.3)',
+                }}>
+                  <div className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>
+                    Máximo — Perpétuo Vitalício
+                  </div>
+                  <div className="text-xl font-black tabular-nums" style={{ color: results.R <= results.maxWithdrawalLifetime ? '#6366f1' : '#d97706' }}>
+                    {formatBRL(results.maxWithdrawalLifetime)}/mês
+                  </div>
+                  <p className="text-[10px] leading-relaxed" style={{ color: 'var(--c-muted)' }}>
+                    Com esta retirada o capital dura exatamente <strong>{results.remainingYears} anos</strong> (até os {includeAge ? age + results.remainingYears : results.remainingYears} anos).
+                    {results.isEffectivelyPerpetual && (
+                      <span style={{ color: '#6366f1' }}> ✓ Sua retirada atual já é efetivamente perpétua para sua vida estimada.</span>
+                    )}
+                  </p>
+                </div>
+              ) : (
+                <div className="rounded-xl border p-4 flex items-center justify-center" style={{ borderColor: 'var(--c-line)', background: 'var(--c-surface)', borderStyle: 'dashed' }}>
+                  <p className="text-xs text-center" style={{ color: 'var(--c-muted)' }}>
+                    Informe sua idade para ver o<br/>
+                    <strong>teto vitalício personalizado</strong>
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Gráfico de barras comparativo */}
+            {(() => {
+              const barData = [
+                { name: 'Sua retirada', value: results.R, fill: '#6366f1' },
+                { name: 'Máx. perpétuo real', value: results.maxWithdrawalRealPerpetual, fill: '#10b981' },
+                ...(results.remainingYears > 0 && results.maxWithdrawalLifetime > 0
+                  ? [{ name: `Máx. vitalício (${results.remainingYears}a)`, value: results.maxWithdrawalLifetime, fill: '#f59e0b' }]
+                  : []),
+              ]
+              const maxVal = Math.max(...barData.map(d => d.value)) * 1.15
+
+              return (
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart data={barData} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--c-line)" vertical={false} />
+                    <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#78716c' }} tickLine={false} />
+                    <YAxis
+                      tick={{ fontSize: 9, fill: '#78716c' }}
+                      tickFormatter={v => `R$${(v/1000).toFixed(1)}k`}
+                      width={44} tickLine={false} axisLine={false}
+                      domain={[0, maxVal]}
+                    />
+                    <Tooltip
+                      formatter={(v) => [formatBRL(Number(v)) + '/mês', 'Retirada mensal']}
+                      contentStyle={{ background: 'var(--c-card-calm)', borderColor: 'var(--c-line)', borderRadius: 10, fontSize: 11 }}
+                    />
+                    <Bar dataKey="value" radius={[4, 4, 0, 0]} label={{ position: 'top', fontSize: 9, fill: '#78716c', formatter: (v: unknown) => `R$${(Number(v)/1000).toFixed(1)}k` }}>
+                      {barData.map((entry, index) => (
+                        <Cell key={index} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              )
+            })()}
+
+            <p className="text-[10px] leading-relaxed" style={{ color: 'var(--c-muted-2)' }}>
+              <strong style={{ color: '#6366f1' }}>Roxo:</strong> sua retirada escolhida.{' '}
+              <strong style={{ color: '#10b981' }}>Verde:</strong> teto do perpétuo real — acima disso o capital diminui com o tempo.{' '}
+              {results.remainingYears > 0 && <><strong style={{ color: '#f59e0b' }}>Âmbar:</strong> teto vitalício — máximo para durar toda a sua vida estimada.</>}
+            </p>
+          </div>
+        )}
 
         {/* Share */}
         <div className="rounded-2xl p-4 border" style={{ backgroundColor: 'var(--c-surface)', borderColor: 'var(--c-line)' }}>

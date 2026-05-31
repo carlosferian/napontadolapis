@@ -1,11 +1,13 @@
 // lib/calculations/income.ts
 
 export interface IncomeParams {
-  C:         number  // Capital Inicial
-  R:         number  // Retirada Mensal (em valores de HOJE — poder de compra constante)
-  I:         number  // Rentabilidade Anual % a.a. (nominal, bruta de inflação)
-  inflation: number  // Inflação Anual % a.a. (IPCA/meta)
-  T:         number  // Tempo de Retirada em anos
+  C:              number  // Capital Inicial
+  R:              number  // Retirada Mensal (em valores de HOJE — poder de compra constante)
+  I:              number  // Rentabilidade Anual % a.a. (nominal, bruta de inflação)
+  inflation:      number  // Inflação Anual % a.a. (IPCA/meta)
+  T:              number  // Tempo de Retirada em anos
+  age?:           number  // Idade atual (opcional — habilita análise vitalícia)
+  lifeExpectancy?: number // Expectativa de vida (default 80, IBGE)
 }
 
 export interface IncomeResult {
@@ -22,6 +24,11 @@ export interface IncomeResult {
   totalWithdrawn:      number
   totalInterestEarned: number
   nominalDuration:     number   // duração sem inflação (comparação)
+  // ── Tetos de retirada ──
+  maxWithdrawalRealPerpetual: number  // C × i_real_mensal — carteira nunca depleta (perpétuo real)
+  maxWithdrawalLifetime:      number  // R máximo para durar até a expectativa de vida (0 se sem idade)
+  remainingYears:             number  // lifeExpectancy - age (0 se sem idade)
+  isEffectivelyPerpetual:     boolean // T >= remainingYears (dura mais que a vida estimada)
   timeline: {
     year:              number
     balance:           number  // saldo real (poder de compra em valores de hoje)
@@ -78,7 +85,10 @@ export function calculateIncome(
   target: 'C' | 'R' | 'I' | 'T'
 ): IncomeResult {
   let { C, R, I, T } = params
-  const inflation = Math.max(0, params.inflation ?? 5)
+  const inflation       = Math.max(0, params.inflation ?? 5)
+  const age             = params.age && params.age > 0 ? params.age : 0
+  const lifeExpectancy  = params.lifeExpectancy && params.lifeExpectancy > 0 ? params.lifeExpectancy : 80
+  const remainingYears  = age > 0 && lifeExpectancy > age ? lifeExpectancy - age : 0
 
   // Taxa real: é aqui que mora o problema que a calculadora antiga ignorava
   const realI    = realAnnualRate(I, inflation)
@@ -186,6 +196,25 @@ export function calculateIncome(
     if (realBal <= 0 && !isPerpetual) break
   }
 
+  // ── Teto 1: perpétuo real — a carteira nunca diminui em termos reais ──────
+  // R_max = C × i_real_mensal  (perpetuidade de anuidade)
+  const maxWithdrawalRealPerpetual = i > 0 ? Number((C * i).toFixed(2)) : 0
+
+  // ── Teto 2: vitalício — dura até a expectativa de vida ───────────────────
+  // PMT para n = remainingYears × 12: R = C × i / (1 - (1+i)^-n)
+  let maxWithdrawalLifetime = 0
+  if (remainingYears > 0 && C > 0) {
+    const nLife = remainingYears * 12
+    if (i <= 0) {
+      maxWithdrawalLifetime = Number((C / nLife).toFixed(2))
+    } else {
+      maxWithdrawalLifetime = Number(((C * i) / (1 - Math.pow(1 + i, -nLife))).toFixed(2))
+    }
+  }
+
+  // Duração "efectivamente perpétua": cobre mais anos que a expectativa de vida
+  const isEffectivelyPerpetual = remainingYears > 0 && (isPerpetual || T >= remainingYears)
+
   return {
     C, R, I, inflation, T,
     realI:              Number(realI.toFixed(2)),
@@ -196,6 +225,10 @@ export function calculateIncome(
     totalWithdrawn:     Number(totalWithdrawn.toFixed(2)),
     totalInterestEarned: Number(totalInterestEarned.toFixed(2)),
     nominalDuration:    nominalDur,
+    maxWithdrawalRealPerpetual,
+    maxWithdrawalLifetime,
+    remainingYears,
+    isEffectivelyPerpetual,
     timeline,
   }
 }
