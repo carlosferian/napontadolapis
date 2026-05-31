@@ -127,7 +127,8 @@ export function calculateUberVsCar(
   const ipvaMonthly  = carValue * ipvaPct    / 100 / 12
   const insuranceMo  = insurance / 12
   const licensingMo  = FIXED_CAR_DEFAULTS.licensingAnnual / 12
-  const opportunity  = carValue * selicAnnual / 12
+  const equityDeployed = carValue - (car.financed && car.financedAmount ? car.financedAmount : 0)
+  const opportunity  = Math.max(0, equityDeployed) * selicAnnual / 12
 
   // Monthly variable costs
   const fuelMonthly  = kmPerMonth * fuelPricePerKm
@@ -195,16 +196,20 @@ export function calculateUberVsCar(
     ? Math.max(0, (fixedCar - tpFixed) / (effectiveUPKm - varCarPerKm))
     : Infinity
 
+  const commuteKmMonth = commute.distanceKm * 2 * commute.workDaysPerMonth
+
   const breakEvenChart = Array.from({ length: 21 }, (_, i) => {
     const km = i * 250
+    const extraKm = Math.max(0, km - commuteKmMonth)
     return {
       km,
       carCost:  Math.round(fixedCar + varCarPerKm * km),
-      uberCost: Math.round(effectiveUPKm * km + tpFixed),
+      uberCost: Math.round(tpFixed + effectiveUPKm * extraKm),
     }
   })
 
   // 5-year projection
+  const initialEquity = Math.max(0, carValue - (car.financed && car.financedAmount ? car.financedAmount : 0))
   let totalCar5y    = 0
   let totalUberTP5y = 0
   let currentVal    = carValue
@@ -222,7 +227,7 @@ export function calculateUberVsCar(
       FIXED_CAR_DEFAULTS.licensingAnnual +
       (parking + washing) * 12 +
       kmPerMonth * 12 * (fuelPricePerKm + maintKm + toll) +
-      startVal * selicAnnual +
+      initialEquity * selicAnnual +
       financing * 12
 
     totalCar5y += yearCar
