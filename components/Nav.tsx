@@ -21,6 +21,7 @@ const workItems = [
   { href: '/trabalho/seguro-desemprego', label: 'Seguro-Desemprego 2026', desc: 'Calcule parcelas e sua pista financeira de transição.' },
   { href: '/trabalho/rescisao', label: 'Rescisão CLT', desc: 'Simule seus proventos e descontos demissionais.' },
   { href: '/viagens/custo-de-vida', label: 'Custo de Vida entre Cidades', desc: 'Compare orçamentos para mudança ou trabalho remoto.' },
+  { href: '/trabalho/uber-vs-carro', label: 'Uber vs. Carro Próprio', desc: 'Descubra qual opção realmente sai mais barato no longo prazo.' },
 ]
 
 const travelItems = [
