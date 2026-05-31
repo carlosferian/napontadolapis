@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { IncomeCalculator } from '@/components/calculators/IncomeCalculator'
-import { AppCTA } from '@/components/AppCTA'
-import { SourcesFooter } from '@/components/ui/SourcesFooter'
+import { IncomePageTabs } from '@/components/IncomePageTabs'
+import { AppCTA }         from '@/components/AppCTA'
+import { SourcesFooter }  from '@/components/ui/SourcesFooter'
 
 export const metadata: Metadata = {
   title: 'Calculadora Viver de Renda — Planejador de Independência Financeira',
@@ -35,7 +35,7 @@ export default function ViverDeRendaPage() {
         </p>
       </div>
 
-      <IncomeCalculator />
+      <IncomePageTabs />
 
       <div className="prose prose-sm prose-stone max-w-none space-y-4">
         <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">A Matemática do Viver de Renda: Perpetuidade vs. Consumo</h2>
