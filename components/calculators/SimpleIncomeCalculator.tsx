@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react'
 import { calculateIncome } from '@/lib/calculations/income'
 import { formatBRL, formatBRLInput, parseBRLInput } from '@/lib/formatters'
 import { RATES } from '@/config/rates'
-import { TrendingDown, AlertTriangle, CheckCircle, RefreshCw, Calendar } from 'lucide-react'
+import { TrendingDown, AlertTriangle, CheckCircle, Calendar } from 'lucide-react'
 
 // ── Premissas fixas — o usuário não precisa pensar nisso ──────────────────
 const FIXED_INFLATION = 5            // IPCA % a.a.
@@ -358,17 +358,6 @@ export function SimpleIncomeCalculator() {
               real: {(((1 + RATES.selic) / 1.05 - 1) * 100).toFixed(2)}% a.a.
             </div>
           </div>
-        </div>
-
-        {/* Linha 3 — como atualizar */}
-        <div className="flex items-center gap-2 px-4 py-2.5">
-          <RefreshCw size={12} style={{ color: 'var(--c-muted-2)' }} />
-          <p className="text-[9px]" style={{ color: 'var(--c-muted-2)' }}>
-            Atualização automática diária via GitHub Actions (BCB SGS 432).
-            Para forçar agora: <code className="font-mono font-bold">npm run update-rates</code> ou acione em{' '}
-            <a href="https://github.com/carlosferian/napontadolapis/actions" target="_blank" rel="noopener noreferrer"
-              className="underline hover:opacity-80">GitHub → Actions → Run workflow</a>.
-          </p>
         </div>
       </div>
     </div>
