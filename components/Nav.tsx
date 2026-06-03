@@ -45,6 +45,8 @@ const mobileGroups = [
   { label: 'Viagens', items: travelItems },
   { label: 'Outros', items: [
     { href: '/dividir', label: 'Dividir Conta', desc: 'Calcule a divisão de despesas em grupo.' },
+    { href: '/sobre', label: 'Sobre', desc: 'Conheça o projeto A Ponta do Lápis.' },
+    { href: '/fale-conosco', label: 'Fale Conosco', desc: 'Sugestões, erros ou só um oi.' },
   ]},
 ]
 
@@ -187,6 +189,10 @@ export function Nav() {
 
           <Link href="/dividir" className={`${btnCls} hidden sm:flex`} style={{ color: 'var(--c-ink)', textDecoration: 'none' }}>
             Dividir
+          </Link>
+
+          <Link href="/sobre" className={`${btnCls} hidden sm:flex`} style={{ color: 'var(--c-ink)', textDecoration: 'none' }}>
+            Sobre
           </Link>
 
           <div className="ml-1"><ThemeToggle /></div>
