@@ -30,13 +30,35 @@ function SliderInput({ label, value, unit, min, max, step, onChange, tip }: {
   label: string; value: number; unit: string; min: number; max: number; step: number
   onChange: (v: number) => void; tip?: string
 }) {
+  const [focused, setFocused]   = useState(false)
+  const [rawInput, setRawInput] = useState('')
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocused(true)
+    setRawInput(String(value))
+    e.target.select()
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value
+    setRawInput(raw)
+    const parsed = parseFloat(raw.replace(',', '.').replace(/[^\d.]/g, ''))
+    if (!isNaN(parsed)) onChange(Math.max(min, Math.min(max, parsed)))
+  }
+
   return (
     <div className="space-y-1.5">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-2">
         <span className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>{label}</span>
-        <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--c-ink)' }}>
-          {value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} {unit}
-        </span>
+        <input
+          type="text" inputMode="decimal"
+          value={focused ? rawInput : `${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} ${unit}`}
+          onFocus={handleFocus}
+          onChange={handleChange}
+          onBlur={() => setFocused(false)}
+          className="text-sm font-bold tabular-nums text-right bg-transparent border-b focus:outline-none transition-colors"
+          style={{ color: 'var(--c-ink)', borderColor: focused ? 'var(--c-emerald)' : 'transparent', maxWidth: '8rem' }}
+        />
       </div>
       <input type="range" min={min} max={max} step={step} value={value}
         onChange={e => onChange(Number(e.target.value))}

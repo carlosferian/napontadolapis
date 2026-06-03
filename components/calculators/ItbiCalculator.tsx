@@ -8,7 +8,7 @@ import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
-import { formatBRL } from '@/lib/formatters'
+import { formatBRL, parseBRLInput } from '@/lib/formatters'
 import { ITBI_CITIES, calculateITBIAndFees, ITBICalculationInput } from '@/config/itbi'
 import { Info, HelpCircle, ShieldAlert, Sparkles, Building2, CheckCircle2 } from 'lucide-react'
 
@@ -19,6 +19,14 @@ export function ItbiCalculator() {
   const [cityCode, setCityCode] = useState<string>('SP')
   const [customRate, setCustomRate] = useState<number>(2.0)
   const [isFirstProperty, setIsFirstProperty] = useState<boolean>(false)
+
+  // Raw string states para edição via teclado
+  const [propFocused,   setPropFocused]   = useState(false)
+  const [propRaw,       setPropRaw]       = useState('')
+  const [downFocused,   setDownFocused]   = useState(false)
+  const [downRaw,       setDownRaw]       = useState('')
+  const [customFocused, setCustomFocused] = useState(false)
+  const [customRaw,     setCustomRaw]     = useState('')
 
   // Garante que o sinal/entrada não ultrapasse o valor do imóvel
   const validatedDownPayment = useMemo(() => {
@@ -56,13 +64,19 @@ export function ItbiCalculator() {
         >
           {/* Valor do Imóvel */}
           <div className="space-y-2">
-            <div className="flex justify-between items-baseline">
+            <div className="flex justify-between items-baseline gap-2">
               <label htmlFor="property-value" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                 Valor de Compra do Imóvel
               </label>
-              <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                {formatBRL(propertyValue)}
-              </span>
+              <input
+                type="text" inputMode="numeric"
+                value={propFocused ? propRaw : formatBRL(propertyValue)}
+                onFocus={e => { setPropFocused(true); setPropRaw(String(propertyValue)); e.target.select() }}
+                onChange={e => { setPropRaw(e.target.value); const v = parseBRLInput(e.target.value); if (v > 0) { setPropertyValue(Math.max(50000, Math.min(2500000, v))); setDownPayment(Math.round(Math.max(50000, Math.min(2500000, v)) * 0.2)) } }}
+                onBlur={() => setPropFocused(false)}
+                className="text-sm font-bold text-right bg-transparent border-b focus:outline-none transition-colors text-emerald-600 dark:text-emerald-400"
+                style={{ borderColor: propFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '8rem' }}
+              />
             </div>
             <input
               id="property-value"
@@ -74,7 +88,6 @@ export function ItbiCalculator() {
               onChange={(e) => {
                 const val = Number(e.target.value)
                 setPropertyValue(val)
-                // Ajusta proporcionalmente a entrada para 20% se o valor do imóvel mudar
                 setDownPayment(Math.round(val * 0.2))
               }}
               className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
@@ -116,13 +129,19 @@ export function ItbiCalculator() {
           {/* Alíquota Customizada (se selecionado "Outra Cidade") */}
           {cityCode === 'custom' && (
             <div className="space-y-2 pt-3 border-t animate-fadeIn" style={{ borderColor: 'var(--c-line)' }}>
-              <div className="flex justify-between items-baseline">
+              <div className="flex justify-between items-baseline gap-2">
                 <label htmlFor="custom-rate" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                   Alíquota do ITBI Personalizada
                 </label>
-                <span className="text-sm font-bold" style={{ color: 'var(--c-ink)' }}>
-                  {customRate.toString().replace('.', ',')}%
-                </span>
+                <input
+                  type="text" inputMode="decimal"
+                  value={customFocused ? customRaw : `${customRate.toString().replace('.', ',')}%`}
+                  onFocus={e => { setCustomFocused(true); setCustomRaw(String(customRate)); e.target.select() }}
+                  onChange={e => { setCustomRaw(e.target.value); const v = parseFloat(e.target.value.replace(',', '.')); if (!isNaN(v)) setCustomRate(Math.max(0.5, Math.min(5, v))) }}
+                  onBlur={() => setCustomFocused(false)}
+                  className="text-sm font-bold text-right bg-transparent border-b focus:outline-none transition-colors"
+                  style={{ color: 'var(--c-ink)', borderColor: customFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '5rem' }}
+                />
               </div>
               <input
                 id="custom-rate"
@@ -170,12 +189,21 @@ export function ItbiCalculator() {
             <div className="space-y-3 pt-3 border-t animate-fadeIn" style={{ borderColor: 'var(--c-line)' }}>
               {/* Entrada */}
               <div className="space-y-2">
-                <div className="flex justify-between items-baseline">
+                <div className="flex justify-between items-baseline gap-2">
                   <label htmlFor="down-payment" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                     Valor de Entrada (Sinal)
                   </label>
                   <span className="text-xs font-bold" style={{ color: 'var(--c-ink)' }}>
-                    {formatBRL(validatedDownPayment)} <span className="text-[10px] font-medium" style={{ color: 'var(--c-muted)' }}>({((validatedDownPayment / propertyValue) * 100).toFixed(0)}%)</span>
+                    <input
+                      type="text" inputMode="numeric"
+                      value={downFocused ? downRaw : formatBRL(validatedDownPayment)}
+                      onFocus={e => { setDownFocused(true); setDownRaw(String(validatedDownPayment)); e.target.select() }}
+                      onChange={e => { setDownRaw(e.target.value); const v = parseBRLInput(e.target.value); if (v > 0) setDownPayment(Math.max(Math.round(propertyValue * 0.1), Math.min(Math.round(propertyValue * 0.9), v))) }}
+                      onBlur={() => setDownFocused(false)}
+                      className="text-right bg-transparent border-b focus:outline-none transition-colors"
+                      style={{ color: 'var(--c-ink)', borderColor: downFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '7rem' }}
+                    />
+                    {!downFocused && <span className="text-[10px] font-medium ml-1" style={{ color: 'var(--c-muted)' }}>({((validatedDownPayment / propertyValue) * 100).toFixed(0)}%)</span>}
                   </span>
                 </div>
                 <input

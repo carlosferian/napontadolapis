@@ -8,7 +8,7 @@ import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
-import { formatBRL } from '@/lib/formatters'
+import { formatBRL, parseBRLInput } from '@/lib/formatters'
 import { calculateAmortizationComparison, AmortizationInput, AmortizationSummary } from '@/lib/calculations/amortization'
 import { HelpCircle, Info, Home, Calendar, ShieldAlert, Sparkles, TrendingDown, ArrowRight, Layers, Percent } from 'lucide-react'
 import {
@@ -28,6 +28,16 @@ export function AmortizationCalculator() {
   const [annualRate, setAnnualRate] = useState<number>(10.5)
   const [years, setYears] = useState<number>(30)
   const [extraMonthly, setExtraMonthly] = useState<number>(500)
+
+  // Raw string states para edição via teclado
+  const [financedFocused, setFinancedFocused] = useState(false)
+  const [financedRaw,     setFinancedRaw]     = useState('')
+  const [rateFocused,     setRateFocused]     = useState(false)
+  const [rateRaw,         setRateRaw]         = useState('')
+  const [yearsFocused,    setYearsFocused]    = useState(false)
+  const [yearsRaw,        setYearsRaw]        = useState('')
+  const [extraFocused,    setExtraFocused]    = useState(false)
+  const [extraRaw,        setExtraRaw]        = useState('')
   const [extraType, setExtraType] = useState<'prazo' | 'parcela'>('prazo')
   const [selectedSystem, setSelectedSystem] = useState<'sac' | 'price'>('sac')
 
@@ -146,13 +156,19 @@ export function AmortizationCalculator() {
         >
           {/* Valor Financiado */}
           <div className="space-y-2">
-            <div className="flex justify-between items-baseline">
+            <div className="flex justify-between items-baseline gap-2">
               <label htmlFor="financed-amount" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                 Valor Total Financiado
               </label>
-              <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                {formatBRL(financedAmount)}
-              </span>
+              <input
+                type="text" inputMode="numeric"
+                value={financedFocused ? financedRaw : formatBRL(financedAmount)}
+                onFocus={e => { setFinancedFocused(true); setFinancedRaw(String(financedAmount)); e.target.select() }}
+                onChange={e => { setFinancedRaw(e.target.value); const v = parseBRLInput(e.target.value); if (v > 0) setFinancedAmount(Math.max(50000, Math.min(1500000, v))) }}
+                onBlur={() => setFinancedFocused(false)}
+                className="text-sm font-bold text-right bg-transparent border-b focus:outline-none transition-colors text-emerald-600 dark:text-emerald-400"
+                style={{ borderColor: financedFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '8rem' }}
+              />
             </div>
             <input
               id="financed-amount"
@@ -173,12 +189,21 @@ export function AmortizationCalculator() {
 
           {/* Taxa de Juros Anual */}
           <div className="space-y-2 pt-3 border-t" style={{ borderColor: 'var(--c-line)' }}>
-            <div className="flex justify-between items-baseline">
+            <div className="flex justify-between items-baseline gap-2">
               <label htmlFor="annual-rate" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                 Taxa de Juros Nominal
               </label>
               <span className="text-sm font-bold" style={{ color: 'var(--c-ink)' }}>
-                {annualRate.toString().replace('.', ',')}% a.a. <span className="text-[10px] font-medium" style={{ color: 'var(--c-muted)' }}>({(annualRate / 12).toFixed(2).replace('.', ',')}% a.m.)</span>
+                <input
+                  type="text" inputMode="decimal"
+                  value={rateFocused ? rateRaw : `${annualRate.toString().replace('.', ',')}% a.a.`}
+                  onFocus={e => { setRateFocused(true); setRateRaw(String(annualRate)); e.target.select() }}
+                  onChange={e => { setRateRaw(e.target.value); const v = parseFloat(e.target.value.replace(',', '.')); if (!isNaN(v)) setAnnualRate(Math.max(4, Math.min(18, v))) }}
+                  onBlur={() => setRateFocused(false)}
+                  className="text-right bg-transparent border-b focus:outline-none transition-colors"
+                  style={{ color: 'var(--c-ink)', borderColor: rateFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '7rem' }}
+                />
+                {!rateFocused && <span className="text-[10px] font-medium ml-1" style={{ color: 'var(--c-muted)' }}>({(annualRate / 12).toFixed(2).replace('.', ',')}% a.m.)</span>}
               </span>
             </div>
             <input
@@ -200,12 +225,21 @@ export function AmortizationCalculator() {
 
           {/* Prazo em Anos */}
           <div className="space-y-2 pt-3 border-t" style={{ borderColor: 'var(--c-line)' }}>
-            <div className="flex justify-between items-baseline">
+            <div className="flex justify-between items-baseline gap-2">
               <label htmlFor="years-term" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                 Prazo Total do Contrato
               </label>
               <span className="text-sm font-bold" style={{ color: 'var(--c-ink)' }}>
-                {years} {years === 1 ? 'ano' : 'anos'} <span className="text-[10px] font-medium" style={{ color: 'var(--c-muted)' }}>({totalMonths} meses)</span>
+                <input
+                  type="text" inputMode="numeric"
+                  value={yearsFocused ? yearsRaw : `${years} ${years === 1 ? 'ano' : 'anos'}`}
+                  onFocus={e => { setYearsFocused(true); setYearsRaw(String(years)); e.target.select() }}
+                  onChange={e => { setYearsRaw(e.target.value); const v = parseInt(e.target.value); if (!isNaN(v)) setYears(Math.max(5, Math.min(35, v))) }}
+                  onBlur={() => setYearsFocused(false)}
+                  className="text-right bg-transparent border-b focus:outline-none transition-colors"
+                  style={{ color: 'var(--c-ink)', borderColor: yearsFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '6rem' }}
+                />
+                {!yearsFocused && <span className="text-[10px] font-medium ml-1" style={{ color: 'var(--c-muted)' }}>({totalMonths} meses)</span>}
               </span>
             </div>
             <input
@@ -233,13 +267,19 @@ export function AmortizationCalculator() {
         >
           {/* Aporte Extra Mensal */}
           <div className="space-y-2">
-            <div className="flex justify-between items-baseline">
+            <div className="flex justify-between items-baseline gap-2">
               <label htmlFor="extra-monthly" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                 Aporte Extra Mensal Previsto
               </label>
-              <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                {extraMonthly === 0 ? 'Nenhum' : formatBRL(extraMonthly)}
-              </span>
+              <input
+                type="text" inputMode="numeric"
+                value={extraFocused ? extraRaw : (extraMonthly === 0 ? 'Nenhum' : formatBRL(extraMonthly))}
+                onFocus={e => { setExtraFocused(true); setExtraRaw(String(extraMonthly)); e.target.select() }}
+                onChange={e => { setExtraRaw(e.target.value); const v = parseBRLInput(e.target.value); setExtraMonthly(Math.max(0, Math.min(5000, v))) }}
+                onBlur={() => setExtraFocused(false)}
+                className="text-sm font-bold text-right bg-transparent border-b focus:outline-none transition-colors text-emerald-600 dark:text-emerald-400"
+                style={{ borderColor: extraFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '8rem' }}
+              />
             </div>
             <input
               id="extra-monthly"

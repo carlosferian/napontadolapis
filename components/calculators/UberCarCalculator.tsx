@@ -37,12 +37,35 @@ interface SliderRowProps {
 function SliderRow({
   label, value, min, max, step, onChange, format, hint, accentColor = 'var(--c-emerald)',
 }: SliderRowProps) {
-  const display = format ? format(value) : String(value)
+  const [focused, setFocused]   = useState(false)
+  const [rawInput, setRawInput] = useState('')
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocused(true)
+    setRawInput(String(value))
+    e.target.select()
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value
+    setRawInput(raw)
+    const parsed = parseFloat(raw.replace(',', '.').replace(/[^\d.]/g, ''))
+    if (!isNaN(parsed)) onChange(Math.max(min, Math.min(max, parsed)))
+  }
+
   return (
     <div className="space-y-1.5">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-2">
         <label className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>{label}</label>
-        <span className="text-xs font-bold tabular-nums" style={{ color: accentColor }}>{display}</span>
+        <input
+          type="text" inputMode="decimal"
+          value={focused ? rawInput : (format ? format(value) : String(value))}
+          onFocus={handleFocus}
+          onChange={handleChange}
+          onBlur={() => setFocused(false)}
+          className="text-xs font-bold tabular-nums text-right bg-transparent border-b focus:outline-none transition-colors"
+          style={{ color: accentColor, borderColor: focused ? accentColor : 'transparent', maxWidth: '7rem' }}
+        />
       </div>
       <input
         type="range" min={min} max={max} step={step} value={value}
