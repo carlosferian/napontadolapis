@@ -56,6 +56,17 @@ html {
   box-sizing: border-box;
 }
 
+/* Remove spin buttons de inputs numéricos em todos os browsers */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 body {
   font-family: 'Manrope', sans-serif;
   background-color: #EEF2F9;

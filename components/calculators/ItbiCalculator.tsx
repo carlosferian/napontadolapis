@@ -20,13 +20,6 @@ export function ItbiCalculator() {
   const [customRate, setCustomRate] = useState<number>(2.0)
   const [isFirstProperty, setIsFirstProperty] = useState<boolean>(false)
 
-  // Raw string states para edição via teclado
-  const [propFocused,   setPropFocused]   = useState(false)
-  const [propRaw,       setPropRaw]       = useState('')
-  const [downFocused,   setDownFocused]   = useState(false)
-  const [downRaw,       setDownRaw]       = useState('')
-  const [customFocused, setCustomFocused] = useState(false)
-  const [customRaw,     setCustomRaw]     = useState('')
 
   // Garante que o sinal/entrada não ultrapasse o valor do imóvel
   const validatedDownPayment = useMemo(() => {
@@ -68,15 +61,24 @@ export function ItbiCalculator() {
               <label htmlFor="property-value" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                 Valor de Compra do Imóvel
               </label>
-              <input
-                type="text" inputMode="numeric"
-                value={propFocused ? propRaw : formatBRL(propertyValue)}
-                onFocus={e => { setPropFocused(true); setPropRaw(String(propertyValue)); e.target.select() }}
-                onChange={e => { setPropRaw(e.target.value); const v = parseBRLInput(e.target.value); if (v > 0) { setPropertyValue(Math.max(50000, Math.min(2500000, v))); setDownPayment(Math.round(Math.max(50000, Math.min(2500000, v)) * 0.2)) } }}
-                onBlur={() => setPropFocused(false)}
-                className="text-sm font-bold text-right bg-transparent border-b focus:outline-none transition-colors text-emerald-600 dark:text-emerald-400"
-                style={{ borderColor: propFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '8rem' }}
-              />
+              <span className="flex items-baseline gap-1">
+                <span className="text-xs font-medium" style={{ color: 'var(--c-muted)' }}>R$</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={propertyValue}
+                  min={50000}
+                  max={2500000}
+                  step={10000}
+                  onChange={e => {
+                    const val = Math.max(50000, Math.min(2500000, parseInt(e.target.value) || 50000))
+                    setPropertyValue(val)
+                    setDownPayment(Math.round(val * 0.2))
+                  }}
+                  className="text-sm font-bold text-right bg-transparent border-b focus:outline-none text-emerald-600 dark:text-emerald-400 focus:border-emerald-500"
+                  style={{ borderColor: 'var(--c-line)', maxWidth: '7rem' }}
+                />
+              </span>
             </div>
             <input
               id="property-value"
@@ -133,15 +135,20 @@ export function ItbiCalculator() {
                 <label htmlFor="custom-rate" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                   Alíquota do ITBI Personalizada
                 </label>
-                <input
-                  type="text" inputMode="decimal"
-                  value={customFocused ? customRaw : `${customRate.toString().replace('.', ',')}%`}
-                  onFocus={e => { setCustomFocused(true); setCustomRaw(String(customRate)); e.target.select() }}
-                  onChange={e => { setCustomRaw(e.target.value); const v = parseFloat(e.target.value.replace(',', '.')); if (!isNaN(v)) setCustomRate(Math.max(0.5, Math.min(5, v))) }}
-                  onBlur={() => setCustomFocused(false)}
-                  className="text-sm font-bold text-right bg-transparent border-b focus:outline-none transition-colors"
-                  style={{ color: 'var(--c-ink)', borderColor: customFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '5rem' }}
-                />
+                <span className="flex items-baseline gap-1">
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    value={customRate}
+                    min={0.5}
+                    max={5}
+                    step={0.1}
+                    onChange={e => setCustomRate(Math.max(0.5, Math.min(5, parseFloat(e.target.value) || 0.5)))}
+                    className="text-sm font-bold text-right bg-transparent border-b focus:outline-none focus:border-emerald-500"
+                    style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)', maxWidth: '3.5rem' }}
+                  />
+                  <span className="text-xs font-medium" style={{ color: 'var(--c-muted)' }}>%</span>
+                </span>
               </div>
               <input
                 id="custom-rate"
@@ -193,17 +200,19 @@ export function ItbiCalculator() {
                   <label htmlFor="down-payment" className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
                     Valor de Entrada (Sinal)
                   </label>
-                  <span className="text-xs font-bold" style={{ color: 'var(--c-ink)' }}>
+                  <span className="flex items-baseline gap-1">
+                    <span className="text-xs font-medium" style={{ color: 'var(--c-muted)' }}>R$</span>
                     <input
-                      type="text" inputMode="numeric"
-                      value={downFocused ? downRaw : formatBRL(validatedDownPayment)}
-                      onFocus={e => { setDownFocused(true); setDownRaw(String(validatedDownPayment)); e.target.select() }}
-                      onChange={e => { setDownRaw(e.target.value); const v = parseBRLInput(e.target.value); if (v > 0) setDownPayment(Math.max(Math.round(propertyValue * 0.1), Math.min(Math.round(propertyValue * 0.9), v))) }}
-                      onBlur={() => setDownFocused(false)}
-                      className="text-right bg-transparent border-b focus:outline-none transition-colors"
-                      style={{ color: 'var(--c-ink)', borderColor: downFocused ? 'var(--c-emerald)' : 'transparent', maxWidth: '7rem' }}
+                      type="number"
+                      inputMode="numeric"
+                      value={validatedDownPayment}
+                      min={Math.round(propertyValue * 0.1)}
+                      max={Math.round(propertyValue * 0.9)}
+                      step={5000}
+                      onChange={e => setDownPayment(Math.max(Math.round(propertyValue * 0.1), Math.min(Math.round(propertyValue * 0.9), parseInt(e.target.value) || Math.round(propertyValue * 0.2))))}
+                      className="text-xs font-bold text-right bg-transparent border-b focus:outline-none focus:border-emerald-500"
+                      style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)', maxWidth: '6rem' }}
                     />
-                    {!downFocused && <span className="text-[10px] font-medium ml-1" style={{ color: 'var(--c-muted)' }}>({((validatedDownPayment / propertyValue) * 100).toFixed(0)}%)</span>}
                   </span>
                 </div>
                 <input

@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react'
 import { calculateIncome } from '@/lib/calculations/income'
-import { formatBRL, formatBRLInput, parseBRLInput } from '@/lib/formatters'
+import { formatBRL } from '@/lib/formatters'
 import { RATES } from '@/config/rates'
 import { TrendingDown, AlertTriangle, CheckCircle, RefreshCw, Calendar } from 'lucide-react'
 
@@ -69,11 +69,6 @@ export function SimpleIncomeCalculator() {
   const [exploredCapital, setExploredCapital] = useState(0)
   const [exploredCapSet,  setExploredCapSet]  = useState(false)
 
-  // Raw string states para evitar o loop de formatação ao digitar
-  const [capitalFocused,    setCapitalFocused]    = useState(false)
-  const [capitalRaw,        setCapitalRaw]        = useState('')
-  const [withdrawalFocused, setWithdrawalFocused] = useState(false)
-  const [withdrawalRaw,     setWithdrawalRaw]     = useState('')
 
   // ── Cálculos ────────────────────────────────────────────────────────────
 
@@ -151,18 +146,26 @@ export function SimpleIncomeCalculator() {
             <label className="block text-sm font-bold" style={{ color: 'var(--c-muted)' }}>
               Quanto você tem investido hoje?
             </label>
-            <div className="relative">
-              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg font-extrabold" style={{ color: 'var(--c-muted)' }}>R$</span>
-              <input
-                type="text" inputMode="numeric"
-                value={capitalFocused ? capitalRaw : (capital === 0 ? '' : formatBRLInput(capital))}
-                onFocus={() => { setCapitalFocused(true); setCapitalRaw(capital === 0 ? '' : String(capital)) }}
-                onChange={e => { setCapitalRaw(e.target.value); setCapital(Math.min(100_000_000, Math.round(parseBRLInput(e.target.value)))) }}
-                onBlur={() => setCapitalFocused(false)}
-                className="w-full border-2 rounded-2xl py-4 pr-5 pl-14 text-2xl font-black tabular-nums focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-transparent"
-                style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }}
-                placeholder="0"
-              />
+            <div className="space-y-1">
+              <div className="relative">
+                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg font-extrabold" style={{ color: 'var(--c-muted)' }}>R$</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={capital || ''}
+                  min={0}
+                  max={100_000_000}
+                  onChange={e => setCapital(Math.min(100_000_000, Math.max(0, parseInt(e.target.value) || 0)))}
+                  className="w-full border-2 rounded-2xl py-4 pr-5 pl-14 text-2xl font-black tabular-nums focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-transparent"
+                  style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }}
+                  placeholder="0"
+                />
+              </div>
+              {capital > 0 && (
+                <p className="text-xs text-right pr-1" style={{ color: 'var(--c-muted)' }}>
+                  = {formatBRL(capital)}
+                </p>
+              )}
             </div>
             <input type="range" min={10_000} max={10_000_000} step={10_000}
               value={Math.min(10_000_000, capital)}
@@ -247,18 +250,26 @@ export function SimpleIncomeCalculator() {
             <label className="block text-sm font-bold" style={{ color: 'var(--c-muted)' }}>
               Quanto você quer retirar por mês?
             </label>
-            <div className="relative">
-              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg font-extrabold" style={{ color: 'var(--c-muted)' }}>R$</span>
-              <input
-                type="text" inputMode="numeric"
-                value={withdrawalFocused ? withdrawalRaw : (withdrawal === 0 ? '' : formatBRLInput(withdrawal))}
-                onFocus={() => { setWithdrawalFocused(true); setWithdrawalRaw(withdrawal === 0 ? '' : String(withdrawal)) }}
-                onChange={e => { setWithdrawalRaw(e.target.value); setWithdrawal(Math.min(1_000_000, Math.round(parseBRLInput(e.target.value)))) }}
-                onBlur={() => setWithdrawalFocused(false)}
-                className="w-full border-2 rounded-2xl py-4 pr-5 pl-14 text-2xl font-black tabular-nums focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-transparent"
-                style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }}
-                placeholder="0"
-              />
+            <div className="space-y-1">
+              <div className="relative">
+                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg font-extrabold" style={{ color: 'var(--c-muted)' }}>R$</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={withdrawal || ''}
+                  min={0}
+                  max={1_000_000}
+                  onChange={e => setWithdrawal(Math.min(1_000_000, Math.max(0, parseInt(e.target.value) || 0)))}
+                  className="w-full border-2 rounded-2xl py-4 pr-5 pl-14 text-2xl font-black tabular-nums focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-transparent"
+                  style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }}
+                  placeholder="0"
+                />
+              </div>
+              {withdrawal > 0 && (
+                <p className="text-xs text-right pr-1" style={{ color: 'var(--c-muted)' }}>
+                  = {formatBRL(withdrawal)}
+                </p>
+              )}
             </div>
             <input type="range" min={500} max={100_000} step={500}
               value={Math.min(100_000, withdrawal)}

@@ -8,7 +8,7 @@ import { SectionDivider } from '@/components/ui/SectionDivider'
 import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
-import { formatBRL, formatBRLInput, parseBRLInput } from '@/lib/formatters'
+import { formatBRL } from '@/lib/formatters'
 import { calculateUberVsCar } from '@/lib/calculations/uber-car'
 import { getSegment, SEGMENT_LABELS, SEGMENT_DEFAULTS } from '@/config/uber-car'
 import type { CitySize, FuelType, CommuteMode } from '@/config/uber-car'
@@ -35,36 +35,20 @@ interface SliderRowProps {
 }
 
 function SliderRow({
-  label, value, min, max, step, onChange, format, hint, accentColor = 'var(--c-emerald)',
-}: SliderRowProps) {
-  const [focused, setFocused]   = useState(false)
-  const [rawInput, setRawInput] = useState('')
-
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    setFocused(true)
-    setRawInput(String(value))
-    e.target.select()
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value
-    setRawInput(raw)
-    const parsed = parseFloat(raw.replace(',', '.').replace(/[^\d.]/g, ''))
-    if (!isNaN(parsed)) onChange(Math.max(min, Math.min(max, parsed)))
-  }
-
+  label, value, min, max, step, onChange, hint, accentColor = 'var(--c-emerald)',
+}: Omit<SliderRowProps, 'format'> & { format?: (v: number) => string }) {
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between items-center gap-2">
         <label className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>{label}</label>
         <input
-          type="text" inputMode="decimal"
-          value={focused ? rawInput : (format ? format(value) : String(value))}
-          onFocus={handleFocus}
-          onChange={handleChange}
-          onBlur={() => setFocused(false)}
-          className="text-xs font-bold tabular-nums text-right bg-transparent border-b focus:outline-none transition-colors"
-          style={{ color: accentColor, borderColor: focused ? accentColor : 'transparent', maxWidth: '7rem' }}
+          type="number"
+          inputMode="decimal"
+          value={value}
+          min={min} max={max} step={step}
+          onChange={e => { const v = parseFloat(e.target.value); if (!isNaN(v)) onChange(Math.max(min, Math.min(max, v))) }}
+          className="text-xs font-bold tabular-nums text-right bg-transparent border-b focus:outline-none"
+          style={{ color: accentColor, borderColor: accentColor, maxWidth: '6rem' }}
         />
       </div>
       <input
@@ -254,13 +238,12 @@ export function UberCarCalculator() {
                   <div className="relative w-40">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium" style={{ color: 'var(--c-muted)' }}>R$</span>
                     <input
-                      type="text" inputMode="numeric"
-                      value={carValueRaw === '0' ? '' : formatBRLInput(Number(carValueRaw.replace(/\D/g, '') || 0))}
-                      placeholder="90.000"
-                      onChange={e => {
-                        const digits = String(Math.round(parseBRLInput(e.target.value)))
-                        setCarValueRaw(digits || '0')
-                      }}
+                      type="number"
+                      inputMode="numeric"
+                      value={carValue || ''}
+                      min={30_000} max={400_000} step={5_000}
+                      placeholder="90000"
+                      onChange={e => setCarValueRaw(String(Math.max(30_000, Math.min(400_000, parseInt(e.target.value) || 30_000))))}
                       className="w-full text-right border rounded-xl pr-3.5 pl-9 py-2 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 tabular-nums bg-transparent"
                       style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }}
                     />

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { formatBRL, formatPct, formatBRLInput, parseBRLInput } from '@/lib/formatters'
+import { formatBRL, formatPct } from '@/lib/formatters'
 import { calcSAC, calcPrice, calcEmprestimo, calcConsorcio } from '@/lib/calculations/financing'
 import { RATES } from '@/config/rates'
 import {
@@ -30,35 +30,22 @@ function SliderInput({ label, value, unit, min, max, step, onChange, tip }: {
   label: string; value: number; unit: string; min: number; max: number; step: number
   onChange: (v: number) => void; tip?: string
 }) {
-  const [focused, setFocused]   = useState(false)
-  const [rawInput, setRawInput] = useState('')
-
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    setFocused(true)
-    setRawInput(String(value))
-    e.target.select()
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value
-    setRawInput(raw)
-    const parsed = parseFloat(raw.replace(',', '.').replace(/[^\d.]/g, ''))
-    if (!isNaN(parsed)) onChange(Math.max(min, Math.min(max, parsed)))
-  }
-
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between items-center gap-2">
         <span className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>{label}</span>
-        <input
-          type="text" inputMode="decimal"
-          value={focused ? rawInput : `${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} ${unit}`}
-          onFocus={handleFocus}
-          onChange={handleChange}
-          onBlur={() => setFocused(false)}
-          className="text-sm font-bold tabular-nums text-right bg-transparent border-b focus:outline-none transition-colors"
-          style={{ color: 'var(--c-ink)', borderColor: focused ? 'var(--c-emerald)' : 'transparent', maxWidth: '8rem' }}
-        />
+        <span className="flex items-baseline gap-1">
+          <input
+            type="number"
+            inputMode="decimal"
+            value={value}
+            min={min} max={max} step={step}
+            onChange={e => { const v = parseFloat(e.target.value); if (!isNaN(v)) onChange(Math.max(min, Math.min(max, v))) }}
+            className="text-sm font-bold tabular-nums text-right bg-transparent border-b focus:outline-none focus:border-emerald-500"
+            style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)', maxWidth: '5rem' }}
+          />
+          <span className="text-xs" style={{ color: 'var(--c-muted)' }}>{unit}</span>
+        </span>
       </div>
       <input type="range" min={min} max={max} step={step} value={value}
         onChange={e => onChange(Number(e.target.value))}
@@ -158,9 +145,10 @@ export function FinancingComparisonCalculator() {
               <span className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>Valor do bem</span>
               <div className="relative w-44">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium" style={{ color: 'var(--c-muted)' }}>R$</span>
-                <input type="text" inputMode="numeric"
-                  value={bemValue === 0 ? '' : formatBRLInput(bemValue)}
-                  onChange={e => setBemValue(Math.min(10_000_000, Math.round(parseBRLInput(e.target.value))))}
+                <input type="number" inputMode="numeric"
+                  value={bemValue || ''}
+                  min={50_000} max={10_000_000} step={10_000}
+                  onChange={e => setBemValue(Math.min(10_000_000, Math.max(50_000, parseInt(e.target.value) || 50_000)))}
                   className="w-full text-right border rounded-xl pr-3 pl-8 py-1.5 text-sm font-bold tabular-nums bg-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }} />
               </div>
