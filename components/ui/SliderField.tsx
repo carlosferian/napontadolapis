@@ -35,7 +35,7 @@ export function SliderField({
   function commit(raw: string) {
     const parsed = parseBRLInput(raw)
     if (!isNaN(parsed) && parsed >= 0) {
-      onChange(Math.max(min, Math.min(max, parsed || min)))
+      onChange(Math.max(min, parsed || min))
     }
     setEditing(false)
   }
@@ -54,7 +54,6 @@ export function SliderField({
             autoFocus
             value={editVal}
             min={min}
-            max={max}
             step={step}
             onChange={e => setEditVal(e.target.value)}
             onBlur={() => commit(editVal)}
@@ -71,12 +70,18 @@ export function SliderField({
           <button
             type="button"
             onClick={startEdit}
-            className="text-xl sm:text-2xl font-bold tabular-nums text-right"
+            className="group text-xl sm:text-2xl font-bold tabular-nums text-right relative"
             style={{ color: 'var(--c-ink)' }}
-            title="Toque para digitar"
+            title="Toque para digitar um valor personalizado"
             aria-label={`${label}: ${formatValue(value)}. Toque para editar.`}
           >
             {formatValue(value)}
+            <span
+              className="absolute -bottom-4 right-0 text-xs font-normal text-stone-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+              aria-hidden="true"
+            >
+              ✎ clique para digitar
+            </span>
           </button>
         )}
       </div>
@@ -87,7 +92,7 @@ export function SliderField({
         min={min}
         max={max}
         step={step}
-        value={value}
+        value={Math.min(value, max)}
         onChange={e => onChange(Number(e.target.value))}
         aria-label={label}
         aria-valuemin={min}
@@ -100,8 +105,19 @@ export function SliderField({
 
       <div className="flex justify-between text-sm text-stone-400">
         <span>{formatValue(min)}</span>
-        <span>{formatValue(max)}</span>
+        <span className="flex items-center gap-1">
+          {value > max && (
+            <span className="text-emerald-500 font-medium text-xs">↑ digitado acima</span>
+          )}
+          {formatValue(max)}
+        </span>
       </div>
+
+      {value > max && (
+        <p className="text-xs text-emerald-600" style={{ marginTop: '-4px' }}>
+          Valor fora do intervalo do slider — toque no número acima para ajustar.
+        </p>
+      )}
     </div>
   )
 }
