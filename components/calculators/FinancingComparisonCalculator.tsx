@@ -26,31 +26,71 @@ const DEFAULTS = {
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
-function SliderInput({ label, value, unit, min, max, step, onChange, tip }: {
+function SliderInput({ label, value, unit, min, max, step, onChange, tip, prefix }: {
   label: string; value: number; unit: string; min: number; max: number; step: number
-  onChange: (v: number) => void; tip?: string
+  onChange: (v: number) => void; tip?: string; prefix?: string
 }) {
+  const [editing, setEditing] = React.useState(false)
+  const [draft, setDraft] = React.useState('')
+
+  function startEdit() {
+    setDraft(String(value))
+    setEditing(true)
+  }
+
+  function commit(raw: string) {
+    const parsed = parseFloat(raw.replace(',', '.'))
+    if (!isNaN(parsed) && parsed >= 0) onChange(Math.max(min, parsed))
+    setEditing(false)
+  }
+
+  const aboveMax = value > max
+
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between items-center gap-2">
         <span className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>{label}</span>
         <span className="flex items-baseline gap-1">
-          <input
-            type="number"
-            inputMode="decimal"
-            value={value}
-            min={min} max={max} step={step}
-            onChange={e => { const v = parseFloat(e.target.value); if (!isNaN(v)) onChange(Math.max(min, Math.min(max, v))) }}
-            className="text-sm font-bold tabular-nums text-right bg-transparent border-b focus:outline-none focus:border-emerald-500"
-            style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)', maxWidth: '5rem' }}
-          />
+          {prefix && <span className="text-xs" style={{ color: 'var(--c-muted)' }}>{prefix}</span>}
+          {editing ? (
+            <input
+              type="number"
+              inputMode="decimal"
+              autoFocus
+              value={draft}
+              min={min}
+              step={step}
+              onChange={e => setDraft(e.target.value)}
+              onBlur={() => commit(draft)}
+              onKeyDown={e => e.key === 'Enter' && commit(draft)}
+              className="text-sm font-bold tabular-nums text-right bg-transparent border-b-2 focus:outline-none focus:border-emerald-500"
+              style={{ color: 'var(--c-ink)', borderColor: 'var(--c-emerald)', maxWidth: '7rem' }}
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={startEdit}
+              title="Clique para digitar"
+              className="text-sm font-bold tabular-nums text-right border-b border-dashed hover:border-emerald-500 focus:outline-none transition-colors"
+              style={{ color: aboveMax ? 'var(--c-emerald)' : 'var(--c-ink)', borderColor: 'var(--c-line)' }}
+            >
+              {value.toLocaleString('pt-BR')}
+            </button>
+          )}
           <span className="text-xs" style={{ color: 'var(--c-muted)' }}>{unit}</span>
         </span>
       </div>
-      <input type="range" min={min} max={max} step={step} value={value}
+      <input type="range" min={min} max={max} step={step} value={Math.min(value, max)}
         onChange={e => onChange(Number(e.target.value))}
         className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
         style={{ backgroundColor: 'var(--c-line)' }} />
+      <div className="flex justify-between text-[9px]" style={{ color: 'var(--c-muted-2)' }}>
+        <span>{min.toLocaleString('pt-BR')}</span>
+        <span className="flex items-center gap-1">
+          {aboveMax && <span className="text-emerald-500 font-semibold">↑ digitado acima</span>}
+          {max.toLocaleString('pt-BR')}
+        </span>
+      </div>
       {tip && <p className="text-[9px]" style={{ color: 'var(--c-muted-2)' }}>{tip}</p>}
     </div>
   )
@@ -140,27 +180,10 @@ export function FinancingComparisonCalculator() {
         <div className="rounded-2xl border p-5 space-y-4" style={{ backgroundColor: 'var(--c-card-calm)', borderColor: 'var(--c-line)' }}>
           <h3 className="text-sm font-black uppercase tracking-wider" style={{ color: 'var(--c-ink)' }}>Dados do Bem</h3>
 
-          <div className="space-y-1.5">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>Valor do bem</span>
-              <div className="relative w-44">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium" style={{ color: 'var(--c-muted)' }}>R$</span>
-                <input type="number" inputMode="numeric"
-                  value={bemValue || ''}
-                  min={50_000} max={10_000_000} step={10_000}
-                  onChange={e => setBemValue(Math.min(10_000_000, Math.max(50_000, parseInt(e.target.value) || 50_000)))}
-                  className="w-full text-right border rounded-xl pr-3 pl-8 py-1.5 text-sm font-bold tabular-nums bg-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  style={{ color: 'var(--c-ink)', borderColor: 'var(--c-line)' }} />
-              </div>
-            </div>
-            <input type="range" min={50_000} max={2_000_000} step={10_000} value={Math.min(2_000_000, bemValue)}
-              onChange={e => setBemValue(Number(e.target.value))}
-              className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-              style={{ backgroundColor: 'var(--c-line)' }} />
-          </div>
-
-          <SliderInput label="Entrada" value={entradaPct} unit="%" min={0} max={50} step={5} onChange={setEntradaPct}
+          <SliderInput label="Valor do bem" value={bemValue} unit="" prefix="R$" min={50_000} max={5_000_000} step={10_000} onChange={setBemValue}
             tip={`Entrada: ${formatBRL(entrada)} · Financiado: ${formatBRL(financed)}`} />
+
+          <SliderInput label="Entrada" value={entradaPct} unit="%" min={0} max={50} step={5} onChange={setEntradaPct} />
 
           <SliderInput label="Prazo" value={prazoMeses} unit="meses" min={12} max={360} step={12} onChange={v => {
             setPrazoMeses(v)
