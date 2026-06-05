@@ -157,28 +157,37 @@ export function AmortizationCalculator() {
                 inputMode="numeric"
                 value={financedAmount}
                 min={50000}
-                max={1500000}
                 step={10000}
-                onChange={e => setFinancedAmount(Math.max(50000, Math.min(1500000, parseInt(e.target.value) || 50000)))}
+                onChange={e => setFinancedAmount(Math.max(50000, parseInt(e.target.value) || 50000))}
                 className="text-sm font-bold text-right bg-transparent border-b focus:outline-none text-emerald-600 dark:text-emerald-400 focus:border-emerald-500"
-                style={{ borderColor: 'var(--c-line)', maxWidth: '8rem' }}
+                style={{ borderColor: 'var(--c-line)', maxWidth: '9rem' }}
               />
             </div>
             <input
               id="financed-amount"
               type="range"
               min={50000}
-              max={1500000}
+              max={5000000}
               step={10000}
-              value={financedAmount}
+              value={Math.min(financedAmount, 5000000)}
               onChange={(e) => setFinancedAmount(Number(e.target.value))}
               className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               style={{ backgroundColor: 'var(--c-line)' }}
             />
             <div className="flex justify-between text-[10px]" style={{ color: 'var(--c-muted-2)' }}>
               <span>R$ 50 mil</span>
-              <span>R$ 1.5 milhão</span>
+              <span className="flex items-center gap-1">
+                {financedAmount > 5000000 && (
+                  <span className="text-emerald-500 font-semibold">↑ digitado acima</span>
+                )}
+                R$ 5 milhões
+              </span>
             </div>
+            {financedAmount > 5000000 && (
+              <p className="text-[10px] text-emerald-600">
+                Valor acima do slider — o campo acima aceita qualquer montante.
+              </p>
+            )}
           </div>
 
           {/* Taxa de Juros Anual */}
@@ -276,11 +285,10 @@ export function AmortizationCalculator() {
                   inputMode="numeric"
                   value={extraMonthly}
                   min={0}
-                  max={5000}
                   step={50}
-                  onChange={e => setExtraMonthly(Math.max(0, Math.min(5000, parseInt(e.target.value) || 0)))}
+                  onChange={e => setExtraMonthly(Math.max(0, parseInt(e.target.value) || 0))}
                   className="text-sm font-bold text-right bg-transparent border-b focus:outline-none text-emerald-600 dark:text-emerald-400 focus:border-emerald-500"
-                  style={{ borderColor: 'var(--c-line)', maxWidth: '5rem' }}
+                  style={{ borderColor: 'var(--c-line)', maxWidth: '6rem' }}
                 />
               </span>
             </div>
@@ -288,17 +296,27 @@ export function AmortizationCalculator() {
               id="extra-monthly"
               type="range"
               min={0}
-              max={5000}
+              max={50000}
               step={50}
-              value={extraMonthly}
+              value={Math.min(extraMonthly, 50000)}
               onChange={(e) => setExtraMonthly(Number(e.target.value))}
               className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               style={{ backgroundColor: 'var(--c-line)' }}
             />
             <div className="flex justify-between text-[10px]" style={{ color: 'var(--c-muted-2)' }}>
               <span>Sem aporte extra</span>
-              <span>R$ 5.000 / mês</span>
+              <span className="flex items-center gap-1">
+                {extraMonthly > 50000 && (
+                  <span className="text-emerald-500 font-semibold">↑ digitado acima</span>
+                )}
+                R$ 50.000 / mês
+              </span>
             </div>
+            {extraMonthly > 50000 && (
+              <p className="text-[10px] text-emerald-600">
+                Valor acima do slider — o campo acima aceita qualquer montante.
+              </p>
+            )}
           </div>
 
           {/* Estratégia de Amortização (Prazo vs Parcela) */}
