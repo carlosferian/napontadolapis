@@ -344,9 +344,9 @@ export function BrazilianRealidadeCalculator() {
             <input
               type="range"
               min={0}
-              max={25000}
-              step={100}
-              value={salary > 25000 ? 25000 : salary}
+              max={100000}
+              step={500}
+              value={Math.min(salary, 100000)}
               onChange={(e) => setSalary(Number(e.target.value))}
               aria-label="Salário Slider"
               className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-emerald-500"
@@ -354,7 +354,10 @@ export function BrazilianRealidadeCalculator() {
             />
             <div className="flex justify-between text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>
               <span>R$ 0</span>
-              <span>R$ 25 mil+</span>
+              <span className="flex items-center gap-1">
+                {salary > 100000 && <span className="text-emerald-500">↑ digitado acima</span>}
+                R$ 100 mil+
+              </span>
             </div>
           </div>
         </CalculatorCard>
