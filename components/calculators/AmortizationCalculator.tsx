@@ -32,6 +32,10 @@ export function AmortizationCalculator() {
   const [extraType, setExtraType] = useState<'prazo' | 'parcela'>('prazo')
   const [selectedSystem, setSelectedSystem] = useState<'sac' | 'price'>('sac')
 
+  // Draft states para inputs de texto (evita clamping durante digitação)
+  const [financedDraft, setFinancedDraft] = useState<string | null>(null)
+  const [extraDraft, setExtraDraft] = useState<string | null>(null)
+
   const totalMonths = useMemo(() => years * 12, [years])
 
   // Process amortization calculations
@@ -155,10 +159,17 @@ export function AmortizationCalculator() {
                 id="financed-amount-text"
                 type="number"
                 inputMode="numeric"
-                value={financedAmount}
+                value={financedDraft ?? financedAmount}
                 min={50000}
                 step={10000}
-                onChange={e => setFinancedAmount(Math.max(50000, parseInt(e.target.value) || 50000))}
+                onChange={e => setFinancedDraft(e.target.value)}
+                onFocus={() => setFinancedDraft(String(financedAmount))}
+                onBlur={() => {
+                  const p = parseInt(financedDraft ?? '')
+                  setFinancedAmount(Math.max(50000, isNaN(p) ? 50000 : p))
+                  setFinancedDraft(null)
+                }}
+                onKeyDown={e => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
                 className="text-sm font-bold text-right bg-transparent border-b focus:outline-none text-emerald-600 dark:text-emerald-400 focus:border-emerald-500"
                 style={{ borderColor: 'var(--c-line)', maxWidth: '9rem' }}
               />
