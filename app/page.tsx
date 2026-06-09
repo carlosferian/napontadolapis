@@ -99,6 +99,15 @@ const calcs = [
     accent: 'var(--c-emerald)',
   },
   {
+    href: '/trabalho/imposto-de-renda',
+    eyebrow: 'TRABALHO · NOVO',
+    title: 'Imposto de Renda 2026',
+    body: 'Quanto você paga de IR com a tabela progressiva e a Lei dos 5 Mil? Veja IR mensal, alíquota efetiva e projeção anual.',
+    pill: 'IRPF',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
+  {
     href: '/trabalho/rescisao',
     eyebrow: 'TRABALHO · NOVO',
     title: 'Rescisão Trabalhista CLT',

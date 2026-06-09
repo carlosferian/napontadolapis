@@ -28,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/fumo`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
     { url: `${base}/dividir`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
     { url: `${base}/trabalho/realidade-brasileira`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
+    { url: `${base}/trabalho/imposto-de-renda`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
     { url: `${base}/trabalho/rescisao`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/trabalho/seguro-desemprego`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/viagens`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
