@@ -192,11 +192,20 @@ scripts/
 
 ### 🟡 Média prioridade
 
-- **CLAUDE.md vazio** — documentar arquitetura, padrões de código e como adicionar nova calculadora para contexto em sessões futuras
+_(nenhum item pendente no momento)_
 
-### 🟢 Baixa prioridade
+---
 
-- **SEO: páginas longtail** — conteúdo textual mínimo para buscas tipo "SAC vs Price simulador" acima das calculadoras existentes
+## O que foi feito — Sessão 2026-06-09 (rodada 3)
+
+- **AGENTS.md documentado**: arquitetura do projeto, padrão de draft state para
+  inputs com slider e checklist de "como adicionar nova calculadora"
+- **SEO longtail**: adicionado conteúdo textual explicativo (seções `prose`)
+  acima/abaixo das calculadoras que ainda não tinham:
+  - `/investimentos/financiamento-ou-consorcio` — explica SAC vs Price e por
+    que o consórcio raramente compensa (alvo: "SAC vs Price simulador")
+  - `/trabalho/uber-vs-carro` — explica o conceito de Custo Total de
+    Propriedade (TCO) e break-even
 
 ---
 
