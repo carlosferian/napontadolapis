@@ -117,6 +117,15 @@ const calcs = [
     accent: 'var(--c-emerald)',
   },
   {
+    href: '/investimentos/reserva-de-emergencia',
+    eyebrow: 'CRESCER · NOVO',
+    title: 'Reserva de Emergência',
+    body: 'Calcule sua meta (3, 6 ou 12 meses), em quanto tempo você chega lá e onde guardar com liquidez imediata.',
+    pill: 'RESERVA',
+    pillVariant: 'c-pill-blue',
+    accent: 'var(--c-emerald)',
+  },
+  {
     href: '/investimentos/viver-de-renda',
     eyebrow: 'CRESCER · NOVO',
     title: 'Viver de Renda',
