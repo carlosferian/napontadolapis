@@ -15,6 +15,42 @@ Toda a infraestrutura roda de forma **100% independente, autônoma e com custo z
 
 ---
 
+## O que foi feito — Sessão 2026-06-09 (rodada 2)
+
+Continuação da implementação do backlog identificado na rodada 1.
+
+### Novas calculadoras
+
+- **IRPF 2026 (`/trabalho/imposto-de-renda`)** — `IRPFCalculator.tsx`
+  - Modo "sei meu salário bruto" ou "quero um salário líquido alvo" (usa `grossFromNet` para resolver o bruto)
+  - Usa `calculateIR()` de `config/tax.ts` (Lei dos 5 Mil já implementada)
+  - Hero com IR devido, alíquota efetiva vs marginal
+  - Detalhamento por faixa com barras coloridas, projeção anual (×13)
+  - Avisos de isenção total (até R$5.000) e zona de transição (R$5.000–R$7.350)
+  - Sharecard `irpf-share-card`
+
+- **Reserva de Emergência (`/investimentos/reserva-de-emergencia`)** — `EmergencyFundCalculator.tsx`
+  - Toggle de cobertura (3/6/12 meses), meta = gastos × meses
+  - Prazo para atingir a meta com e sem rendimento Selic
+  - Comparativo "onde guardar" (Tesouro Selic, CDB liquidez diária, Poupança)
+  - Aviso de que reserva não é investimento (liquidez > rendimento)
+  - Sharecard `emergency-share-card`
+
+Ambas adicionadas ao `app/sitemap.ts` (prioridade 0.95) e como cards na homepage (`app/page.tsx`).
+
+### Correções de clamping adicionais
+
+- **AmortizationCalculator** (`/investimentos/amortizacao`): campo "Valor Total Financiado" ainda tinha `Math.max(50000, parseInt(...) || 50000)` no `onChange`, travando a digitação dígito a dígito mesmo após a correção anterior. Migrado para o padrão de `draft` state.
+- **ItbiCalculator** (`/investimentos/itbi-e-cartorio`): mesmo bug duplo-clamp (`Math.max(50000, Math.min(2500000,...))`) no campo "Valor de Compra do Imóvel". Corrigido com draft state, slider ampliado para R$5M, recalcula entrada (20%) ao commitar.
+
+### Itens do backlog verificados — já implementados, sem ação necessária
+
+- **Sharecard Realidade Brasileira** — já existe e funciona (`realidade-share-card`, mensagem "Top X% do Brasil")
+- **Calculadora de Milhas** (`config/miles.ts`) — CPPs (LATAM 22.50, Smiles 16.50, TudoAzul 18.00, Livelo/Esfera 35.00) seguem condizentes com mercado
+- **FGTS na Rescisão** (`RescissionCalculator.tsx`) — já simula multa de 40%/20% e saque conforme motivo do desligamento
+
+---
+
 ## O que foi feito — Sessão 2026-06-09
 
 Foco em **correção de inputs por teclado**, **ampliação de limites de sliders** e **padronização de UX** em todas as calculadoras.
@@ -133,8 +169,11 @@ components/
     SplitBillCalculator.tsx          — Divisão de conta com incrementador e compartilhamento rápido
     UberCarCalculator.tsx            — TCO completo com clareza sobre Transporte Público
     FinancingComparisonCalculator.tsx — SliderInput local corrigido (draft pattern)
-    AmortizationCalculator.tsx       — Sliders ampliados, inputs sem clamp
+    AmortizationCalculator.tsx       — Sliders ampliados, inputs sem clamp (draft pattern)
     InvestmentComparison.tsx         — Slider mensal até R$50k
+    ItbiCalculator.tsx                — Valor do imóvel até R$5M, draft pattern
+    IRPFCalculator.tsx                — Calculadora de Imposto de Renda 2026 (Lei dos 5 Mil)
+    EmergencyFundCalculator.tsx       — Calculadora de Reserva de Emergência
 
 scripts/
   update-market.mjs      — Busca taxas do BCB e atualiza config/
@@ -154,13 +193,10 @@ scripts/
 ### 🟡 Média prioridade
 
 - **CLAUDE.md vazio** — documentar arquitetura, padrões de código e como adicionar nova calculadora para contexto em sessões futuras
-- **Calculadora de Milhas** — verificar se CPP e taxas de emissão ainda estão atualizados com o mercado atual
 
-### 🟢 Baixa prioridade (novas calculadoras)
+### 🟢 Baixa prioridade
 
-- **Calculadora de IRPF** — "Quanto pago de IR em 2026?" — tabela já existe em `config/tax.ts` com Lei dos 5 Mil; alto potencial de busca orgânica
-- **Reserva de Emergência** — simulador de meta de reserva; complementa o ecossistema de investimentos
-- **Sharecard na Realidade Brasileira** — alto potencial viral ("Você está no top X% do Brasil")
+- **SEO: páginas longtail** — conteúdo textual mínimo para buscas tipo "SAC vs Price simulador" acima das calculadoras existentes
 
 ---
 

@@ -23,7 +23,7 @@ export function IRPFCalculator() {
   const resultFromGross = useMemo(() => calculateIR(gross), [gross])
   const resultFromNet   = useMemo(() => {
     const g = grossFromNet(net)
-    return { gross: g, ...calculateIR(g) }
+    return calculateIR(g)
   }, [net])
 
   const result = mode === 'bruto' ? resultFromGross : resultFromNet

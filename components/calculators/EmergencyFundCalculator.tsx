@@ -8,7 +8,6 @@ import { ShareCardBase } from '@/components/share/ShareCard'
 import { ScaledPreview } from '@/components/ui/ScaledPreview'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { formatBRL } from '@/lib/formatters'
-import { calculateSavingsPlan } from '@/lib/calculations/savings'
 import { RATES } from '@/config/rates'
 import { ShieldCheck, Zap, Clock, TrendingUp, AlertTriangle } from 'lucide-react'
 
@@ -57,11 +56,6 @@ export function EmergencyFundCalculator() {
   const target   = expenses * coverage
   const missing  = Math.max(0, target - alreadyHave)
   const progress = target > 0 ? Math.min(1, alreadyHave / target) : 0
-
-  const plan = useMemo(() => {
-    if (missing <= 0 || monthlySavings <= 0) return null
-    return calculateSavingsPlan(missing, 120, RATES.selic, 0.05)
-  }, [missing, monthlySavings])
 
   const monthsToGoal = useMemo(() => {
     if (missing <= 0) return 0
