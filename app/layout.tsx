@@ -25,6 +25,20 @@ export const metadata: Metadata = {
     siteName: 'A Ponta do Lápis',
     locale: 'pt_BR',
     type: 'website',
+    images: [
+      {
+        url: '/screenshot_home.png',
+        width: 1280,
+        height: 900,
+        alt: 'A Ponta do Lápis — calculadoras financeiras para o brasileiro',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'A Ponta do Lápis — calculadoras financeiras para o brasileiro',
+    description: 'Calculadoras financeiras gratuitas, sem cadastro: IRPF 2026, reserva de emergência, financiamento vs. consórcio, custo de apostas e muito mais.',
+    images: ['/screenshot_home.png'],
   },
   other: {
     'google-adsense-account': 'ca-pub-1917277909427173',
