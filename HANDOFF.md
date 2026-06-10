@@ -185,14 +185,29 @@ scripts/
 
 ### 🔴 Alta prioridade
 
-- **Bug de clamping em sliders não verificados** — as calculadoras abaixo usam inputs inline (não `SliderField`) e provavelmente têm o mesmo bug de clamping ao digitar:
-  - `CompoundInterestCalculator.tsx` (`/juros-compostos`)
-  - `RotativoCalculator.tsx` (`/investimentos/fuga-do-rotativo`)
-  - `IncomeCalculator.tsx` e `SimpleIncomeCalculator.tsx` (`/investimentos/viver-de-renda`)
+_(nenhum item pendente no momento)_
 
 ### 🟡 Média prioridade
 
 _(nenhum item pendente no momento)_
+
+---
+
+## O que foi feito — Sessão 2026-06-10 (rodada 2): fechamento do backlog
+
+Verificado o último item 🔴 pendente — possível bug de clamping em inputs
+inline de `CompoundInterestCalculator.tsx`, `RotativoCalculator.tsx`,
+`IncomeCalculator.tsx` e `SimpleIncomeCalculator.tsx`.
+
+**Resultado**: nenhum bug encontrado. Todos os `onChange` desses campos usam
+`Math.max(0, ...)` (ou guards internos de cálculo como `Math.max(1, ...)`,
+que não são `onChange`) — o bug de "digitação travada" só ocorre quando
+`min > 0` no clamp do `onChange`, o que não é o caso aqui. `SimpleIncomeCalculator.tsx`
+tem `Math.min(max, Math.max(0, ...))` em dois campos (capital e retirada),
+o que limita o valor máximo digitado por design (R$100M e R$1M), sem travar
+a digitação de valores menores.
+
+**Backlog estrutural zerado.** Próximas frentes a definir na próxima sessão.
 
 ---
 
