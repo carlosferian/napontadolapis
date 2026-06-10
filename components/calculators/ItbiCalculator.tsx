@@ -20,6 +20,9 @@ export function ItbiCalculator() {
   const [customRate, setCustomRate] = useState<number>(2.0)
   const [isFirstProperty, setIsFirstProperty] = useState<boolean>(false)
 
+  // Draft para o input de texto do valor do imóvel
+  const [propertyDraft, setPropertyDraft] = useState<string | null>(null)
+
 
   // Garante que o sinal/entrada não ultrapasse o valor do imóvel
   const validatedDownPayment = useMemo(() => {
@@ -66,15 +69,19 @@ export function ItbiCalculator() {
                 <input
                   type="number"
                   inputMode="numeric"
-                  value={propertyValue}
+                  value={propertyDraft ?? propertyValue}
                   min={50000}
-                  max={2500000}
                   step={10000}
-                  onChange={e => {
-                    const val = Math.max(50000, Math.min(2500000, parseInt(e.target.value) || 50000))
+                  onChange={e => setPropertyDraft(e.target.value)}
+                  onFocus={() => setPropertyDraft(String(propertyValue))}
+                  onBlur={() => {
+                    const p = parseInt(propertyDraft ?? '')
+                    const val = Math.max(50000, isNaN(p) ? 50000 : p)
                     setPropertyValue(val)
                     setDownPayment(Math.round(val * 0.2))
+                    setPropertyDraft(null)
                   }}
+                  onKeyDown={e => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
                   className="text-sm font-bold text-right bg-transparent border-b focus:outline-none text-emerald-600 dark:text-emerald-400 focus:border-emerald-500"
                   style={{ borderColor: 'var(--c-line)', maxWidth: '7rem' }}
                 />
@@ -84,9 +91,9 @@ export function ItbiCalculator() {
               id="property-value"
               type="range"
               min={50000}
-              max={2500000}
+              max={5000000}
               step={10000}
-              value={propertyValue}
+              value={Math.min(propertyValue, 5000000)}
               onChange={(e) => {
                 const val = Number(e.target.value)
                 setPropertyValue(val)
@@ -97,7 +104,10 @@ export function ItbiCalculator() {
             />
             <div className="flex justify-between text-[10px]" style={{ color: 'var(--c-muted-2)' }}>
               <span>R$ 50 mil</span>
-              <span>R$ 2.5 milhões</span>
+              <span className="flex items-center gap-1">
+                {propertyValue > 5000000 && <span className="text-emerald-500 font-semibold">↑ digitado acima</span>}
+                R$ 5 milhões
+              </span>
             </div>
           </div>
 

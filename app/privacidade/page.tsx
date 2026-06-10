@@ -4,7 +4,7 @@ import { SourcesFooter } from '@/components/ui/SourcesFooter'
 
 export const metadata: Metadata = {
   title: 'Política de Privacidade — A Ponta do Lápis',
-  description: 'Política de privacidade do site A Ponta do Lápis e do aplicativo Dividir Conta — A Ponta do Lápis. Privacidade by design: sem coleta de dados pessoais.',
+  description: 'Política de privacidade do site A Ponta do Lápis e do aplicativo Dividir a Conta — A Ponta do Lápis. Privacidade by design: sem coleta de dados pessoais.',
   alternates: { canonical: 'https://apontadolapis.com.br/privacidade' },
 }
 
@@ -24,7 +24,7 @@ export default function PrivacidadePage() {
           A Ponta do Lápis · Última atualização: 30 de maio de 2026
         </p>
         <p className="mt-3 text-sm leading-relaxed" style={{ color: 'var(--c-muted)' }}>
-          Esta Política de Privacidade se aplica ao <strong style={{ color: 'var(--c-ink)' }}>site apontadolapis.com.br</strong> e ao <strong style={{ color: 'var(--c-ink)' }}>aplicativo Dividir Conta — A Ponta do Lápis</strong> (disponível para Android e iOS). Ambos compartilham os mesmos princípios de privacidade descritos abaixo.
+          Esta Política de Privacidade se aplica ao <strong style={{ color: 'var(--c-ink)' }}>site apontadolapis.com.br</strong> e ao <strong style={{ color: 'var(--c-ink)' }}>aplicativo Dividir a Conta — A Ponta do Lápis</strong> (disponível para Android e iOS). Ambos compartilham os mesmos princípios de privacidade descritos abaixo.
         </p>
         <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--c-muted)' }}>
           Ao utilizar o site ou o aplicativo, você concorda com as práticas descritas nesta política.
@@ -98,7 +98,7 @@ export default function PrivacidadePage() {
           ← Voltar ao site
         </Link>
         <Link href="/dividir" className="text-sm font-semibold hover:opacity-70 transition-opacity" style={{ color: 'var(--c-emerald)' }}>
-          Calculadora Dividir Conta →
+          Calculadora Dividir a Conta →
         </Link>
       </div>
 

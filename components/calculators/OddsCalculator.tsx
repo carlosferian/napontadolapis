@@ -590,7 +590,7 @@ export function OddsCalculator() {
           {ev < 0 ? (
             <>
               <div className="flex items-baseline gap-2 flex-wrap">
-                <span className="text-4xl font-bold text-red-500 tabular-nums">−{formatBRL(lossPerBet)}</span>
+                <span className="text-3xl sm:text-4xl font-bold text-red-500 tabular-nums break-words">−{formatBRL(lossPerBet)}</span>
                 <span className="text-sm flex items-center flex-wrap" style={{ color: 'var(--c-muted)' }}>
                   de perda esperada por aposta
                   <InfoTip text={`Valor Esperado (VE): a perda média estatística por aposta. Numa odd de ${odd.toFixed(2)}, cada R$ ${betAmount} apostado resulta em um VE negativo de R$ ${lossPerBet.toFixed(2)}. A longo prazo, a lei dos grandes números garante que o seu resultado real se aproximará desse prejuízo médio.`} />

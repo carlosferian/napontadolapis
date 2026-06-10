@@ -47,7 +47,7 @@ export function InvestmentComparison() {
             label="Valor mensal"
             value={monthly}
             min={50}
-            max={5000}
+            max={50000}
             step={50}
             onChange={setMonthly}
           />
