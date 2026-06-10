@@ -741,7 +741,7 @@ export function SplitBillCalculator() {
                   style={{ backgroundColor: 'var(--c-surface)', borderColor: 'var(--c-line)' }}
                 >
                   <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--c-muted)' }}>Cada um paga</p>
-                  <p className="text-5xl font-bold tabular-nums font-serif" style={{ color: 'var(--c-emerald)' }}>
+                  <p className="text-3xl sm:text-5xl font-bold tabular-nums font-serif break-words" style={{ color: 'var(--c-emerald)' }}>
                     {formatBRLDecimal(perPersonEqual)}
                   </p>
                   {tip > 0 && (

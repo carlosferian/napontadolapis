@@ -178,11 +178,11 @@ export function SimpleIncomeCalculator() {
           </div>
 
           {/* Resposta principal: retirada perpétua */}
-          <div className="rounded-3xl border-2 p-8 text-center space-y-3" style={{ borderColor: 'rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.03)' }}>
+          <div className="rounded-3xl border-2 p-5 sm:p-8 text-center space-y-3" style={{ borderColor: 'rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.03)' }}>
             <p className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>
               Retirada mensal sustentável para sempre
             </p>
-            <div className="text-5xl sm:text-6xl font-black tabular-nums" style={{ color: 'var(--c-emerald)' }}>
+            <div className="text-3xl sm:text-5xl lg:text-6xl font-black tabular-nums break-words" style={{ color: 'var(--c-emerald)' }}>
               {formatBRL(maxPerpetual)}
             </div>
             <p className="text-sm" style={{ color: 'var(--c-muted)' }}>
@@ -282,11 +282,11 @@ export function SimpleIncomeCalculator() {
           </div>
 
           {/* Resposta principal: capital necessário */}
-          <div className="rounded-3xl border-2 p-8 text-center space-y-3" style={{ borderColor: 'rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.03)' }}>
+          <div className="rounded-3xl border-2 p-5 sm:p-8 text-center space-y-3" style={{ borderColor: 'rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.03)' }}>
             <p className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--c-muted)' }}>
               Capital necessário para receber isso para sempre
             </p>
-            <div className="text-5xl sm:text-6xl font-black tabular-nums" style={{ color: 'var(--c-emerald)' }}>
+            <div className="text-3xl sm:text-5xl lg:text-6xl font-black tabular-nums break-words" style={{ color: 'var(--c-emerald)' }}>
               {formatBRL(capitalForPerpetual)}
             </div>
             <p className="text-sm" style={{ color: 'var(--c-muted)' }}>

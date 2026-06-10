@@ -193,7 +193,35 @@ _(nenhum item pendente no momento)_
 
 ---
 
-## O que foi feito — Sessão 2026-06-10 (rodada 2): fechamento do backlog
+## O que foi feito — Sessão 2026-06-10 (rodada 3): overflow de números grandes em cards
+
+Reportado pelo usuário: na aba "Quero uma renda mensal" de
+`/investimentos/viver-de-renda`, o valor do card "Capital necessário para
+receber isso para sempre" extrapolava a largura do cartão no celular.
+
+**Causa raiz**: `SimpleIncomeCalculator.tsx` usava `text-5xl sm:text-6xl`
+sem `break-words` para valores em BRL que podem chegar a 8+ dígitos
+(capital até R$100M, retirada até R$1M/mês), estourando a largura do
+card em telas de 320–375px.
+
+**Correção aplicada** (reduzir tamanho base + permitir quebra em mobile,
+seguindo o padrão já usado em `ResultHero.tsx`):
+- `SimpleIncomeCalculator.tsx` — ambos os cards hero ("Retirada mensal
+  sustentável" e "Capital necessário"): `text-5xl sm:text-6xl` →
+  `text-3xl sm:text-5xl lg:text-6xl break-words`; padding do card
+  `p-8` → `p-5 sm:p-8`
+
+**Verificação em outros cartões com números grandes em fonte grande**
+(`text-4xl`/`text-5xl`/`text-6xl` sem `break-words`) — adicionado
+`break-words` e reduzido o tamanho base em mobile como precaução, mesmo
+quando o overflow é menos provável:
+- `SplitBillCalculator.tsx` — "Cada um paga" (`text-5xl` → `text-3xl sm:text-5xl break-words`)
+- `TravelCalculator.tsx` — "Meta da viagem" e "Poupar por mês" (`text-4xl/5xl` → `text-3xl sm:text-5xl break-words`)
+- `OddsCalculator.tsx` — "perda esperada por aposta" (`text-4xl` → `text-3xl sm:text-4xl break-words`)
+
+---
+
+
 
 Verificado o último item 🔴 pendente — possível bug de clamping em inputs
 inline de `CompoundInterestCalculator.tsx`, `RotativoCalculator.tsx`,

@@ -879,7 +879,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
 
           <div className="px-5 pt-5 pb-4">
             <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">Meta da viagem</p>
-            <p className="text-4xl sm:text-5xl font-bold tabular-nums font-serif text-amber-500 leading-none">
+            <p className="text-3xl sm:text-5xl font-bold tabular-nums font-serif text-amber-500 leading-none break-words">
               {formatBRL(grandTotal)}
             </p>
             <p className="text-xs text-stone-400 mt-1">
@@ -1054,7 +1054,7 @@ export function TravelCalculator({ initialDestination }: TravelCalculatorProps) 
             ) : (
               <>
                 <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Poupar por mês</p>
-                <p className={`text-5xl font-bold tabular-nums font-serif leading-none ${savingsPlan.monthlyWithSelic < 2000 ? 'text-emerald-600' : 'text-amber-500'}`}>
+                <p className={`text-3xl sm:text-5xl font-bold tabular-nums font-serif leading-none break-words ${savingsPlan.monthlyWithSelic < 2000 ? 'text-emerald-600' : 'text-amber-500'}`}>
                   {formatBRL(savingsPlan.monthlyWithSelic)}
                 </p>
                 <p className="text-xs text-stone-400 mt-2">investindo na Selic · {selicRate.toFixed(2)}% a.a.</p>
