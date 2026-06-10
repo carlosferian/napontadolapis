@@ -155,15 +155,15 @@ export function IRPFCalculator() {
           <div className="px-5 py-3 border-t grid grid-cols-3 gap-2 text-center" style={{ backgroundColor: 'var(--c-surface)', borderColor: 'var(--c-line)' }}>
             <div>
               <p className="text-[10px] uppercase tracking-wide" style={{ color: 'var(--c-muted)' }}>Bruto</p>
-              <p className="text-sm font-bold tabular-nums" style={{ color: 'var(--c-ink)' }}>{formatBRL(displayGross)}</p>
+              <p className="text-xs sm:text-sm font-bold tabular-nums" style={{ color: 'var(--c-ink)' }}>{formatBRL(displayGross)}</p>
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-wide" style={{ color: 'var(--c-muted)' }}>IR</p>
-              <p className="text-sm font-bold tabular-nums text-red-500">−{formatBRL(result.irDue)}</p>
+              <p className="text-xs sm:text-sm font-bold tabular-nums text-red-500">−{formatBRL(result.irDue)}</p>
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-wide" style={{ color: 'var(--c-muted)' }}>Líquido</p>
-              <p className="text-sm font-bold tabular-nums" style={{ color: 'var(--c-emerald)' }}>{formatBRL(result.net)}</p>
+              <p className="text-xs sm:text-sm font-bold tabular-nums" style={{ color: 'var(--c-emerald)' }}>{formatBRL(result.net)}</p>
             </div>
           </div>
         </div>
@@ -207,15 +207,15 @@ export function IRPFCalculator() {
         {/* Projeção anual */}
         <div className="rounded-2xl p-5 space-y-3" style={{ backgroundColor: 'var(--c-card-calm)', border: '1px solid var(--c-line)' }}>
           <SectionDivider label="Projeção anual (13 competências)" />
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               { label: 'Bruto anual',   value: formatBRL(displayGross * 13),    color: 'var(--c-ink)' },
               { label: 'IR anual',      value: formatBRL(result.irDue * 13),    color: '#ef4444'       },
               { label: 'Líquido anual', value: formatBRL(result.net * 13),      color: 'var(--c-emerald)' },
             ].map(m => (
-              <div key={m.label} className="rounded-xl p-3 text-center space-y-1" style={{ background: 'var(--c-surface)' }}>
+              <div key={m.label} className="rounded-xl p-3 text-center space-y-1 flex sm:block items-center justify-between" style={{ background: 'var(--c-surface)' }}>
                 <p className="text-[10px] uppercase tracking-wide" style={{ color: 'var(--c-muted)' }}>{m.label}</p>
-                <p className="text-sm font-black tabular-nums break-all" style={{ color: m.color }}>{m.value}</p>
+                <p className="text-sm font-black tabular-nums" style={{ color: m.color }}>{m.value}</p>
               </div>
             ))}
           </div>

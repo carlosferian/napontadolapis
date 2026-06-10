@@ -1,6 +1,6 @@
 # Handoff — A Ponta do Lápis
 
-**Última atualização:** 2026-06-09  
+**Última atualização:** 2026-06-10  
 **Branch de desenvolvimento:** `claude/awesome-einstein-C2THb`  
 **Stack:** Next.js 16.2.6 · React 19 · TypeScript · Tailwind CSS v4 · Netlify (deploy contínuo ativo)  
 **Domínio registrado:** `apontadolapis.com.br`
@@ -196,7 +196,37 @@ _(nenhum item pendente no momento)_
 
 ---
 
-## O que foi feito — Sessão 2026-06-09 (rodada 3)
+## O que foi feito — Sessão 2026-06-10: auditoria de responsividade mobile
+
+Auditoria de código (sem ambiente de browser disponível) focada em telas de
+320–430px, cobrindo `components/calculators/*`, `components/ui/*` e
+`components/share/ShareCard.tsx`.
+
+**Conclusão geral**: o site já está bem preparado para mobile — padding
+global consistente, `ScaledPreview` nos sharecards, e a maioria dos grids já
+tem variantes `sm:`. Os pontos com risco real de quebra de layout eram
+poucos e pontuais:
+
+- **`IRPFCalculator.tsx`** — resumo "Bruto/IR/Líquido" (`grid-cols-3`) tinha
+  valores em `text-sm` que podiam encostar nas bordas em 320px; reduzido para
+  `text-xs sm:text-sm`. A "Projeção anual" (`grid-cols-3` com `break-all`)
+  podia quebrar números no meio (ex: `R$ 650.0` / `00,00`); mudado para
+  `grid-cols-1 sm:grid-cols-3` (empilha em mobile, sem `break-all`).
+
+Itens revisados e descartados (já adequados ou comportamento intencional):
+- `BetsCasino.tsx` — grids `grid-cols-4 sm:grid-cols-2` e `grid-cols-3` no
+  cassino são intencionais (chips compactos otimizados para mobile, com
+  `truncate` e fontes reduzidas)
+- `SplitBillCalculator.tsx` (gorjeta `grid-cols-4`), `EmergencyFundCalculator.tsx`
+  (toggle de cobertura `grid-cols-3`), `FinancingComparisonCalculator.tsx`
+  (comparativo `grid-cols-2 lg:grid-cols-4`) — labels curtos, sem overflow real
+- `SliderField.tsx` (`maxWidth: 12rem` no input de edição) — apenas faz o
+  label quebrar linha em telas muito estreitas, sem overflow horizontal
+- `ShareCard.tsx` (600px fixo) — uso correto, sempre via `ScaledPreview`
+
+---
+
+
 
 - **AGENTS.md documentado**: arquitetura do projeto, padrão de draft state para
   inputs com slider e checklist de "como adicionar nova calculadora"
