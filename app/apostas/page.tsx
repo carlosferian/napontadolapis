@@ -54,6 +54,36 @@ export default function ApostasPage() {
       {/* Botão de entrada */}
       <GameLauncher />
 
+      <div className="prose prose-sm prose-stone max-w-none space-y-4">
+        <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">A matemática por trás das odds</h2>
+        <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
+          Toda casa de apostas calcula a <strong>probabilidade implícita</strong> de cada resultado a partir
+          da odd oferecida (probabilidade ≈ 1 ÷ odd) e soma uma margem — a chamada "vigorish" ou "overround" —
+          que garante o lucro da casa independentemente de quem ganhe. Some as probabilidades implícitas de
+          todos os resultados de um evento e o total quase sempre passa de 100%: essa diferença é a fatia
+          que a casa já embolsou antes mesmo de a partida começar. É por isso que, no longo prazo, mesmo
+          apostadores com bom conhecimento técnico tendem a perder dinheiro — a estrutura do jogo é
+          matematicamente desfavorável para quem aposta.
+        </p>
+        <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Por que "quase ganhei" não é quase nada</h2>
+        <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
+          Estudos de psicologia do jogo mostram que apostas com resultado "quase certo" (como perder uma
+          aposta esportiva no último minuto) ativam no cérebro os mesmos circuitos de recompensa de uma
+          vitória real — o chamado <strong>"near-miss effect"</strong>. As plataformas de apostas são
+          desenhadas para gerar esses momentos com frequência, reforçando a sensação de que "a próxima vai
+          dar". Esse mecanismo, somado à facilidade de depósito via Pix e à disponibilidade 24 horas,
+          contribui para o ciclo de apostas repetidas que caracteriza a ludopatia.
+        </p>
+        <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">O tamanho do problema no Brasil</h2>
+        <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
+          Segundo dados do Banco Central, em 2024 famílias brasileiras de baixa renda destinaram parcela
+          significativa do orçamento mensal a apostas esportivas online, em muitos casos superando gastos
+          com itens básicos. O simulador acima existe para tornar essa matemática tangível: em vez de
+          explicar com gráficos, ele deixa você experimentar — em poucos minutos — a curva de perdas que,
+          na vida real, se estende por meses ou anos.
+        </p>
+      </div>
+
       <SourcesFooter sources={[
         { label: 'Banco Central do Brasil — Apostas Esportivas e impacto no orçamento das famílias', url: 'https://www.bcb.gov.br/estabilidadefinanceira/apostasesportivas' },
         { label: 'BCB — Sistema de Metas de Inflação e taxa Selic vigente', url: 'https://www.bcb.gov.br/controleinflacao/taxaselic' },

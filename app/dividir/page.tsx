@@ -36,12 +36,31 @@ export default function DividirPage() {
 
       <SplitBillCalculator />
 
-      <div className="space-y-2">
-        <h2 className="text-base font-semibold text-brand-ink">Sobre a calculadora</h2>
-        <p className="text-brand-muted text-sm leading-relaxed">
-          Divisão simples e igual entre todos. Digite o total, selecione a gorjeta (opcional)
-          e adicione os nomes de quem vai pagar. O app A Ponta do Lápis, em desenvolvimento
-          para Android, vai além: divisão por item, gorjeta ponderada proporcional e muito mais.
+      <div className="prose prose-sm prose-stone max-w-none space-y-4">
+        <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Como funciona o rateio</h2>
+        <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
+          A calculadora faz a divisão <strong>simples e igual</strong> entre todas as pessoas: soma o valor
+          total da conta, aplica a gorjeta escolhida (10% é o padrão sugerido em boa parte dos
+          restaurantes, mas é opcional e pode ser ajustada) e divide o resultado pelo número de
+          pessoas adicionadas. O valor por pessoa é arredondado para facilitar o pagamento via Pix
+          ou dinheiro, sem casas decimais difíceis de acertar.
+        </p>
+        <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">A gorjeta é obrigatória?</h2>
+        <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
+          Não. No Brasil, a chamada "taxa de serviço" de 10% incluída na conta é, segundo o Código
+          de Defesa do Consumidor, uma <strong>cobrança opcional</strong> — o cliente pode recusar
+          o pagamento sem qualquer justificativa, embora seja uma forma importante de remunerar
+          garçons e equipe de salão. A Lei da Gorjeta (nº 13.419/2017) regulamenta o repasse desses
+          valores aos trabalhadores quando cobrados. A calculadora permite zerar, reduzir ou
+          aumentar a porcentagem livremente, conforme o atendimento recebido.
+        </p>
+        <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Quando a divisão igual não é justa</h2>
+        <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
+          A divisão igual funciona bem quando todos consomem aproximadamente o mesmo. Em grupos
+          onde uma pessoa pediu só uma água e outra pediu prato principal, bebida e dessert, a
+          divisão igual pode parecer injusta. Nesses casos, a alternativa é a divisão por item
+          (cada um paga exatamente o que consumiu, mais a gorjeta proporcional), recurso que está
+          em desenvolvimento no app A Ponta do Lápis para Android.
         </p>
       </div>
 
