@@ -13,7 +13,7 @@ const personJsonLd = {
   name: 'Carlos Ferian',
   url: 'https://apontadolapis.com.br/sobre',
   jobTitle: 'Autor — A Ponta do Lápis',
-  description: 'Criador da A Ponta do Lápis, com 9 anos de experiência em banco de varejo, atuando com crédito, financiamento, investimentos e câmbio para clientes pessoa física.',
+  description: 'Criador da A Ponta do Lápis, com quase dez anos de atuação no setor bancário de varejo, com experiência em crédito, financiamento, investimentos e câmbio para clientes pessoa física.',
   knowsAbout: ['Educação financeira', 'Crédito e financiamento', 'Investimentos', 'Câmbio'],
 }
 
@@ -72,8 +72,8 @@ export default function SobrePage() {
         <div className="rounded-2xl border p-4" style={{ background: 'var(--c-surface)', borderColor: 'var(--c-line)' }}>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--c-muted)' }}>
             A Ponta do Lápis é criada e mantida por <strong style={{ color: 'var(--c-ink)' }}>Carlos Ferian</strong>,
-            que trabalhou por <strong style={{ color: 'var(--c-ink)' }}>9 anos em banco de varejo</strong>, atuando
-            diretamente com produtos como crédito, financiamento, investimentos e câmbio para clientes pessoa física.
+            profissional com <strong style={{ color: 'var(--c-ink)' }}>quase dez anos de atuação no setor bancário de varejo</strong>,
+            com experiência direta em produtos de crédito, financiamento, investimentos e câmbio para clientes pessoa física.
           </p>
           <p className="text-sm mt-3 leading-relaxed" style={{ color: 'var(--c-muted)' }}>
             Foi nesse período, vendo de perto as dúvidas mais comuns dos clientes — e as armadilhas de produtos

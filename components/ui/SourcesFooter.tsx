@@ -37,7 +37,7 @@ export function SourcesFooter({ sources, className }: SourcesFooterProps) {
         <Link href="/sobre" className="underline underline-offset-2 hover:text-stone-600 transition-colors">
           Carlos Ferian
         </Link>
-        , 9 anos de experiência em banco de varejo.
+        , profissional com quase dez anos de atuação no setor bancário de varejo.
       </p>
     </div>
   )
