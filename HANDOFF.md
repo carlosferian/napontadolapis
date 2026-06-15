@@ -36,8 +36,15 @@ Build local validado (0 erros/warnings). Commit `bb1b254`/`5deb817` enviado dire
 - Nova página `/glossario` (Glossário Financeiro): Selic, CDI, IPCA, IOF, INSS, FGTS, IRPF, SAC, Price, CET, Poupança, Tesouro Direto, spread cambial, liquidez, renda fixa vs. variável, overround — com links cruzados para as calculadoras e schema.org `DefinedTermSet`. Adicionada ao sitemap e ao rodapé global.
 - Commits `c8c330a`, `39509d7`, `9a0712c` — todos enviados para `claude/friendly-hypatia-HwfUk`.
 
-**Pendente:** aguardar reanálise do Google AdSense (pode levar dias/semanas até reindexação). Próximas ondas planejadas se "baixo valor" persistir:
-- Onda 2 restante: FAQ por calculadora (accordion), revisar `/fale-conosco` e `/viagens` (listagem)
+### Rodada 3: FAQ com schema.org FAQPage
+
+- Novo componente `components/ui/FAQ.tsx` (accordion via `<details>` + JSON-LD `FAQPage`).
+- Aplicado em 5 páginas de alto tráfego: `/juros-compostos`, `/trabalho/imposto-de-renda`, `/apostas`, `/dividir`, `/viagens/planejar` (3 perguntas cada).
+- `/fale-conosco` e `/viagens` (listagem) revisadas — já têm conteúdo suficiente, não precisaram de alteração.
+- Build local validado (0 erros/warnings), testado em dev server (FAQPage JSON-LD e Person schema confirmados via curl). Commit `5766218` enviado para `claude/friendly-hypatia-HwfUk`.
+
+**Pendente:** aguardar reanálise do Google AdSense (pode levar dias/semanas até reindexação). Se "baixo valor" persistir:
+- Estender FAQ para as demais calculadoras
 - Onda 3: seção de artigos/blog (`/aprenda`), aproveitando os temas do plano de divulgação (ex: "Quanto pago de IR em 2026", "SAC vs Price")
 
 ---
