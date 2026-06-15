@@ -256,7 +256,7 @@ export function ItbiCalculator() {
                     É o meu primeiro imóvel residencial
                   </label>
                   <p style={{ color: 'var(--c-muted)' }}>
-                    Garante **50% de desconto** nas custas de cartório (Registro) pelo Art. 290 da Lei 6.015/73 (apenas para financiamento SFH).
+                    Garante <strong>50% de desconto</strong> nas custas de cartório (Registro) pelo Art. 290 da Lei 6.015/73 (apenas para financiamento SFH).
                   </p>
                 </div>
               </div>
@@ -270,7 +270,7 @@ export function ItbiCalculator() {
           <div className="space-y-1 text-xs leading-relaxed" style={{ color: 'var(--c-muted)' }}>
             <p className="font-semibold" style={{ color: 'var(--c-ink-2)' }}>Nota técnica sobre cartórios:</p>
             <p>
-              Emolumentos de Escritura e Registro variam conforme tabelas progressivas estaduais. Os valores exibidos são **estimativas médias nacionais consolidadas**, servindo como excelente referência orçamentária.
+              Emolumentos de Escritura e Registro variam conforme tabelas progressivas estaduais. Os valores exibidos são <strong>estimativas médias nacionais consolidadas</strong>, servindo como excelente referência orçamentária.
             </p>
           </div>
         </div>
@@ -418,7 +418,7 @@ export function ItbiCalculator() {
                 <span className="text-xs font-bold" style={{ color: 'var(--c-ink)' }}>Força de Escritura do Contrato</span>
               </div>
               <p className="text-[10px] leading-relaxed" style={{ color: 'var(--c-muted)' }}>
-                Por força do Art. 61 da Lei nº 4.380/64, o **contrato de financiamento do banco substitui legalmente a escritura pública**. Como o comprador financiou, ele **economiza automaticamente cerca de R$ 3.000 a R$ 6.000** em custos de Tabelionato de Notas de compra à vista!
+                Por força do Art. 61 da Lei nº 4.380/64, o <strong>contrato de financiamento do banco substitui legalmente a escritura pública</strong>. Como o comprador financiou, ele <strong>economiza automaticamente cerca de R$ 3.000 a R$ 6.000</strong> em custos de Tabelionato de Notas de compra à vista!
               </p>
             </div>
 
@@ -429,7 +429,7 @@ export function ItbiCalculator() {
                 <span className="text-xs font-bold" style={{ color: 'var(--c-ink)' }}>Art. 290 - Desconto de 50%</span>
               </div>
               <p className="text-[10px] leading-relaxed" style={{ color: 'var(--c-muted)' }}>
-                Se esta for a aquisição do seu **primeiro imóvel residencial financiado pelo SFH**, o cartório de registro é obrigado por lei federal a dar **50% de desconto** nas custas de registro. Não se esqueça de solicitar este desconto na entrega da pasta de documentos!
+                Se esta for a aquisição do seu <strong>primeiro imóvel residencial financiado pelo SFH</strong>, o cartório de registro é obrigado por lei federal a dar <strong>50% de desconto</strong> nas custas de registro. Não se esqueça de solicitar este desconto na entrega da pasta de documentos!
               </p>
             </div>
           </div>

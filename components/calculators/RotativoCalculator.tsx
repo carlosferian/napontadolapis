@@ -254,7 +254,7 @@ export function RotativoCalculator() {
             <div>
               <p className="font-extrabold text-red-950 dark:text-red-100 text-sm mb-1">Dívida Infinita no Cartão! 🛑</p>
               <p>
-                Os juros do cartão de crédito (<strong>{formatBRL(debtValue * (cardRate / 100))}</strong> no primeiro mês) superam o seu pagamento de <strong>{formatBRL(monthlyPayment)}</strong>. Isso significa que mesmo pagando todo mês, sua dívida **crescerá para sempre**. Fazer a troca da dívida por um empréstimo saudável a {loanRate}% a.m. é a única saída matemática possível para o seu orçamento.
+                Os juros do cartão de crédito (<strong>{formatBRL(debtValue * (cardRate / 100))}</strong> no primeiro mês) superam o seu pagamento de <strong>{formatBRL(monthlyPayment)}</strong>. Isso significa que mesmo pagando todo mês, sua dívida <strong>crescerá para sempre</strong>. Fazer a troca da dívida por um empréstimo saudável a {loanRate}% a.m. é a única saída matemática possível para o seu orçamento.
               </p>
             </div>
           </div>
@@ -381,7 +381,7 @@ export function RotativoCalculator() {
               <div>
                 <p className="font-bold text-stone-800 dark:text-stone-100">1. Nunca Pague Apenas o Mínimo do Cartão 💳</p>
                 <p style={{ color: 'var(--c-muted)' }} className="mt-0.5">
-                  Ao pagar o mínimo, você ativará a pior linha de juros disponível na economia brasileira. Se não tiver dinheiro para quitar integralmente a fatura, ligue imediatamente para a operadora e solicite o **parcelamento da fatura**, que por lei possui taxas muito mais suaves do que os juros corridos do rotativo.
+                  Ao pagar o mínimo, você ativará a pior linha de juros disponível na economia brasileira. Se não tiver dinheiro para quitar integralmente a fatura, ligue imediatamente para a operadora e solicite o <strong>parcelamento da fatura</strong>, que por lei possui taxas muito mais suaves do que os juros corridos do rotativo.
                 </p>
               </div>
             </div>
@@ -401,7 +401,7 @@ export function RotativoCalculator() {
               <div>
                 <p className="font-bold text-stone-800 dark:text-stone-100">3. Conheça Seus Direitos (Lei do Superendividamento) ⚖️</p>
                 <p style={{ color: 'var(--c-muted)' }} className="mt-0.5">
-                  A **Lei Federal nº 14.181/2021** protege o cidadão do assédio de cobranças e garante o direito de renegociar todas as suas dívidas em bloco junto ao Judiciário, garantindo a preservação do seu **"mínimo existencial"** orçamentário. O seu sustento básico doméstico nunca pode ser confiscado para pagar juros bancários.
+                  A <strong>Lei Federal nº 14.181/2021</strong> protege o cidadão do assédio de cobranças e garante o direito de renegociar todas as suas dívidas em bloco junto ao Judiciário, garantindo a preservação do seu <strong>"mínimo existencial"</strong> orçamentário. O seu sustento básico doméstico nunca pode ser confiscado para pagar juros bancários.
                 </p>
               </div>
             </div>

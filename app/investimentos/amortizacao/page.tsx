@@ -42,7 +42,7 @@ export default function AmortizationPage() {
         <div>
           <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Como funciona a quitação antecipada por amortização?</h2>
           <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
-            No Brasil, a Lei Federal nº 8.078 (Código de Defesa do Consumidor) assegura a todo cidadão o direito de quitar antecipadamente seus débitos, total ou parcialmente, mediante **redução proporcional dos juros**. Quando você realiza um pagamento extraordinário (amortização extra), esse montante não é utilizado para quitar parcelas futuras ordinárias; em vez disso, ele é subtraído **diretamente do seu saldo devedor principal**. Como os juros mensais incidem apenas sobre o saldo devedor restante, diminuir essa base faz com que o custo total de juros do contrato encolha dramaticamente a partir daquele mês.
+            No Brasil, a Lei Federal nº 8.078 (Código de Defesa do Consumidor) assegura a todo cidadão o direito de quitar antecipadamente seus débitos, total ou parcialmente, mediante <strong>redução proporcional dos juros</strong>. Quando você realiza um pagamento extraordinário (amortização extra), esse montante não é utilizado para quitar parcelas futuras ordinárias; em vez disso, ele é subtraído <strong>diretamente do seu saldo devedor principal</strong>. Como os juros mensais incidem apenas sobre o saldo devedor restante, diminuir essa base faz com que o custo total de juros do contrato encolha dramaticamente a partir daquele mês.
           </p>
         </div>
 
@@ -52,8 +52,8 @@ export default function AmortizationPage() {
             A escolha do sistema de amortização influi diretamente na velocidade de decaimento do saldo devedor:
           </p>
           <ul className="list-disc pl-5 text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2 space-y-1">
-            <li><strong>SAC (Sistema de Amortização Constante):</strong> A amortização é igual em todos os meses. Como o saldo devedor cai de forma constante e rápida, os juros diminuem agressivamente a cada período, fazendo com que as prestações comecem mais altas e caiam mês a mês. **É o sistema financeiramente mais eficiente**, resultando em menos juros totais ao final do contrato.</li>
-            <li><strong>Tabela Price (Sistema Francês):</strong> As prestações são fixas do início ao fim do financiamento. Nos primeiros anos, quase a totalidade da parcela serve para cobrir os juros do banco, e pouquíssimo dinheiro é usado para de fato reduzir a dívida. Embora facilite o orçamento inicial por começar menor que a prestação do SAC, **a Price acumula muito mais juros no longo prazo**.</li>
+            <li><strong>SAC (Sistema de Amortização Constante):</strong> A amortização é igual em todos os meses. Como o saldo devedor cai de forma constante e rápida, os juros diminuem agressivamente a cada período, fazendo com que as prestações comecem mais altas e caiam mês a mês. <strong>É o sistema financeiramente mais eficiente</strong>, resultando em menos juros totais ao final do contrato.</li>
+            <li><strong>Tabela Price (Sistema Francês):</strong> As prestações são fixas do início ao fim do financiamento. Nos primeiros anos, quase a totalidade da parcela serve para cobrir os juros do banco, e pouquíssimo dinheiro é usado para de fato reduzir a dívida. Embora facilite o orçamento inicial por começar menor que a prestação do SAC, <strong>a Price acumula muito mais juros no longo prazo</strong>.</li>
           </ul>
         </div>
 

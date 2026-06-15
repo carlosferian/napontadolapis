@@ -41,10 +41,10 @@ export default function RescisaoPage() {
       <div className="prose prose-sm prose-stone max-w-none space-y-4">
         <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Como Funciona a Rescisão sob Regime CLT</h2>
         <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
-          Os direitos e descontos de um desligamento trabalhista no Brasil variam drasticamente conforme o **motivo da rescisão**. A demissão sem justa causa pelo empregador é a modalidade mais abrangente em termos de garantias ao trabalhador, enquanto o pedido de demissão voluntária ou a demissão por justa causa removem diversos proventos importantes.
+          Os direitos e descontos de um desligamento trabalhista no Brasil variam drasticamente conforme o <strong>motivo da rescisão</strong>. A demissão sem justa causa pelo empregador é a modalidade mais abrangente em termos de garantias ao trabalhador, enquanto o pedido de demissão voluntária ou a demissão por justa causa removem diversos proventos importantes.
         </p>
         <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
-          A Reforma Trabalhista (Lei 13.467/2017) introduziu também a **rescisão por comum acordo**, na qual o trabalhador tem direito a sacar 80% do saldo do FGTS, recebe metade da multa rescisória (20%) e metade do aviso prévio indenizado correspondente, mas abre mão de ingressar no programa de Seguro-Desemprego.
+          A Reforma Trabalhista (Lei 13.467/2017) introduziu também a <strong>rescisão por comum acordo</strong>, na qual o trabalhador tem direito a sacar 80% do saldo do FGTS, recebe metade da multa rescisória (20%) e metade do aviso prévio indenizado correspondente, mas abre mão de ingressar no programa de Seguro-Desemprego.
         </p>
       </div>
 

@@ -244,7 +244,7 @@ export function CostOfLivingCalculator() {
           <div className="space-y-1 leading-relaxed" style={{ color: 'var(--c-muted)' }}>
             <p className="font-bold" style={{ color: 'var(--c-ink-2)' }}>Como funciona a comparação?</p>
             <p>
-              Os índices são ponderados pelas cestas básicas do **DIEESE**, preços de aluguel por região do **FipeZap** e variações de serviços metropolitanos compilados. Como o Brasil não tem um banco único para 5 mil cidades, menores municípios do interior são agregados à média rural do seu respectivo estado para fins de representatividade estatística.
+              Os índices são ponderados pelas cestas básicas do <strong>DIEESE</strong>, preços de aluguel por região do <strong>FipeZap</strong> e variações de serviços metropolitanos compilados. Como o Brasil não tem um banco único para 5 mil cidades, menores municípios do interior são agregados à média rural do seu respectivo estado para fins de representatividade estatística.
             </p>
           </div>
         </div>
@@ -391,7 +391,7 @@ export function CostOfLivingCalculator() {
               <div>
                 <p className="font-bold">Estratégia do Arbitragem de Custo de Vida 🌍</p>
                 <p className="mt-1">
-                  Trabalhar remotamente para uma empresa baseada em **{originName}** (recebendo salários maiores) enquanto reside em **{destName}** (com custo de vida {results.isCheaper ? 'inferior' : 'superior'}) é a maior alavanca de poupança financeira pessoal hoje no Brasil. Essa decisão permite acumular patrimônio **{results.isCheaper ? 'muito mais rápido' : 'com esforço muito maior'}**.
+                  Trabalhar remotamente para uma empresa baseada em <strong>{originName}</strong> (recebendo salários maiores) enquanto reside em <strong>{destName}</strong> (com custo de vida {results.isCheaper ? 'inferior' : 'superior'}) é a maior alavanca de poupança financeira pessoal hoje no Brasil. Essa decisão permite acumular patrimônio <strong>{results.isCheaper ? 'muito mais rápido' : 'com esforço muito maior'}</strong>.
                 </p>
               </div>
             </div>

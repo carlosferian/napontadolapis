@@ -899,7 +899,7 @@ export function SplitBillCalculator() {
             >
               <p className="text-white/80 text-sm font-bold">Quer dividir tirando foto do cardápio?</p>
               <p className="text-white/50 text-sm leading-relaxed">
-                O aplicativo mobile **A Ponta do Lápis** utilizará IA para escanear a foto da conta/cardápio do restaurante, atribuir itens e calcular quem deve o quê instantaneamente.
+                O aplicativo mobile <strong>A Ponta do Lápis</strong> utilizará IA para escanear a foto da conta/cardápio do restaurante, atribuir itens e calcular quem deve o quê instantaneamente.
               </p>
               <p className="text-white/20 text-xs italic">Em desenvolvimento — apenas quando estiver excelente.</p>
             </div>

@@ -41,7 +41,7 @@ export default function SeguroDesempregoPage() {
       <div className="prose prose-sm prose-stone max-w-none space-y-4">
         <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">As Regras de Elegibilidade e Valores em 2026</h2>
         <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
-          Com a entrada em vigor dos novos valores em 11 de janeiro de 2026, a parcela mínima do seguro-desemprego foi fixada em **R$ 1.621,00** (equivalente ao salário mínimo nacional reajustado), e o teto máximo de pagamento por parcela passou a ser de **R$ 2.518,65**.
+          Com a entrada em vigor dos novos valores em 11 de janeiro de 2026, a parcela mínima do seguro-desemprego foi fixada em <strong>R$ 1.621,00</strong> (equivalente ao salário mínimo nacional reajustado), e o teto máximo de pagamento por parcela passou a ser de <strong>R$ 2.518,65</strong>.
         </p>
         <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
           Para ter direito, além de ter sido demitido sem justa causa de um regime CLT, você precisa preencher o tempo mínimo trabalhado de acordo com a ordem da solicitação:

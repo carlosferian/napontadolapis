@@ -42,7 +42,7 @@ export default function RealidadeBrasileiraPage() {
       <div className="prose prose-sm prose-stone max-w-none space-y-4">
         <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">O choque estatístico e a bolha social</h2>
         <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
-          Para a maioria dos profissionais com nível superior ou atuando no setor de tecnologia, serviços corporativos e cargos públicos, é comum sentir que a renda individual é apenas mediana. No entanto, no contexto macroeconômico do Brasil, **ganhar mais de R$ 5.000,00 por mês coloca o cidadão no topo dos 10% mais ricos do país**.
+          Para a maioria dos profissionais com nível superior ou atuando no setor de tecnologia, serviços corporativos e cargos públicos, é comum sentir que a renda individual é apenas mediana. No entanto, no contexto macroeconômico do Brasil, <strong>ganhar mais de R$ 5.000,00 por mês coloca o cidadão no topo dos 10% mais ricos do país</strong>.
         </p>
         <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
           Essa distorção ocorre porque vivemos em bolhas sociais segregadas. O Brasil é uma das nações mais desiguais do planeta, com um dos índices de Gini mais concentrados do mundo. De acordo com o IBGE, metade dos trabalhadores brasileiros sobrevive com menos de um salário mínimo por mês, e a maior fatia da massa de rendimentos está extremamente concentrada no topo da pirâmide (os 1% e 0,1% mais ricos).

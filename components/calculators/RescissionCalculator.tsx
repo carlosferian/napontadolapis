@@ -203,7 +203,7 @@ export function RescissionCalculator() {
             <div>
               <h3 className="text-base font-bold">Erro nas datas digitadas</h3>
               <p className="text-xs mt-1 leading-relaxed">
-                Por favor, confira os dados. A **data de afastamento** deve ser posterior à **data de admissão** e o salário bruto deve ser superior a R$ 0.
+                Por favor, confira os dados. A <strong>data de afastamento</strong> deve ser posterior à <strong>data de admissão</strong> e o salário bruto deve ser superior a R$ 0.
               </p>
             </div>
           </div>
@@ -267,7 +267,7 @@ export function RescissionCalculator() {
                 <div>
                   <p className="font-bold">Demissão por Justa Causa Aplicada</p>
                   <p>
-                    Na demissão por justa causa, o funcionário perde quase todos os direitos rescisórios. Você recebe apenas o **Saldo de Salário** trabalhado no mês e férias vencidas com 1/3 (se possuir). Você perde o direito ao 13º proporcional, férias proporcionais, aviso prévio, multa de 40%, guia de saque do FGTS e seguro-desemprego.
+                    Na demissão por justa causa, o funcionário perde quase todos os direitos rescisórios. Você recebe apenas o <strong>Saldo de Salário</strong> trabalhado no mês e férias vencidas com 1/3 (se possuir). Você perde o direito ao 13º proporcional, férias proporcionais, aviso prévio, multa de 40%, guia de saque do FGTS e seguro-desemprego.
                   </p>
                 </div>
               </div>

@@ -40,7 +40,7 @@ export default function FugaRotativoPage() {
       <div className="prose prose-sm prose-stone max-w-none space-y-4">
         <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">A Armadilha dos Juros do Rotativo do Cartão</h2>
         <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
-          Os juros do cartão de crédito rotativo no Brasil figuram historicamente entre as taxas mais elevadas do planeta, superando com frequência **400% ao ano** ou **14% ao mês**. Sob essa taxa, uma dívida inicial de R$ 5.000 se transforma em mais de R$ 25.000 em apenas 12 meses caso não receba novos pagamentos.
+          Os juros do cartão de crédito rotativo no Brasil figuram historicamente entre as taxas mais elevadas do planeta, superando com frequência <strong>400% ao ano</strong> ou <strong>14% ao mês</strong>. Sob essa taxa, uma dívida inicial de R$ 5.000 se transforma em mais de R$ 25.000 em apenas 12 meses caso não receba novos pagamentos.
         </p>
         <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
           <strong>A Espiral Infinita da Dívida:</strong>

@@ -49,7 +49,7 @@ export default function ParceladoPage() {
         <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Custo de Oportunidade: Quando vale a pena parcelar ou pagar à vista?</h2>
         <ul className="text-stone-500 dark:text-stone-400 text-sm list-disc pl-5 space-y-1">
           <li>
-            <strong>Quando pagar à vista:</strong> Se a taxa de juros implícita calculada for **superior à rentabilidade líquida do seu dinheiro** investido (como o CDI ou a Poupança). Quitar o produto à vista equivale a obter um rendimento livre de imposto de renda igual à taxa de juros economizada.
+            <strong>Quando pagar à vista:</strong> Se a taxa de juros implícita calculada for <strong>superior à rentabilidade líquida do seu dinheiro</strong> investido (como o CDI ou a Poupança). Quitar o produto à vista equivale a obter um rendimento livre de imposto de renda igual à taxa de juros economizada.
           </li>
           <li>
             <strong>Quando parcelar:</strong> Se o desconto à vista for extremamente pequeno ou inexistente (gerando uma taxa de juros próxima a 0% a.m.). Nesses cenários, parcelar é matematicamente vantajoso, pois permite que o seu dinheiro principal continue rendendo na sua conta corrente ao longo dos meses enquanto você paga as parcelas de forma suave.

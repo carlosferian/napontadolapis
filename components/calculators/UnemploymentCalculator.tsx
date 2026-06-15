@@ -398,14 +398,14 @@ export function UnemploymentCalculator() {
               <div>
                 <h3 className="text-base font-bold">Sem direito legal ao Seguro-Desemprego</h3>
                 <p className="text-xs mt-1 leading-relaxed">
-                  Pela legislação trabalhista da CLT, demissões **com justa causa** ou **pedidos de demissão** voluntários **não dão direito** ao benefício. O seguro é reservado a trabalhadores desamparados por rescisão unilateral da empresa.
+                  Pela legislação trabalhista da CLT, demissões <strong>com justa causa</strong> ou <strong>pedidos de demissão</strong> voluntários <strong>não dão direito</strong> ao benefício. O seguro é reservado a trabalhadores desamparados por rescisão unilateral da empresa.
                 </p>
               </div>
             </div>
             <div className="border-t pt-3 space-y-2 text-xs" style={{ borderColor: 'var(--c-line)' }}>
               <p className="font-semibold" style={{ color: 'var(--c-ink)' }}>Sua única proteção é sua própria reserva:</p>
               <p style={{ color: 'var(--c-muted)' }}>
-                Sem a ajuda do governo, sua pista financeira é de **{runwayResult.runwayMonths.toFixed(1).replace('.', ',')} meses**, sustentada exclusivamente pelos seus R$ {savingsFGTS.toFixed(2).replace('.', ',')} de reserva.
+                Sem a ajuda do governo, sua pista financeira é de <strong>{runwayResult.runwayMonths.toFixed(1).replace('.', ',')} meses</strong>, sustentada exclusivamente pelos seus R$ {savingsFGTS.toFixed(2).replace('.', ',')} de reserva.
               </p>
             </div>
           </div>
@@ -445,7 +445,7 @@ export function UnemploymentCalculator() {
                 <div className="space-y-1 text-xs text-amber-900 dark:text-amber-300 leading-relaxed">
                   <p className="font-bold">⚠️ Atenção: Risco Iminente de Bloqueio por MEI Ativo</p>
                   <p>
-                    Ter um CNPJ MEI ativo, mesmo sem faturamento, é o **motivo nº 1** de suspensão de seguro pelo governo federal, pois presume-se renda própria. Para liberar o seguro, você precisará comprovar inatividade (DASN-SIMEI zerada) no recurso administrativo ou providenciar a baixa do MEI antes de iniciar o protocolo do seguro.
+                    Ter um CNPJ MEI ativo, mesmo sem faturamento, é o <strong>motivo nº 1</strong> de suspensão de seguro pelo governo federal, pois presume-se renda própria. Para liberar o seguro, você precisará comprovar inatividade (DASN-SIMEI zerada) no recurso administrativo ou providenciar a baixa do MEI antes de iniciar o protocolo do seguro.
                   </p>
                 </div>
               </div>

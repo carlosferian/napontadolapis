@@ -43,21 +43,21 @@ export default function ItbiPage() {
         <div>
           <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">O que é o ITBI e quem deve pagar?</h2>
           <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
-            O **ITBI (Imposto de Transmissão de Bens Imóveis)** é um tributo municipal obrigatório, regido pelo Artigo 156 da Constituição Federal. Ele é cobrado pelas prefeituras sempre que ocorre a compra e venda de um bem imóvel de forma onerosa (ou seja, quando há pagamento). A lei determina que o pagamento do imposto é de responsabilidade do **comprador do imóvel**, e o registro de transferência no cartório só pode ser finalizado após a comprovação de quitação da guia de ITBI emitida pela prefeitura local.
+            O <strong>ITBI (Imposto de Transmissão de Bens Imóveis)</strong> é um tributo municipal obrigatório, regido pelo Artigo 156 da Constituição Federal. Ele é cobrado pelas prefeituras sempre que ocorre a compra e venda de um bem imóvel de forma onerosa (ou seja, quando há pagamento). A lei determina que o pagamento do imposto é de responsabilidade do <strong>comprador do imóvel</strong>, e o registro de transferência no cartório só pode ser finalizado após a comprovação de quitação da guia de ITBI emitida pela prefeitura local.
           </p>
         </div>
 
         <div>
           <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Como funciona o desconto de 50% nas custas do cartório?</h2>
           <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
-            A Lei Federal nº 6.015, de 1973 (Lei de Registros Públicos), em seu Artigo 290, assegura um benefício financeiro robusto para o cidadão: quem está adquirindo o seu **primeiro imóvel residencial financiado pelo SFH (Sistema Financeiro de Habitação)** tem direito a um **desconto de 50% sobre os emolumentos de cartório** para o ato de Registro do Imóvel. Para obter esse desconto legal, o comprador deve solicitar formalmente ao cartório de registro e declarar, sob as penas da lei, que se trata de sua primeira aquisição residencial financiada.
+            A Lei Federal nº 6.015, de 1973 (Lei de Registros Públicos), em seu Artigo 290, assegura um benefício financeiro robusto para o cidadão: quem está adquirindo o seu <strong>primeiro imóvel residencial financiado pelo SFH (Sistema Financeiro de Habitação)</strong> tem direito a um <strong>desconto de 50% sobre os emolumentos de cartório</strong> para o ato de Registro do Imóvel. Para obter esse desconto legal, o comprador deve solicitar formalmente ao cartório de registro e declarar, sob as penas da lei, que se trata de sua primeira aquisição residencial financiada.
           </p>
         </div>
 
         <div>
           <h2 className="text-base font-semibold text-stone-700 dark:text-stone-300">Financiamento Imobiliário precisa de Escritura Pública?</h2>
           <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mt-2">
-            Esta é uma das grandes vantagens financeiras de financiar um imóvel: **não há necessidade de pagar taxas para lavrar uma Escritura Pública de compra e venda** no Tabelionato de Notas. Pelo Artigo 61 da Lei nº 4.380/64, o **contrato assinado com o banco tem força legal de Escritura Pública**. Esse contrato é levado diretamente ao Cartório de Registro de Imóveis para averbação, resultando em uma economia automática de milhares de reais (cerca de 1% do valor do imóvel) que seriam gastos com custas notariais em uma transação puramente à vista.
+            Esta é uma das grandes vantagens financeiras de financiar um imóvel: <strong>não há necessidade de pagar taxas para lavrar uma Escritura Pública de compra e venda</strong> no Tabelionato de Notas. Pelo Artigo 61 da Lei nº 4.380/64, o <strong>contrato assinado com o banco tem força legal de Escritura Pública</strong>. Esse contrato é levado diretamente ao Cartório de Registro de Imóveis para averbação, resultando em uma economia automática de milhares de reais (cerca de 1% do valor do imóvel) que seriam gastos com custas notariais em uma transação puramente à vista.
           </p>
         </div>
       </div>
