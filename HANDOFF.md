@@ -29,7 +29,16 @@ Adicionadas seções `prose prose-sm prose-stone max-w-none space-y-4` com texto
 
 Build local validado (0 erros/warnings). Commit `bb1b254`/`5deb817` enviado direto para `claude/friendly-hypatia-HwfUk` (produção).
 
-**Pendente:** aguardar reanálise do Google AdSense (pode levar dias). Se o status "baixo valor" persistir, revisar `/sobre`, `/fale-conosco`, `/privacidade` e `/viagens` (listagem) para profundidade adicional.
+### Rodada 2: sinais de autoria (E-E-A-T) + glossário
+
+- `/sobre` agora tem uma seção "Quem está por trás" com a bio do autor — **Carlos Ferian, 9 anos de experiência em banco de varejo** — e expõe um JSON-LD `Person` com essa informação.
+- `components/ui/SourcesFooter.tsx` (usado em ~21 páginas) agora exibe a linha "Escrito por Carlos Ferian, 9 anos de banco de varejo" com link para `/sobre` — reforça autoria em quase todo o conteúdo financeiro do site.
+- Nova página `/glossario` (Glossário Financeiro): Selic, CDI, IPCA, IOF, INSS, FGTS, IRPF, SAC, Price, CET, Poupança, Tesouro Direto, spread cambial, liquidez, renda fixa vs. variável, overround — com links cruzados para as calculadoras e schema.org `DefinedTermSet`. Adicionada ao sitemap e ao rodapé global.
+- Commits `c8c330a`, `39509d7`, `9a0712c` — todos enviados para `claude/friendly-hypatia-HwfUk`.
+
+**Pendente:** aguardar reanálise do Google AdSense (pode levar dias/semanas até reindexação). Próximas ondas planejadas se "baixo valor" persistir:
+- Onda 2 restante: FAQ por calculadora (accordion), revisar `/fale-conosco` e `/viagens` (listagem)
+- Onda 3: seção de artigos/blog (`/aprenda`), aproveitando os temas do plano de divulgação (ex: "Quanto pago de IR em 2026", "SAC vs Price")
 
 ---
 
