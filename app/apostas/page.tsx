@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { GameLauncher } from '@/components/GameLauncher'
 import { AppCTA }       from '@/components/AppCTA'
 import { SourcesFooter } from '@/components/ui/SourcesFooter'
+import { FAQ } from '@/components/ui/FAQ'
 
 export const metadata: Metadata = {
   title: 'A Ilusão das Apostas — Jogue, perca e entenda a matemática',
@@ -83,6 +84,21 @@ export default function ApostasPage() {
           na vida real, se estende por meses ou anos.
         </p>
       </div>
+
+      <FAQ items={[
+        {
+          question: 'É possível ganhar dinheiro consistentemente apostando em casas de apostas?',
+          answer: 'No longo prazo, não. A margem (overround) embutida nas odds garante que a soma das probabilidades implícitas passe de 100%, ou seja, a casa já tem uma vantagem matemática antes mesmo do evento começar. Apostadores podem ter sequências de sorte, mas a expectativa matemática de quem aposta repetidamente é negativa.',
+        },
+        {
+          question: 'Por que sinto que "quase ganhei" em apostas que perdi?',
+          answer: 'É o chamado "near-miss effect": resultados quase certos (como perder no último minuto) ativam circuitos de recompensa parecidos com os de uma vitória real. As plataformas são desenhadas para gerar esses momentos com frequência, o que reforça a vontade de apostar de novo.',
+        },
+        {
+          question: 'O simulador desta página usa dinheiro real?',
+          answer: 'Não. É um simulador 100% fictício, sem cadastro, sem dinheiro real e sem coleta de dados — criado apenas para demonstrar, na prática, a matemática que sustenta as casas de apostas.',
+        },
+      ]} />
 
       <SourcesFooter sources={[
         { label: 'Banco Central do Brasil — Apostas Esportivas e impacto no orçamento das famílias', url: 'https://www.bcb.gov.br/estabilidadefinanceira/apostasesportivas' },

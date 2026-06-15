@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { SplitBillCalculator } from '@/components/calculators/SplitBillCalculator'
 import { SourcesFooter } from '@/components/ui/SourcesFooter'
+import { FAQ } from '@/components/ui/FAQ'
 
 export const metadata: Metadata = {
   title: 'Dividir a Conta — Calculadora de rateio por pessoa',
@@ -63,6 +64,21 @@ export default function DividirPage() {
           em desenvolvimento no app A Ponta do Lápis para Android.
         </p>
       </div>
+
+      <FAQ items={[
+        {
+          question: 'Sou obrigado a pagar os 10% de serviço no restaurante?',
+          answer: 'Não. A taxa de serviço de 10% é uma cobrança opcional segundo o Código de Defesa do Consumidor (Art. 39, V) — o cliente pode pedir para retirá-la da conta sem justificativa, embora ela seja uma forma importante de remuneração da equipe.',
+        },
+        {
+          question: 'A calculadora funciona se algumas pessoas consumiram mais que outras?',
+          answer: 'A versão atual faz a divisão igual entre todas as pessoas, ideal para grupos que consomem de forma parecida. Para divisão por item (cada um paga o que pediu), essa funcionalidade está em desenvolvimento no app A Ponta do Lápis para Android.',
+        },
+        {
+          question: 'Preciso me cadastrar ou instalar algo para usar?',
+          answer: 'Não. A calculadora roda inteiramente no seu navegador, sem cadastro, sem CPF e sem necessidade de instalar aplicativo.',
+        },
+      ]} />
 
       <SourcesFooter sources={[
         { label: 'Planalto — Lei da Gorjeta nº 13.419/2017 (Regulamentação e repasse de taxas de serviço)', url: 'https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/lei/l13419.htm' },

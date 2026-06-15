@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { CompoundInterestCalculator } from '@/components/calculators/CompoundInterestCalculator'
 import { AppCTA } from '@/components/AppCTA'
 import { SourcesFooter } from '@/components/ui/SourcesFooter'
+import { FAQ } from '@/components/ui/FAQ'
 
 export const metadata: Metadata = {
   title: 'Calculadora de Juros Compostos — Simule seu crescimento patrimonial',
@@ -45,6 +46,21 @@ export default function CompoundInterestPage() {
           À medida que o tempo passa, a curva de crescimento deixa de ser linear e assume um comportamento exponencial. É o efeito conhecido como "bola de neve", no qual, em prazos mais longos, o rendimento em juros supera significativamente o somatório total de todo o dinheiro investido mensalmente pelo próprio poupador.
         </p>
       </div>
+
+      <FAQ items={[
+        {
+          question: 'Qual a diferença entre juros simples e juros compostos?',
+          answer: 'Nos juros simples, a taxa incide sempre sobre o valor original aplicado. Nos juros compostos, a taxa incide sobre o saldo acumulado (principal + juros já ganhos), gerando "juros sobre juros" — o que faz o crescimento ser exponencial e não linear ao longo do tempo.',
+        },
+        {
+          question: 'Aportes mensais fazem diferença real no resultado final?',
+          answer: 'Sim, e muito. Aportes mensais constantes, somados ao efeito composto, costumam representar a maior parte do patrimônio final em simulações de longo prazo — mais até do que o valor inicial investido, especialmente em horizontes acima de 10-15 anos.',
+        },
+        {
+          question: 'Devo usar a taxa mensal ou anual na simulação?',
+          answer: 'Use a taxa que corresponde ao seu investimento real (ex: CDBs costumam divulgar a taxa anual, enquanto alguns fundos informam a taxa mensal). A calculadora converte automaticamente entre as duas, mas o resultado é mais preciso quando você usa a taxa efetiva informada pela instituição financeira.',
+        },
+      ]} />
 
       <SourcesFooter sources={[
         { label: 'CVM — Comissão de Valores Mobiliários (Educação Financeira)', url: 'https://www.investidor.gov.br/' },

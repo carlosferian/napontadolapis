@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { TravelCalculator } from '@/components/calculators/TravelCalculator'
 import { SourcesFooter } from '@/components/ui/SourcesFooter'
+import { FAQ } from '@/components/ui/FAQ'
 
 export const metadata: Metadata = {
   title: 'Calculadora da Viagem dos Sonhos — Planeje qualquer destino',
@@ -48,6 +49,21 @@ export default function PlanejarPage() {
           necessária — o efeito dos juros compostos trabalha a seu favor mesmo em prazos curtos.
         </p>
       </div>
+      <FAQ items={[
+        {
+          question: 'Vale mais a pena levar dinheiro em espécie ou usar cartão na viagem?',
+          answer: 'Depende do destino e do valor. Cartões internacionais (crédito/débito tradicionais) cobram IOF de 3,38% mais spread bancário. Contas digitais como Wise e Nomad eliminam o IOF e reduzem bastante o spread. Espécie evita taxas de cartão, mas tem riscos de segurança e, em geral, cotação de compra de papel-moeda pior que a eletrônica.',
+        },
+        {
+          question: 'Por que a calculadora soma 15% de margem de segurança na meta?',
+          answer: 'Imprevistos (taxas extras, compras não planejadas, variação cambial entre o planejamento e a data da viagem) são praticamente garantidos. A margem de 15% evita que você chegue ao destino com o orçamento exatamente no limite.',
+        },
+        {
+          question: 'O cálculo considera a cotação do dólar no momento da viagem?',
+          answer: 'A calculadora usa a cotação informada por você no momento do planejamento. Como o câmbio varia, o ideal é revisitar a simulação periodicamente conforme a data da viagem se aproxima, especialmente se a cotação mudar significativamente.',
+        },
+      ]} />
+
       <SourcesFooter sources={[
         { label: 'Decreto 11.322/2022 — IOF sobre operações de câmbio com cartão no exterior (3,38%)', url: 'https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/D11322.htm' },
         { label: 'BCB — Taxa Selic para referência do plano de poupança', url: 'https://www.bcb.gov.br/controleinflacao/taxaselic' },

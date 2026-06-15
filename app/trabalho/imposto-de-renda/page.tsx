@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { IRPFCalculator } from '@/components/calculators/IRPFCalculator'
 import { AppCTA } from '@/components/AppCTA'
 import { SourcesFooter } from '@/components/ui/SourcesFooter'
+import { FAQ } from '@/components/ui/FAQ'
 
 export const metadata: Metadata = {
   title: 'Calculadora de Imposto de Renda 2026 — IRPF com Lei dos 5 Mil',
@@ -51,6 +52,21 @@ export default function ImpostoDeRendaPage() {
           Uma calculadora de IRPF correta precisa calcular faixa por faixa e depois subtrair o redutor da Lei dos 5 Mil.
         </p>
       </div>
+
+      <FAQ items={[
+        {
+          question: 'Quem ganha até R$ 5.000 por mês está totalmente isento de IR em 2026?',
+          answer: 'Sim. Pela Lei nº 15.270/2025 (Lei dos 5 Mil), quem tem renda mensal de até R$ 5.000 tem o Imposto de Renda zerado integralmente, graças ao redutor especial aplicado sobre o valor calculado pela tabela progressiva.',
+        },
+        {
+          question: 'Por que quem ganha R$ 5.001 paga mais IR proporcionalmente do que quem ganha R$ 5.000?',
+          answer: 'É uma descontinuidade conhecida da lei: até R$ 5.000 o redutor cobre 100% do IR devido. De R$ 5.000,01 a R$ 7.350, o redutor é parcial e decrescente, então o IR aparece de forma mais abrupta nessa faixa de transição — embora ainda menor do que seria sem o redutor.',
+        },
+        {
+          question: 'O que é alíquota efetiva e por que ela é menor que a alíquota da minha faixa?',
+          answer: 'A alíquota efetiva é o percentual do seu salário bruto total que realmente vai para o IR. Como a tabela é progressiva, só a parcela do salário que excede cada limite de faixa é tributada pela alíquota daquela faixa — por isso a alíquota efetiva é sempre menor que a alíquota marginal (a maior faixa atingida).',
+        },
+      ]} />
 
       <SourcesFooter sources={[
         { label: 'Lei nº 15.270/2025 (Lei dos 5 Mil) — Presidência da República', url: 'https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/L15270.htm' },
