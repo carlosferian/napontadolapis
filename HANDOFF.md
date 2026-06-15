@@ -1,7 +1,7 @@
 # Handoff — A Ponta do Lápis
 
-**Última atualização:** 2026-06-10  
-**Branch de desenvolvimento:** `claude/awesome-einstein-C2THb`  
+**Última atualização:** 2026-06-15  
+**Branch de desenvolvimento e produção:** `claude/friendly-hypatia-HwfUk` (deploy contínuo Netlify → apontadolapis.com.br)  
 **Stack:** Next.js 16.2.6 · React 19 · TypeScript · Tailwind CSS v4 · Netlify (deploy contínuo ativo)  
 **Domínio registrado:** `apontadolapis.com.br`
 
@@ -12,6 +12,24 @@
 O projeto está completo, compilando com **sucesso absoluto** (48 páginas estáticas geradas sem avisos ou erros) e 100% monetizado (Google AdSense + Programa de Afiliados Wise).
 
 Toda a infraestrutura roda de forma **100% independente, autônoma e com custo zero vitalício**.
+
+⚠️ **Importante:** a partir de 2026-06-10, a branch `claude/friendly-hypatia-HwfUk` é a única conectada ao deploy contínuo do Netlify (produção). Sessões anteriores trabalhavam em `claude/awesome-einstein-C2THb`, que foi mesclada via PR para `claude/friendly-hypatia-HwfUk`. Todo trabalho novo deve partir e ser enviado para `claude/friendly-hypatia-HwfUk`.
+
+---
+
+## O que foi feito — Sessão 2026-06-15: conteúdo para revisão do AdSense
+
+O AdSense recusou o cadastro do site com o motivo **"Conteúdo de baixo valor"** (ads.txt já estava "Autorizado", então a parte técnica estava ok — era questão de profundidade de conteúdo).
+
+Adicionadas seções `prose prose-sm prose-stone max-w-none space-y-4` com texto explicativo original (2-3 parágrafos com subtítulos `<h2>`) nas páginas mais "finas" do site:
+
+- `/apostas` — seções sobre probabilidade implícita/overround das odds, o "near-miss effect" psicológico e o tamanho do problema de apostas no Brasil
+- `/dividir` — seções sobre como funciona o rateio, a gorjeta opcional (CDC + Lei 13.419/2017) e quando a divisão igual não é justa
+- `/viagens/planejar` — seções sobre cartão tradicional vs. conta internacional (IOF) e como montar a meta de poupança
+
+Build local validado (0 erros/warnings). Commit `bb1b254`/`5deb817` enviado direto para `claude/friendly-hypatia-HwfUk` (produção).
+
+**Pendente:** aguardar reanálise do Google AdSense (pode levar dias). Se o status "baixo valor" persistir, revisar `/sobre`, `/fale-conosco`, `/privacidade` e `/viagens` (listagem) para profundidade adicional.
 
 ---
 
