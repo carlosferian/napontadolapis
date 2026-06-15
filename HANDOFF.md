@@ -43,6 +43,16 @@ Build local validado (0 erros/warnings). Commit `bb1b254`/`5deb817` enviado dire
 - `/fale-conosco` e `/viagens` (listagem) revisadas — já têm conteúdo suficiente, não precisaram de alteração.
 - Build local validado (0 erros/warnings), testado em dev server (FAQPage JSON-LD e Person schema confirmados via curl). Commit `5766218` enviado para `claude/friendly-hypatia-HwfUk`.
 
+### Rodada 4: refinar bio do autor + auditoria estilo "analista AdSense"
+
+- Bio do autor refinada: "profissional com quase dez anos de atuação no setor bancário de varejo" (em `/sobre`, JSON-LD `Person` e byline do `SourcesFooter`). Commit `cc49835`.
+- Auditoria completa do site simulando um revisor do Google AdSense. Achados corrigidos:
+  - **Link quebrado crítico**: a homepage linkava para `/apostas/probabilidades`, rota que não existia (404). Criada a página usando o `OddsCalculator` (componente já existia mas não estava em nenhuma rota) — agora com header, prose, FAQ e fontes.
+  - Sitemap: adicionadas `/apostas/probabilidades` e `/fale-conosco` (estavam faltando).
+  - Tom de "/apostas" suavizado: removidas referências a "cassino virtual"/"cassino imersivo" no menu e metadata, reforçando que é simulador educativo sem dinheiro real (mitigação de risco da política "Gambling and games" do AdSense).
+  - Criado `app/not-found.tsx` (404 customizado com links de retorno, evita "dead ends").
+  - Build local validado (0 erros/warnings), testado em dev server. Commit `6776665` enviado para `claude/friendly-hypatia-HwfUk`.
+
 **Pendente:** aguardar reanálise do Google AdSense (pode levar dias/semanas até reindexação). Se "baixo valor" persistir:
 - Estender FAQ para as demais calculadoras
 - Onda 3: seção de artigos/blog (`/aprenda`), aproveitando os temas do plano de divulgação (ex: "Quanto pago de IR em 2026", "SAC vs Price")
