@@ -15,6 +15,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: base, lastModified: now, changeFrequency: 'monthly', priority: 1 },
     { url: `${base}/privacidade`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${base}/glossario`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/sobre`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/trabalho/uber-vs-carro`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/apostas`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/investimentos`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },

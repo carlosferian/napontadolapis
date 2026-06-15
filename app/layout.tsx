@@ -110,6 +110,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               SEM CADASTRO · SEM CPF · SEM JULGAMENTO · OS CÁLCULOS RODAM NO SEU NAVEGADOR
             </p>
             <div className="mt-3 flex items-center gap-4">
+              <Link href="/glossario" className="c-eyebrow hover:opacity-70 transition-opacity" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
+                GLOSSÁRIO
+              </Link>
               <Link href="/privacidade" className="c-eyebrow hover:opacity-70 transition-opacity" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
                 POLÍTICA DE PRIVACIDADE
               </Link>
