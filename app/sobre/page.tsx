@@ -7,9 +7,24 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://apontadolapis.com.br/sobre' },
 }
 
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Carlos Ferian',
+  url: 'https://apontadolapis.com.br/sobre',
+  jobTitle: 'Autor — A Ponta do Lápis',
+  description: 'Criador da A Ponta do Lápis, com 9 anos de experiência em banco de varejo, atuando com crédito, financiamento, investimentos e câmbio para clientes pessoa física.',
+  knowsAbout: ['Educação financeira', 'Crédito e financiamento', 'Investimentos', 'Câmbio'],
+}
+
 export default function SobrePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-10">
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
 
       {/* Header */}
       <div className="calm-header" style={{ paddingBottom: 24, borderBottom: '1px solid var(--c-line)' }}>

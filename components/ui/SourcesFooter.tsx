@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 interface Source {
   label: string
   url?: string
@@ -30,6 +32,13 @@ export function SourcesFooter({ sources, className }: SourcesFooterProps) {
           </li>
         ))}
       </ul>
+      <p className="text-xs text-stone-400 pt-1 border-t border-stone-100">
+        Escrito por{' '}
+        <Link href="/sobre" className="underline underline-offset-2 hover:text-stone-600 transition-colors">
+          Carlos Ferian
+        </Link>
+        , 9 anos de experiência em banco de varejo.
+      </p>
     </div>
   )
 }
