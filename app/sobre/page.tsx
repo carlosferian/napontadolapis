@@ -51,6 +51,24 @@ export default function SobrePage() {
         </div>
       </div>
 
+      {/* Autor */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-black" style={{ color: 'var(--c-ink)' }}>Quem está por trás</h2>
+        <div className="rounded-2xl border p-4" style={{ background: 'var(--c-surface)', borderColor: 'var(--c-line)' }}>
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--c-muted)' }}>
+            A Ponta do Lápis é criada e mantida por <strong style={{ color: 'var(--c-ink)' }}>Carlos Ferian</strong>,
+            que trabalhou por <strong style={{ color: 'var(--c-ink)' }}>9 anos em banco de varejo</strong>, atuando
+            diretamente com produtos como crédito, financiamento, investimentos e câmbio para clientes pessoa física.
+          </p>
+          <p className="text-sm mt-3 leading-relaxed" style={{ color: 'var(--c-muted)' }}>
+            Foi nesse período, vendo de perto as dúvidas mais comuns dos clientes — e as armadilhas de produtos
+            financeiros mal explicados — que nasceu a ideia da Ponta do Lápis: traduzir esse conhecimento em
+            ferramentas simples, gratuitas e sem letra miúda, para que qualquer pessoa possa fazer a própria conta
+            antes de tomar uma decisão financeira.
+          </p>
+        </div>
+      </div>
+
       {/* Ferramentas */}
       <div className="space-y-4">
         <h2 className="text-lg font-black" style={{ color: 'var(--c-ink)' }}>O que você encontra aqui</h2>
