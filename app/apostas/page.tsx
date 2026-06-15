@@ -5,11 +5,11 @@ import { SourcesFooter } from '@/components/ui/SourcesFooter'
 import { FAQ } from '@/components/ui/FAQ'
 
 export const metadata: Metadata = {
-  title: 'A Ilusão das Apostas — Jogue, perca e entenda a matemática',
-  description: 'Um cassino virtual que revela a matemática real das bets. Jogue, experimente a decadência, e descubra quanto você realmente perde.',
+  title: 'A Ilusão das Apostas — Simulador educativo e a matemática real',
+  description: 'Um simulador educativo e gratuito que revela a matemática real das casas de apostas. Sem dinheiro real, sem cadastro — só para você entender por que a casa sempre ganha.',
   openGraph: {
     title: 'A Ilusão das Apostas — A Ponta do Lápis',
-    description: 'Jogue. Perca. Entenda. A matemática das bets nunca mente.',
+    description: 'Simule, sem dinheiro real, e entenda a matemática das bets.',
     url: 'https://apontadolapis.com.br/apostas',
     locale: 'pt_BR',
     type: 'website',

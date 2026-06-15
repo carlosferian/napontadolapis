@@ -33,7 +33,8 @@ const travelItems = [
 ]
 
 const habitItems = [
-  { href: '/apostas', label: 'Gastos com Apostas', desc: 'Cassino imersivo que revela a matemática real das bets.' },
+  { href: '/apostas', label: 'Gastos com Apostas', desc: 'Simulador educativo que revela a matemática real das bets.' },
+  { href: '/apostas/probabilidades', label: 'Probabilidades Reais', desc: 'Calcule a margem da casa e sua chance real de lucro.' },
   { href: '/fumo', label: 'Custo do Fumo', desc: 'O preço de cigarros, vape ou pod por décadas.' },
 ]
 

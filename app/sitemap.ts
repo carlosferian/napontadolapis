@@ -19,6 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/sobre`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/trabalho/uber-vs-carro`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/apostas`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${base}/apostas/probabilidades`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
+    { url: `${base}/fale-conosco`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${base}/investimentos`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/investimentos/amortizacao`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
     { url: `${base}/investimentos/itbi-e-cartorio`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
