@@ -51,17 +51,18 @@ Como o Google avalia a **média** de qualidade do site, essas 22 afundavam tudo.
 - **Fase 3:** seção editorial `/aprenda` com 8-15 artigos aprofundados.
 - **Fase 4:** datas de publicação/atualização visíveis + malha de links internos.
 
-> Trabalho desta sessão na branch `claude/nifty-carson-2j0ofa`.
+> Trabalho desta sessão originalmente na branch `claude/nifty-carson-2j0ofa` e posteriormente unificado na branch principal `claude/friendly-hypatia-HwfUk`.
 
 ---
 
 ## Estado atual
 
-O projeto está completo, compilando com **sucesso absoluto** (48 páginas estáticas geradas sem avisos ou erros) e 100% monetizado (Google AdSense + Programa de Afiliados Wise).
+O projeto está completo, compilando com **sucesso absoluto** (54 páginas estáticas geradas sem avisos ou erros) e 100% monetizado (Google AdSense + Programa de Afiliados Wise).
 
 Toda a infraestrutura roda de forma **100% independente, autônoma e com custo zero vitalício**.
 
-⚠️ **Importante:** a partir de 2026-06-10, a branch `claude/friendly-hypatia-HwfUk` é a única conectada ao deploy contínuo do Netlify (produção). Sessões anteriores trabalhavam em `claude/awesome-einstein-C2THb`, que foi mesclada via PR para `claude/friendly-hypatia-HwfUk`. Todo trabalho novo deve partir e ser enviado para `claude/friendly-hypatia-HwfUk`.
+⚠️ **Importante:** O repositório foi organizado para conter **apenas uma única branch ativa**, tanto local quanto remotamente no GitHub: `claude/friendly-hypatia-HwfUk`. Todas as outras branches antigas e temporárias (`main`, `novotemplate`, `claude/nifty-carson-2j0ofa`, etc.) foram removidas após termos unificado todo o conteúdo e histórico na branch principal.
+
 
 ---
 
