@@ -7,6 +7,7 @@ import { FAQ } from '@/components/ui/FAQ'
 export const metadata: Metadata = {
   title: 'A Ilusão das Apostas — Simulador educativo e a matemática real',
   description: 'Um simulador educativo e gratuito que revela a matemática real das casas de apostas. Sem dinheiro real, sem cadastro — só para você entender por que a casa sempre ganha.',
+  robots: 'noindex, nofollow',
   openGraph: {
     title: 'A Ilusão das Apostas — A Ponta do Lápis',
     description: 'Simule, sem dinheiro real, e entenda a matemática das bets.',

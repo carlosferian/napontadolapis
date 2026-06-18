@@ -109,12 +109,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <p className="c-eyebrow mt-6" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
               SEM CADASTRO · SEM CPF · SEM JULGAMENTO · OS CÁLCULOS RODAM NO SEU NAVEGADOR
             </p>
-            <div className="mt-3 flex items-center gap-4">
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
               <Link href="/glossario" className="c-eyebrow hover:opacity-70 transition-opacity" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
                 GLOSSÁRIO
               </Link>
               <Link href="/privacidade" className="c-eyebrow hover:opacity-70 transition-opacity" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
                 POLÍTICA DE PRIVACIDADE
+              </Link>
+              <Link href="/politica-editorial" className="c-eyebrow hover:opacity-70 transition-opacity" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
+                POLÍTICA EDITORIAL
+              </Link>
+              <Link href="/termos-de-uso" className="c-eyebrow hover:opacity-70 transition-opacity" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
+                TERMOS DE USO
               </Link>
               <Link href="/sobre" className="c-eyebrow hover:opacity-70 transition-opacity" style={{ fontSize: 10, color: 'var(--c-muted-2)' }}>
                 SOBRE

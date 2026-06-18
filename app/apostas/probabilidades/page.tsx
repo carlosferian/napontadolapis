@@ -7,6 +7,7 @@ import { FAQ } from '@/components/ui/FAQ'
 export const metadata: Metadata = {
   title: 'Probabilidades Reais das Apostas — Calculadora de Odds e Margem da Casa',
   description: 'Descubra a probabilidade implícita de uma odd, a margem retida pela casa e a chance real de lucro após 10, 100 ou 1.000 apostas. A matemática crua, sem ilusão.',
+  robots: 'noindex, nofollow',
   openGraph: {
     title: 'Probabilidades Reais das Apostas — A Ponta do Lápis',
     description: 'A casa não é burra. Veja a matemática por trás de qualquer odd.',
