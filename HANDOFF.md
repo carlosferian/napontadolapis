@@ -1,9 +1,57 @@
 # Handoff — A Ponta do Lápis
 
-**Última atualização:** 2026-06-15  
+**Última atualização:** 2026-06-18  
 **Branch de desenvolvimento e produção:** `claude/friendly-hypatia-HwfUk` (deploy contínuo Netlify → apontadolapis.com.br)  
 **Stack:** Next.js 16.2.6 · React 19 · TypeScript · Tailwind CSS v4 · Netlify (deploy contínuo ativo)  
 **Domínio registrado:** `apontadolapis.com.br`
+
+---
+
+## O que foi feito — Sessão 2026-06-18: combate ao "Conteúdo de baixo valor" (Fase 1)
+
+O AdSense reprovou o site **de novo** com o motivo "Conteúdo de baixo valor",
+mesmo após as 4 rodadas de 2026-06-15 (prosa curta, FAQ, glossário, E-E-A-T).
+Diagnóstico desta sessão: as rodadas anteriores foram cosméticas. Os problemas
+estruturais são (a) páginas dominadas por widget com pouco texto rastreável e
+(b) **22 das ~48 páginas eram as rotas `/viagens/[destino]` quase-duplicadas** —
+mesma `TravelCalculator` + ~80 palavras de texto-modelo com a cidade trocada.
+Como o Google avalia a **média** de qualidade do site, essas 22 afundavam tudo.
+
+**Decisão do dono (via AskUserQuestion):** enriquecer TODOS os 22 destinos
+(em vez de `noindex`).
+
+### Entregue (Fase 1 — destinos)
+
+- **`config/destination-guides.ts`** (novo): guia editorial **único por cidade**
+  para os 22 destinos. Cada um tem: intro específica, melhor época (alta/baixa/
+  evitar), contexto de custo, voo (duração/conexões de GRU + dica), moeda +
+  pagamento, 3 bairros para se hospedar, dica de economia local, armadilha comum
+  e 3 FAQ próprias. Conteúdo factual e específico — nada de frase genérica que
+  serviria para qualquer cidade (é isso que caracteriza thin content).
+- **`app/viagens/[destino]/page.tsx`** (reescrito): agora tem `<h1>` (faltava —
+  era um buraco de SEO), bloco "custos em números" (voo + diária em BRL via
+  `TRAVEL_CONFIG.defaultUSDtoBRL`), as seções do guia, FAQ por destino
+  (schema.org FAQPage), links internos para `/viagens/planejar`,
+  `/viagens` e `/viagens/milhas-ou-dinheiro`, e `SourcesFooter` (Itamaraty/BCB).
+  A `TravelCalculator` não foi tocada (campo `guide` mora em arquivo à parte).
+- Verificado: `npm run build` em **0 erros / 0 warnings**; os 22 destinos como
+  SSG; **conteúdo confirmado no HTML pré-renderizado** (rastreável, não só
+  client-side) inclusive nas chaves com hífen (`nova-york`, `machu-picchu`...).
+  `eslint` dos 2 arquivos novos limpo (os 162 problemas de lint pré-existentes
+  em `config/itbi.ts`, `config/tax.ts`, `lib/calculations/*` não foram tocados).
+
+### Próximos passos do plano (ainda pendentes)
+
+- **Fase 1b — apostas:** neutralizar risco do jogo de cassino em `/apostas`
+  (manter ferramenta, reforçar enquadramento educativo, avaliar `noindex` no
+  overlay do jogo).
+- **Fase 2:** engrossar as ~10-12 calculadoras-carro-chefe de ~150 → 700-1000+
+  palavras (como funciona, exemplo numérico passo a passo, erros comuns,
+  limitações) e FAQ de 3 → 6-8 perguntas.
+- **Fase 3:** seção editorial `/aprenda` com 8-15 artigos aprofundados.
+- **Fase 4:** datas de publicação/atualização visíveis + malha de links internos.
+
+> Trabalho desta sessão na branch `claude/nifty-carson-2j0ofa`.
 
 ---
 
