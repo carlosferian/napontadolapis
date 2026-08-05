@@ -3,8 +3,8 @@
 export const MARKET_DATA = {
   apostas: 'R$ 130bi',
   selic: '14,25% a.a.',
-  usd: '5,07',
+  usd: '5,11',
   iof: '2,38%',
   ipca: '4,64%',
-  lastUpdated: '2026-08-04',
+  lastUpdated: '2026-08-05',
 }
