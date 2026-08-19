@@ -6,5 +6,5 @@ export const MARKET_DATA = {
   usd: '5,20',
   iof: '2,38%',
   ipca: '4,44%',
-  lastUpdated: '2026-08-18',
+  lastUpdated: '2026-08-19',
 }
