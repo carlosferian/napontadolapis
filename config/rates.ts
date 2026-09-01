@@ -6,5 +6,5 @@ export const RATES = {
   cdi: 0.1390,
   selic: 0.1400,
   tesouroDireto: 0.1550,
-  lastUpdated: '2026-08',
+  lastUpdated: '2026-09',
 }
