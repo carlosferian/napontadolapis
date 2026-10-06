@@ -5,6 +5,6 @@ export const MARKET_DATA = {
   selic: '13,75% a.a.',
   usd: '4,99',
   iof: '2,38%',
-  ipca: '4,22%',
-  lastUpdated: '2026-10-05',
+  ipca: '4,83%',
+  lastUpdated: '2026-10-06',
 }
