@@ -2,9 +2,9 @@
 // GERADO AUTOMATICAMENTE VIA GITHUB ACTIONS — NÃO EDITE DIRETAMENTE
 export const MARKET_DATA = {
   apostas: 'R$ 130bi',
-  selic: '10,50% a.a.',
-  usd: '5,51',
+  selic: '13,75% a.a.',
+  usd: '5,58',
   iof: '2,38%',
   ipca: '4,58%',
-  lastUpdated: '2026-11-09',
+  lastUpdated: '2026-11-10',
 }
